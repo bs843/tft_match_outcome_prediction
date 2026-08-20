@@ -9,7 +9,7 @@ import pytest
 import src.provenance as provenance
 
 
-TAG = "tft-patch17.8-final-collection-v3"
+TAG = "tft-patch17.8-final-collection-v4"
 
 
 def git(path: Path, *args: str) -> str:
@@ -70,10 +70,10 @@ def test_accepted_manifest_checksum_is_order_independent() -> None:
     )
 
 
-def test_collection_manifest_records_v3_git_and_configuration_provenance(tmp_path: Path) -> None:
+def test_collection_manifest_records_v4_git_and_configuration_provenance(tmp_path: Path) -> None:
     manifests = tmp_path / "manifests"
     config_value = {
-        "project": {"dataset_version": "dataset-v4", "schema_version": "1.1.0"},
+        "project": {"dataset_version": "dataset-v5", "schema_version": "1.1.0"},
         "provenance": {"configuration_version": TAG},
         "scope": {"study_patch": "17.8"},
         "paths": {"manifests": str(manifests)},
@@ -88,3 +88,9 @@ def test_collection_manifest_records_v3_git_and_configuration_provenance(tmp_pat
     assert payload["git_tag"] == TAG
     assert payload["configuration_version"] == TAG
     assert payload["requested_accepted_match_target"] == 5000
+    provenance.update_run_manifest(path, status="capacity_failed")
+    failed = json.loads(path.read_text(encoding="utf-8"))
+    assert failed["status"] == "capacity_failed"
+    assert failed["completed_at"]
+    assert failed["accepted_match_manifest_id"] is None
+    assert failed["accepted_match_manifest_sha256"] is None

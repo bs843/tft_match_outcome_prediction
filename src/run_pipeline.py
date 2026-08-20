@@ -16,6 +16,10 @@ from .provenance import (
 from .utils import read_csv_rows
 
 
+class CandidateCapacityError(RuntimeError):
+    """Raised before match download when discovery cannot support the main target."""
+
+
 def run_module(module: str, *arguments: str) -> None:
     command = [sys.executable, "-m", module, *arguments]
     print("\n$ " + " ".join(command))
@@ -29,6 +33,32 @@ def resolve_run_id(target: str, requested_run_id: str | None) -> str:
             "failed or interrupted final runs cannot be resumed or merged"
         )
     return requested_run_id or new_run_id()
+
+
+def enforce_candidate_capacity(config: dict, run_id: str) -> int:
+    unique_count = len({
+        row.get("match_id", "") for row in read_csv_rows(project_path(config, "unique_match_ids"))
+        if row.get("run_id") == run_id and row.get("match_id", "")
+    })
+    threshold = int(config["sampling"]["candidate_pool_capacity_target"])
+    if unique_count < threshold:
+        raise CandidateCapacityError(
+            f"Candidate capacity gate failed: {unique_count} unique candidates; "
+            f"at least {threshold} required before match download"
+        )
+    print(f"Candidate capacity gate passed: {unique_count} >= {threshold}")
+    return unique_count
+
+
+def run_acquisition_stages(
+    config: dict, run_common: list[str], *, run_id: str, player_mode: str,
+    accepted_target: int, enforce_capacity: bool,
+) -> None:
+    run_module("src.collect_players", *run_common, "--mode", player_mode)
+    run_module("src.collect_match_ids", *run_common)
+    if enforce_capacity:
+        enforce_candidate_capacity(config, run_id)
+    run_module("src.collect_matches", *run_common, "--accepted-target", str(accepted_target))
 
 
 def main() -> None:
@@ -58,9 +88,10 @@ def main() -> None:
     common = (["--config", args.config] if args.config else [])
     run_common = [*common, "--run-id", run_id]
     try:
-        run_module("src.collect_players", *run_common, "--mode", args.player_mode)
-        run_module("src.collect_match_ids", *run_common)
-        run_module("src.collect_matches", *run_common, "--accepted-target", str(accepted_target))
+        run_acquisition_stages(
+            config, run_common, run_id=run_id, player_mode=args.player_mode,
+            accepted_target=accepted_target, enforce_capacity=args.target == "main",
+        )
         run_module("src.validate_matches", *run_common, "--accepted-target", str(accepted_target))
         accepted = len([row for row in read_csv_rows(project_path(config, "accepted_match_ids"))
                         if row.get("run_id") == run_id])
@@ -82,6 +113,10 @@ def main() -> None:
             ),
         })
         write_collection_report(config, run_id)
+    except CandidateCapacityError:
+        update_run_manifest(manifest, status="capacity_failed")
+        write_collection_report(config, run_id)
+        raise
     except Exception:
         update_run_manifest(manifest, status="failed")
         write_collection_report(config, run_id)

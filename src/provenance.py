@@ -129,6 +129,6 @@ def update_run_manifest(
         payload.setdefault("stage_counts", {}).update(stage_counts)
     if metadata:
         payload.update(metadata)
-    if status in {"complete", "failed", "partial"}:
+    if status in {"complete", "failed", "partial", "capacity_failed"}:
         payload["completed_at"] = utc_now_iso()
     atomic_json_dump(payload, path)

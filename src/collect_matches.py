@@ -19,6 +19,10 @@ STATUS_FIELDS = [
 ]
 
 
+class RawIntegrityError(RuntimeError):
+    """Raised when an existing immutable raw response no longer matches provenance."""
+
+
 def collect_matches(
     config: dict[str, Any], client: RiotApiClient, *, run_id: str,
     accepted_target: int | None = None, candidate_limit: int | None = None,
@@ -45,6 +49,12 @@ def collect_matches(
         ((row.get("run_id", ""), row.get("match_id", "")), row)
         for row in existing if row.get("run_id") and row.get("match_id")
     )
+    known_digests: dict[str, set[str]] = {}
+    for row in existing:
+        match_id = row.get("match_id", "")
+        digest = row.get("raw_sha256", "")
+        if match_id and digest:
+            known_digests.setdefault(match_id, set()).add(digest)
     raw_dir = project_path(config, "raw_matches")
     regional_route = config["scope"]["regional_route"]
     accepted = 0
@@ -59,15 +69,18 @@ def collect_matches(
         checked_at = utc_now_iso()
         try:
             if raw_path.exists() and raw_path.stat().st_size > 0:
+                digest = sha256_file(raw_path)
+                if known_digests.get(match_id) and digest not in known_digests[match_id]:
+                    raise RawIntegrityError("existing raw checksum disagrees with recorded provenance")
                 payload = load_json(raw_path)
                 status = "existing_verified"
                 first_collected = status_map.get(key, {}).get("first_collected_at", "") or checked_at
             else:
                 payload = client.get_match(regional_route, match_id)
                 atomic_json_dump(payload, raw_path)
+                digest = sha256_file(raw_path)
                 status = "downloaded"
                 first_collected = checked_at
-            digest = sha256_file(raw_path)
             previous_digest = status_map.get(key, {}).get("raw_sha256", "")
             if previous_digest and previous_digest != digest:
                 raise RuntimeError("immutable raw checksum changed")
@@ -89,6 +102,9 @@ def collect_matches(
             raise
         except RiotNotFoundError:
             status_map[key] = _failure_row(run_id, match_id, "not_found", checked_at)
+        except RawIntegrityError:
+            failed += 1
+            status_map[key] = _failure_row(run_id, match_id, "raw_checksum_mismatch", checked_at)
         except RiotAPIError as exc:
             failed += 1
             status_map[key] = _failure_row(run_id, match_id, type(exc).__name__, checked_at)

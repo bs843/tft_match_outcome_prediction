@@ -97,6 +97,17 @@ def test_wrong_set_is_rejected() -> None:
     assert "wrong_or_missing_set" in result.rejection_reasons
 
 
+def test_incomplete_match_is_rejected() -> None:
+    payload = deepcopy(sample_match())
+    payload["info"]["participants"].pop()
+    payload["metadata"]["participants"].pop()
+    result = validate_match_payload(payload, sample_config())
+    assert result.accepted is False
+    assert {"unexpected_participant_count", "incomplete_or_duplicate_placements"}.issubset(
+        result.rejection_reasons
+    )
+
+
 def test_patch_parser_and_placement_group() -> None:
     assert parse_patch("Linux Version 16.15.801.3452 <Releases/16.15>") == "16.15"
     assert parse_patch("Linux Version malformed") == ""

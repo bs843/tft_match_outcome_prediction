@@ -20,6 +20,8 @@ CANDIDATE_REPORT_FIELDS = [
     "run_id", "seed_players", "history_pages_requested_per_seed",
     "candidate_occurrences", "unique_seed_match_associations",
     "unique_candidate_match_ids", "duplicate_candidate_occurrences_removed",
+    "duplicate_candidate_rate_percentage", "unique_candidate_threshold",
+    "capacity_gate_result",
 ]
 
 
@@ -87,6 +89,8 @@ def collect_match_ids(
         "first_retrieved_at": record["first_retrieved_at"],
     } for match_id, record in aggregate.items()]
     if stats is not None:
+        threshold = int(config.get("sampling", {}).get("candidate_pool_capacity_target", 0))
+        duplicates_removed = candidate_occurrences - len(unique_rows)
         stats.update({
             "run_id": run_id,
             "seed_players": len(seeds),
@@ -94,7 +98,12 @@ def collect_match_ids(
             "candidate_occurrences": candidate_occurrences,
             "unique_seed_match_associations": len(source_rows),
             "unique_candidate_match_ids": len(unique_rows),
-            "duplicate_candidate_occurrences_removed": candidate_occurrences - len(unique_rows),
+            "duplicate_candidate_occurrences_removed": duplicates_removed,
+            "duplicate_candidate_rate_percentage": round(
+                100 * duplicates_removed / candidate_occurrences, 4
+            ) if candidate_occurrences else 0.0,
+            "unique_candidate_threshold": threshold,
+            "capacity_gate_result": "pass" if len(unique_rows) >= threshold else "fail",
         })
     return source_rows, unique_rows
 

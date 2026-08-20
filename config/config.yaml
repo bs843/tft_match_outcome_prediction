@@ -1,14 +1,14 @@
 # Frozen MSc study configuration. Amendments require a new dataset_version.
 project:
   name: tft_outcome_prediction
-  # v4 distinguishes this dataset from the v3 dataset_version embedded in the
-  # frozen final-collection-v2 commit. The relational schema itself is unchanged.
-  dataset_version: tft_set17_patch17_8_v4
+  # v5 distinguishes this dataset from the v4 dataset_version embedded in the
+  # frozen final-collection-v3 commit. The relational schema itself is unchanged.
+  dataset_version: tft_set17_patch17_8_v5
   schema_version: "1.1.0"
 
 provenance:
-  configuration_version: tft-patch17.8-final-collection-v3
-  required_git_tag: tft-patch17.8-final-collection-v3
+  configuration_version: tft-patch17.8-final-collection-v4
+  required_git_tag: tft-patch17.8-final-collection-v4
   enforce_git_integrity_for_main: true
 
 scope:
@@ -31,27 +31,27 @@ scope:
 sampling:
   random_seed: 4275
   queue_type: RANKED_TFT
-  seed_players_per_stratum: 80
+  seed_players_per_stratum: 160
   match_history_page_size: 100
   match_history_pages_per_seed: 3
   pilot_accepted_matches: 100
   target_accepted_matches: 5000
   candidate_oversample_factor: 1.5
   # Capacity planning only; this is not an eligibility or acceptance threshold.
-  candidate_pool_capacity_target: 20000
+  candidate_pool_capacity_target: 25000
   rank_strata:
     - tier: GOLD
       divisions: [I, II, III, IV]
-      pages_per_division: 2
+      pages_per_division: 3
     - tier: PLATINUM
       divisions: [I, II, III, IV]
-      pages_per_division: 2
+      pages_per_division: 3
     - tier: EMERALD
       divisions: [I, II, III, IV]
-      pages_per_division: 2
+      pages_per_division: 3
     - tier: DIAMOND
       divisions: [I, II, III, IV]
-      pages_per_division: 2
+      pages_per_division: 3
     - tier: MASTER
       divisions: []
       pages_per_division: 1
@@ -140,6 +140,7 @@ paths:
   unique_match_ids: data/private/metadata/unique_match_ids.csv
   collection_status: data/private/metadata/collection_status.csv
   player_sampling_report: data/private/metadata/player_sampling_report.csv
+  player_sampling_pages: data/private/metadata/player_sampling_pages.csv
   candidate_discovery_report: data/private/metadata/candidate_discovery_report.csv
   accepted_match_ids: data/private/metadata/accepted_match_ids.csv
   rejected_match_ids: data/private/metadata/rejected_match_ids.csv

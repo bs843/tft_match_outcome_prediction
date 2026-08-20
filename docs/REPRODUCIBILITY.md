@@ -38,10 +38,15 @@ The raw checksum result in the report establishes that validation did not silent
 change or substitute source responses. Only `PASS` or `PASS_WITH_WARNINGS` creates
 `data/validated/<run-id>/`; critical failures return a non-zero process status.
 
-The amended final collection tag is `tft-patch17.8-final-collection-v3`. At main-run startup,
+The amended final collection tag is `tft-patch17.8-final-collection-v4`. At main-run startup,
 the pipeline requires `HEAD` to equal that tag's peeled commit and rejects all
 uncommitted changes to tracked files. The tag must never be moved or recreated after
 collection begins. A later pipeline amendment requires a new commit and tag.
-The earlier `tft-patch17.8-final-collection-v2` tag remains immutable audit evidence.
+The earlier `tft-patch17.8-final-collection-v2` and
+`tft-patch17.8-final-collection-v3` tags remain immutable audit evidence.
 Run `20260820T152821Z-9df0ecbb` is a failed, exhausted-pool run and cannot be resumed,
 merged, or used to create analytical output.
+Run `20260820T212450Z-31431b86` is likewise permanently failed/audit-only. V4 main
+runs reject supplied run IDs and enforce the 25,000-unique-candidate gate before raw
+match download. `capacity_failed` is a terminal manifest status with no frozen accepted
+partition or downstream analytical output.

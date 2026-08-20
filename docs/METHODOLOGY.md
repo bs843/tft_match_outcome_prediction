@@ -53,3 +53,12 @@ pages increase from one to two and match-history depth from two to three pages.
 The original tier/division strata, 5,000-match target, Patch 17.8 scope, eligibility
 rules, schema 1.1.0 and modelling design remain unchanged. The 20,000-candidate
 capacity target is a safety buffer, not an inclusion or validation threshold.
+
+Collection configuration `tft-patch17.8-final-collection-v4` and dataset version
+`tft_set17_patch17_8_v5` respond to the v3 audit: 31,818 candidate occurrences
+collapsed to 13,585 unique IDs and 3,479 accepted matches. Non-apex ladder depth
+therefore increases to three pages and deterministic selection increases to at most
+160 unique players per populated page. History depth remains three pages. A main run
+must establish at least 25,000 unique in-window candidate IDs before match downloads;
+otherwise it terminates as a capacity failure. This gate concerns collection feasibility
+only. Schema 1.1.0, rank strata, validity rules and primary modelling design are unchanged.

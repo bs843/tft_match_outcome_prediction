@@ -61,9 +61,16 @@ checksum and validation provenance without exposing the source identifier.
 ## Collection-capacity reports
 
 `player_sampling_report.csv` records aggregate ladder entries returned, unique players
-selected and requested/populated strata for each run. `candidate_discovery_report.csv`
+available/selected, duplicate player entries removed and requested/populated/exhausted
+pages for each run. `player_sampling_pages.csv` provides identifier-free tier/division/page
+diagnostics, including entries returned and pagination exhaustion. `candidate_discovery_report.csv`
 records raw candidate occurrences, unique seed-match associations, globally unique
-candidate match IDs and duplicates removed. `reports/collection/collection_<run-id>.json`
+candidate match IDs, duplicates removed/rate, the 25,000 threshold and gate result.
+`reports/collection/collection_<run-id>.json`
 combines those statistics with download counts, rejection counts by reason, acceptance
 rate, rank-snapshot coverage and Git/configuration provenance. These aggregate reports
 contain no Riot IDs, PUUIDs or match IDs.
+
+`existing_verified` means an immutable raw response matched a previously recorded
+SHA-256 digest and was parsed and revalidated for the current run. It never carries
+forward prior acceptance or dataset membership.

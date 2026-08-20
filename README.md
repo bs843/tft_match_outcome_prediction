@@ -81,7 +81,7 @@ The command prints a run ID. Every private collection table, manifest, and exper
 ## Run the frozen final collection
 
 The main collection is bound to the annotated tag
-`tft-patch17.8-final-collection-v3`. Before any API request, the pipeline verifies
+`tft-patch17.8-final-collection-v4`. Before any API request, the pipeline verifies
 that `HEAD` resolves to the tag's exact commit and that no tracked file is modified.
 Untracked runtime files correctly excluded by `.gitignore` do not invalidate the run.
 
@@ -90,22 +90,28 @@ Verify the frozen state and start a new 5,000-match run with:
 ```powershell
 git status
 git rev-parse HEAD
-git rev-parse "tft-patch17.8-final-collection-v3^{commit}"
+git rev-parse "tft-patch17.8-final-collection-v4^{commit}"
 python -m src.run_pipeline --target main --player-mode ladder
 ```
 
 Do not reuse the interrupted runs `20260811T174646Z-34d8ca25` or
-`20260820T152821Z-9df0ecbb`. A main run rejects an explicit run ID and aborts
+`20260820T152821Z-9df0ecbb` or `20260820T212450Z-31431b86`. A main run rejects an explicit run ID and aborts
 before collection if the tag is missing, points elsewhere, or tracked files are dirty.
 Any behaviour-changing amendment requires a reviewed commit and a new version/tag.
 
-The v3 amendment preserves the GOLD, PLATINUM, EMERALD, DIAMOND and MASTER strata
-and all eligibility rules. It reads two ladder pages per non-apex division and up to
-three match-history pages per selected player. The configured 20,000-candidate value
-is a capacity-planning target only, never a validity threshold. Discovery reports
+The v4 amendment preserves the GOLD, PLATINUM, EMERALD, DIAMOND and MASTER strata
+and all eligibility rules. It reads three ladder pages per non-apex division, selects
+up to 160 unique players per populated page, and retains three match-history pages.
+The 25,000-unique-candidate requirement is a pre-download capacity gate, never a
+match-validity threshold. A shortfall terminates the run as `capacity_failed` before
+raw match download, acceptance, rank enrichment or analytical output. Discovery reports
 record returned ladder entries, selected unique players, candidate occurrences,
 unique match IDs and duplicates removed. Candidate IDs are deduplicated before any
 download or acceptance accounting.
+
+An `existing_verified` raw response is reused only after its SHA-256 digest agrees
+with recorded provenance and the JSON is revalidated under the current configuration.
+No prior run's acceptance decision, manifest membership or analytical status is inherited.
 
 ## Run stages independently
 
