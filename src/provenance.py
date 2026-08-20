@@ -100,6 +100,7 @@ def initialise_run_manifest(
             "config_hash": config_hash(config),
             "dataset_version": config["project"]["dataset_version"],
             "schema_version": config["project"]["schema_version"],
+            "configuration_version": config["provenance"].get("configuration_version"),
             "git_commit": (git_state or {}).get("git_commit", git_commit()),
             "git_tag": (git_state or {}).get("git_tag", "unavailable"),
             "study_patch": config["scope"]["study_patch"],

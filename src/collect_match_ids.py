@@ -16,11 +16,17 @@ UNIQUE_FIELDS = [
     "run_id", "match_id", "source_seed_count", "source_tiers",
     "source_divisions", "first_retrieved_at",
 ]
+CANDIDATE_REPORT_FIELDS = [
+    "run_id", "seed_players", "history_pages_requested_per_seed",
+    "candidate_occurrences", "unique_seed_match_associations",
+    "unique_candidate_match_ids", "duplicate_candidate_occurrences_removed",
+]
 
 
 def collect_match_ids(
     config: dict[str, Any], client: RiotApiClient, *, run_id: str,
     page_size: int, pages_per_seed: int, start_time: int | None, end_time: int | None,
+    stats: dict[str, Any] | None = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     seeds = [row for row in read_csv_rows(project_path(config, "seed_players"),
                                            ["run_id", "puuid", "participant_hash"])
@@ -30,6 +36,7 @@ def collect_match_ids(
     regional_route = config["scope"]["regional_route"]
     source_map: OrderedDict[tuple[str, str], dict[str, Any]] = OrderedDict()
     failures = 0
+    candidate_occurrences = 0
     for index, seed in enumerate(seeds, start=1):
         puuid, seed_hash = seed["puuid"].strip(), seed["participant_hash"].strip()
         try:
@@ -38,6 +45,7 @@ def collect_match_ids(
                 ids = client.get_match_ids(regional_route, puuid, start=offset, count=page_size,
                                            start_time=start_time, end_time=end_time)
                 retrieved_at = utc_now_iso()
+                candidate_occurrences += len(ids)
                 for match_id in ids:
                     source_map.setdefault((match_id, seed_hash), {
                         "run_id": run_id, "match_id": match_id,
@@ -78,6 +86,16 @@ def collect_match_ids(
         "source_divisions": sorted(record["divisions"]),
         "first_retrieved_at": record["first_retrieved_at"],
     } for match_id, record in aggregate.items()]
+    if stats is not None:
+        stats.update({
+            "run_id": run_id,
+            "seed_players": len(seeds),
+            "history_pages_requested_per_seed": pages_per_seed,
+            "candidate_occurrences": candidate_occurrences,
+            "unique_seed_match_associations": len(source_rows),
+            "unique_candidate_match_ids": len(unique_rows),
+            "duplicate_candidate_occurrences_removed": candidate_occurrences - len(unique_rows),
+        })
     return source_rows, unique_rows
 
 
@@ -99,14 +117,19 @@ def main() -> None:
     end_time = args.end_time if args.end_time is not None else scope.get("end_time")
     if start_time is None or end_time is None:
         raise RuntimeError("Verified scope.start_time and scope.end_time are required")
+    stats: dict[str, Any] = {}
     with RiotApiClient(config) as client:
         sources, unique = collect_match_ids(
             config, client, run_id=args.run_id, page_size=page_size,
             pages_per_seed=pages, start_time=int(start_time), end_time=int(end_time),
+            stats=stats,
         )
     replace_csv_partition(project_path(config, "match_id_sources"), sources, SOURCE_FIELDS,
                           partition_field="run_id", partition_value=args.run_id)
     replace_csv_partition(project_path(config, "unique_match_ids"), unique, UNIQUE_FIELDS,
+                          partition_field="run_id", partition_value=args.run_id)
+    replace_csv_partition(project_path(config, "candidate_discovery_report"), [stats],
+                          CANDIDATE_REPORT_FIELDS,
                           partition_field="run_id", partition_value=args.run_id)
     print(f"Saved {len(unique)} unique candidate match IDs")
 

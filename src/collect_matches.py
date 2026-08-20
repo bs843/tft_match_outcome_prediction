@@ -23,9 +23,15 @@ def collect_matches(
     config: dict[str, Any], client: RiotApiClient, *, run_id: str,
     accepted_target: int | None = None, candidate_limit: int | None = None,
 ) -> list[dict[str, Any]]:
-    match_rows = [row for row in read_csv_rows(project_path(config, "unique_match_ids"),
-                                                ["run_id", "match_id"])
-                  if row.get("run_id") == run_id]
+    discovered_rows = [row for row in read_csv_rows(project_path(config, "unique_match_ids"),
+                                                     ["run_id", "match_id"])
+                       if row.get("run_id") == run_id]
+    # Defend the accounting/download stage even if its nominally unique input is
+    # malformed: one match ID can be evaluated and counted at most once per run.
+    match_rows = list(OrderedDict(
+        (row.get("match_id", "").strip(), row) for row in discovered_rows
+        if row.get("match_id", "").strip()
+    ).values())
     if not match_rows:
         raise RuntimeError(f"No candidate match IDs found for run {run_id}")
     rng = random.Random(int(config["sampling"]["random_seed"]))

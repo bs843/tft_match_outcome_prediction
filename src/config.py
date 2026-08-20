@@ -67,15 +67,19 @@ def load_config(config_path: str | Path | None = None) -> dict[str, Any]:
 
 def _validate_config(config: dict[str, Any]) -> None:
     project = _mapping(config, "project")
-    if project.get("dataset_version") != "tft_set17_patch17_8_v3":
-        raise ConfigurationError("Frozen pilot-informed dataset_version must be tft_set17_patch17_8_v3")
+    if project.get("dataset_version") != "tft_set17_patch17_8_v4":
+        raise ConfigurationError("Expanded-discovery dataset_version must be tft_set17_patch17_8_v4")
     if str(project.get("schema_version", "")) != "1.1.0":
         raise ConfigurationError("Frozen rank-enriched schema_version must be 1.1.0")
 
     provenance = _mapping(config, "provenance")
-    if provenance.get("required_git_tag") != "tft-patch17.8-final-collection-v2":
+    if provenance.get("configuration_version") != "tft-patch17.8-final-collection-v3":
         raise ConfigurationError(
-            "provenance.required_git_tag must be tft-patch17.8-final-collection-v2"
+            "provenance.configuration_version must identify final collection v3"
+        )
+    if provenance.get("required_git_tag") != "tft-patch17.8-final-collection-v3":
+        raise ConfigurationError(
+            "provenance.required_git_tag must be tft-patch17.8-final-collection-v3"
         )
     if provenance.get("enforce_git_integrity_for_main") is not True:
         raise ConfigurationError("provenance.enforce_git_integrity_for_main must be true")
@@ -139,11 +143,33 @@ def _validate_config(config: dict[str, Any]) -> None:
         raise ConfigurationError("sampling.match_history_page_size must be 1..100")
     if int(sampling.get("match_history_pages_per_seed", 0)) < 1:
         raise ConfigurationError("sampling.match_history_pages_per_seed must be positive")
+    if int(sampling["match_history_pages_per_seed"]) != 3:
+        raise ConfigurationError("Expanded discovery requires three match-history pages per seed")
     for key in ("pilot_accepted_matches", "target_accepted_matches"):
         if int(sampling.get(key, 0)) < 1:
             raise ConfigurationError(f"sampling.{key} must be positive")
     if int(sampling["target_accepted_matches"]) != 5000:
         raise ConfigurationError("The frozen main collection target must be exactly 5000 matches")
+    if int(sampling.get("candidate_pool_capacity_target", 0)) != 20000:
+        raise ConfigurationError("Candidate discovery capacity target must be 20000")
+    strata = sampling.get("rank_strata", [])
+    expected_strata = {
+        "GOLD": ["I", "II", "III", "IV"],
+        "PLATINUM": ["I", "II", "III", "IV"],
+        "EMERALD": ["I", "II", "III", "IV"],
+        "DIAMOND": ["I", "II", "III", "IV"],
+        "MASTER": [],
+    }
+    observed_strata = {
+        str(row.get("tier", "")).upper(): [str(value).upper() for value in row.get("divisions", [])]
+        for row in strata if isinstance(row, dict)
+    }
+    if observed_strata != expected_strata:
+        raise ConfigurationError("The frozen ladder rank strata must remain unchanged")
+    for row in strata:
+        expected_pages = 1 if str(row.get("tier", "")).upper() == "MASTER" else 2
+        if int(row.get("pages_per_division", 0)) != expected_pages:
+            raise ConfigurationError("Non-apex ladder strata require two pages; MASTER requires one")
 
     splits = _mapping(config, "splits")
     fractions = [float(splits.get(key, 0)) for key in (
@@ -155,11 +181,12 @@ def _validate_config(config: dict[str, Any]) -> None:
     paths = _mapping(config, "paths")
     required_paths = {
         "input_seed_players", "seed_players", "match_id_sources", "unique_match_ids",
-        "collection_status", "accepted_match_ids", "rejected_match_ids",
+        "collection_status", "player_sampling_report", "candidate_discovery_report",
+        "accepted_match_ids", "rejected_match_ids",
         "rank_snapshots",
         "raw_matches", "manifests", "interim", "processed", "splits",
         "models", "reports", "request_log", "quality_report",
-        "validated", "validation_reports",
+        "validated", "validation_reports", "collection_reports",
     }
     missing_paths = required_paths.difference(paths)
     if missing_paths:
@@ -210,12 +237,13 @@ def required_environment_value(config: dict[str, Any], dotted_key: str) -> str:
 def ensure_project_directories(config: dict[str, Any]) -> None:
     for key in (
         "raw_matches", "manifests", "interim", "processed", "splits", "models",
-        "reports", "validated", "validation_reports",
+        "reports", "validated", "validation_reports", "collection_reports",
     ):
         project_path(config, key).mkdir(parents=True, exist_ok=True)
     for key in (
         "input_seed_players", "seed_players", "match_id_sources", "unique_match_ids",
-        "collection_status", "accepted_match_ids", "rejected_match_ids",
+        "collection_status", "player_sampling_report", "candidate_discovery_report",
+        "accepted_match_ids", "rejected_match_ids",
         "rank_snapshots",
         "request_log", "quality_report",
     ):

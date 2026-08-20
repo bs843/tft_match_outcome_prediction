@@ -193,6 +193,9 @@ def run_validation(
             "collection_manifest_status": manifest.get("status", "unknown"),
             "collection_pipeline_version": manifest.get("dataset_version", "unknown"),
             "schema_version": manifest.get("schema_version", config["project"]["schema_version"]),
+            "configuration_version": manifest.get(
+                "configuration_version", config.get("provenance", {}).get("configuration_version", "unknown")
+            ),
             "configuration_hash": manifest.get("config_hash", "unknown"),
             "git_commit_sha": manifest.get("git_commit", "unavailable"),
             "git_tag": manifest.get("git_tag", "unavailable"),

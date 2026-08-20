@@ -74,6 +74,19 @@ def test_read_only_validation_writes_sanitized_dataset(monkeypatch, tmp_path: Pa
     assert "private-" not in text
     assert "participant_hash" in text
 
+    # The same accepted partition cannot become analytical output if its run
+    # manifest is failed/interrupted.
+    atomic_json_dump({"run_id": run_id, "status": "failed", "started_at": "2026-08-12T00:00:00Z",
+                      "dataset_version": "test", "schema_version": "1"},
+                     manifests / f"collection_run_{run_id}.json")
+    failed_validated = tmp_path / "failed-validated"
+    failed_summary, _ = run_validation(
+        config, run_id=run_id, report_dir=tmp_path / "failed-report",
+        validated_dir=failed_validated,
+    )
+    assert failed_summary.collection_status == "FAIL"
+    assert not failed_validated.exists()
+
 
 def test_placement_top_four_mismatch_and_duplicate_join_are_critical(tmp_path: Path) -> None:
     run = "run"; path = tmp_path / run; path.mkdir()

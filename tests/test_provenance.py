@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import subprocess
+import json
 from pathlib import Path
 
 import pytest
@@ -8,7 +9,7 @@ import pytest
 import src.provenance as provenance
 
 
-TAG = "tft-patch17.8-final-collection-v2"
+TAG = "tft-patch17.8-final-collection-v3"
 
 
 def git(path: Path, *args: str) -> str:
@@ -67,3 +68,23 @@ def test_accepted_manifest_checksum_is_order_independent() -> None:
     assert provenance.accepted_manifest_checksum("run", rows) == provenance.accepted_manifest_checksum(
         "run", list(reversed(rows))
     )
+
+
+def test_collection_manifest_records_v3_git_and_configuration_provenance(tmp_path: Path) -> None:
+    manifests = tmp_path / "manifests"
+    config_value = {
+        "project": {"dataset_version": "dataset-v4", "schema_version": "1.1.0"},
+        "provenance": {"configuration_version": TAG},
+        "scope": {"study_patch": "17.8"},
+        "paths": {"manifests": str(manifests)},
+    }
+    path = provenance.initialise_run_manifest(
+        config_value, "new-run",
+        git_state={"git_commit": "a" * 40, "git_tag": TAG},
+        requested_accepted_match_target=5000,
+    )
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    assert payload["git_commit"] == "a" * 40
+    assert payload["git_tag"] == TAG
+    assert payload["configuration_version"] == TAG
+    assert payload["requested_accepted_match_target"] == 5000

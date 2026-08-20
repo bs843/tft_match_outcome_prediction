@@ -197,11 +197,19 @@ def main() -> None:
     rank_status_counts = Counter(
         row.get("rank_snapshot_status", "") for row in rank_snapshot_rows
     )
+    collection_manifest = load_json(
+        project_path(config, "manifests") / f"collection_run_{args.run_id}.json"
+    )
     atomic_json_dump({
         "run_id": args.run_id,
         "dataset_version": config["project"]["dataset_version"],
         "schema_version": config["project"]["schema_version"],
         "config_hash": config_hash(config),
+        "configuration_version": config["provenance"]["configuration_version"],
+        "git_commit": collection_manifest.get("git_commit", "unavailable"),
+        "git_tag": collection_manifest.get("git_tag", "unavailable"),
+        "accepted_match_manifest_id": collection_manifest.get("accepted_match_manifest_id"),
+        "accepted_match_manifest_sha256": collection_manifest.get("accepted_match_manifest_sha256"),
         "accepted_match_count": len(tables["matches"]),
         "raw_response_count": len(statuses),
         "raw_checksum_set_sha256": hashlib.sha256(

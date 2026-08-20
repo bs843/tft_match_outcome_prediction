@@ -89,6 +89,14 @@ def test_wrong_queue_and_missing_units_are_rejected() -> None:
     assert {"wrong_or_missing_queue", "invalid_participant_record"}.issubset(result.rejection_reasons)
 
 
+def test_wrong_set_is_rejected() -> None:
+    payload = deepcopy(sample_match())
+    payload["info"]["tft_set_number"] = 16
+    result = validate_match_payload(payload, sample_config())
+    assert result.accepted is False
+    assert "wrong_or_missing_set" in result.rejection_reasons
+
+
 def test_patch_parser_and_placement_group() -> None:
     assert parse_patch("Linux Version 16.15.801.3452 <Releases/16.15>") == "16.15"
     assert parse_patch("Linux Version malformed") == ""

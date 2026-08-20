@@ -57,3 +57,13 @@ only after a run passes the critical checks. Raw match IDs and PUUIDs are replac
 project hashes, Riot display-name fields are removed, and `top_four_derived` is
 reconstructed from validated placement. `validated_manifest.csv` records the source
 checksum and validation provenance without exposing the source identifier.
+
+## Collection-capacity reports
+
+`player_sampling_report.csv` records aggregate ladder entries returned, unique players
+selected and requested/populated strata for each run. `candidate_discovery_report.csv`
+records raw candidate occurrences, unique seed-match associations, globally unique
+candidate match IDs and duplicates removed. `reports/collection/collection_<run-id>.json`
+combines those statistics with download counts, rejection counts by reason, acceptance
+rate, rank-snapshot coverage and Git/configuration provenance. These aggregate reports
+contain no Riot IDs, PUUIDs or match IDs.

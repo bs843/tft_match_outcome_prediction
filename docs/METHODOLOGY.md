@@ -45,3 +45,11 @@ Dataset version `tft_set17_patch17_8_v3` increases the main-run allocation from
 uses the observed 58.69% match acceptance rate and approximately 9.68 unique
 candidates per sampled player. Rank strata, eligibility rules, study scope,
 schema and primary modelling design are unchanged.
+
+Collection configuration `tft-patch17.8-final-collection-v3` and dataset version
+`tft_set17_patch17_8_v4` increase discovery capacity after the v2 final attempt
+exhausted 10,326 candidates with 3,142 accepted matches (30.43%). Non-apex ladder
+pages increase from one to two and match-history depth from two to three pages.
+The original tier/division strata, 5,000-match target, Patch 17.8 scope, eligibility
+rules, schema 1.1.0 and modelling design remain unchanged. The 20,000-candidate
+capacity target is a safety buffer, not an inclusion or validation threshold.

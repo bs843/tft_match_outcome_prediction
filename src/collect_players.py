@@ -14,6 +14,10 @@ SEED_FIELDS = [
     "sampling_tier", "sampling_division", "sampling_page", "selection_probability",
     "league_points", "wins", "losses", "queue_type", "rank_retrieval_datetime", "source",
 ]
+PLAYER_SAMPLING_FIELDS = [
+    "run_id", "mode", "ladder_entries_returned", "unique_players_selected",
+    "strata_requested", "strata_with_entries",
+]
 APEX_TIERS = {"MASTER", "GRANDMASTER", "CHALLENGER"}
 
 
@@ -60,7 +64,8 @@ def collect_manual_players(
 
 
 def collect_ladder_players(
-    config: dict[str, Any], client: RiotApiClient, *, run_id: str
+    config: dict[str, Any], client: RiotApiClient, *, run_id: str,
+    stats: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     platform = config["scope"]["platform_route"]
     queue_type = config["sampling"].get("queue_type", "RANKED_TFT")
@@ -69,6 +74,9 @@ def collect_ladder_players(
     key = get_hash_key(config)
     selected: list[dict[str, Any]] = []
     seen: set[str] = set()
+    ladder_entries_returned = 0
+    strata_requested = 0
+    strata_with_entries = 0
 
     for specification in config["sampling"].get("rank_strata", []):
         tier = str(specification.get("tier", "")).upper()
@@ -78,6 +86,7 @@ def collect_ladder_players(
             (division, page) for division in divisions for page in range(1, pages + 1)
         ]
         for division, page in strata:
+            strata_requested += 1
             try:
                 if tier in APEX_TIERS:
                     candidates = [dict(entry) for entry in
@@ -89,6 +98,8 @@ def collect_ladder_players(
                     )
             except RiotAPIError as exc:
                 raise RuntimeError(f"Ladder stratum {tier} {division} page {page} failed: {exc}") from exc
+            ladder_entries_returned += len(candidates)
+            strata_with_entries += int(bool(candidates))
             unique: OrderedDict[str, dict[str, Any]] = OrderedDict()
             for candidate in candidates:
                 puuid = str(candidate.get("puuid", "")).strip()
@@ -105,6 +116,14 @@ def collect_ladder_players(
                 seen.add(puuid)
                 selected.append(_seed_row(run_id, puuid, key, platform, entry, tier, division,
                                           page, probability, "", "", "ranked_ladder", queue_type))
+    if stats is not None:
+        stats.update({
+            "run_id": run_id, "mode": "ladder",
+            "ladder_entries_returned": ladder_entries_returned,
+            "unique_players_selected": len(selected),
+            "strata_requested": strata_requested,
+            "strata_with_entries": strata_with_entries,
+        })
     return selected
 
 
@@ -133,11 +152,21 @@ def main() -> None:
     args = parser.parse_args()
     config = load_config(args.config)
     ensure_project_directories(config)
+    stats: dict[str, Any] = {}
     with RiotApiClient(config) as client:
-        rows = (collect_ladder_players(config, client, run_id=args.run_id)
+        rows = (collect_ladder_players(config, client, run_id=args.run_id, stats=stats)
                 if args.mode == "ladder" else
                 collect_manual_players(config, client, run_id=args.run_id))
+    if args.mode == "manual":
+        stats = {
+            "run_id": args.run_id, "mode": "manual", "ladder_entries_returned": 0,
+            "unique_players_selected": len(rows), "strata_requested": 0,
+            "strata_with_entries": 0,
+        }
     replace_csv_partition(project_path(config, "seed_players"), rows, SEED_FIELDS,
+                          partition_field="run_id", partition_value=args.run_id)
+    replace_csv_partition(project_path(config, "player_sampling_report"), [stats],
+                          PLAYER_SAMPLING_FIELDS,
                           partition_field="run_id", partition_value=args.run_id)
     print(f"Saved {len(rows)} seed players")
 
