@@ -1,0 +1,44 @@
+# Secrets and private identifiers
+.env
+*.env
+!.env.example
+data/private/**
+!data/private/.gitkeep
+data/raw/**
+data/validated/**
+data/input_seed_players.csv
+
+# Generated research artifacts
+data/interim/**
+!data/interim/.gitkeep
+data/processed/**
+!data/processed/.gitkeep
+data/splits/**
+!data/splits/.gitkeep
+data/manifests/**
+!data/manifests/.gitkeep
+logs/**
+!logs/.gitkeep
+*.log
+models/**
+!models/.gitkeep
+reports/**
+!reports/.gitkeep
+
+# Python/build tooling
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+dist/
+
+# IDE/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

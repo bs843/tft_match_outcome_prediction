@@ -1,0 +1,150 @@
+# Frozen MSc study configuration. Amendments require a new dataset_version.
+project:
+  name: tft_outcome_prediction
+  dataset_version: tft_set17_patch17_8_v3
+  schema_version: "1.1.0"
+
+provenance:
+  required_git_tag: tft-patch17.8-final-collection-v2
+  enforce_git_integrity_for_main: true
+
+scope:
+  study_patch: "17.8"
+  allowed_patches: ["17.8"]
+  # Public TFT patch 17.8 is encoded as client patch 16.15 in game_version.
+  allowed_client_patches: ["16.15"]
+  set_number: 17
+  allowed_queue_ids: [1100]
+  allowed_game_types: [standard]
+  allowed_end_results: [GameComplete]
+  expected_participants: 8
+  platform_route: ME1
+  regional_route: EUROPE
+  # Populate with verified UTC Unix seconds before collection. Exact patch
+  # membership is still decided from each response's game_version.
+  start_time: 1785283200
+  end_time: 1787702400
+
+sampling:
+  random_seed: 4275
+  queue_type: RANKED_TFT
+  seed_players_per_stratum: 80
+  match_history_page_size: 100
+  match_history_pages_per_seed: 2
+  pilot_accepted_matches: 100
+  target_accepted_matches: 5000
+  candidate_oversample_factor: 1.5
+  rank_strata:
+    - tier: GOLD
+      divisions: [I, II, III, IV]
+      pages_per_division: 1
+    - tier: PLATINUM
+      divisions: [I, II, III, IV]
+      pages_per_division: 1
+    - tier: EMERALD
+      divisions: [I, II, III, IV]
+      pages_per_division: 1
+    - tier: DIAMOND
+      divisions: [I, II, III, IV]
+      pages_per_division: 1
+    - tier: MASTER
+      divisions: []
+      pages_per_division: 1
+
+api:
+  key_env: RIOT_API_KEY
+  timeout_seconds: 30
+  max_retries: 5
+  base_backoff_seconds: 2
+  user_agent: tft-msc-offline-research-collector/2.0
+  # Conservative fallback for personal keys. Response headers may impose a
+  # stricter application or method limit.
+  fallback_requests_per_window: 95
+  fallback_window_seconds: 120
+  minimum_interval_seconds: 0.06
+
+privacy:
+  hash_key_env: PARTICIPANT_HASH_KEY
+  retain_raw_identifiers_privately: true
+  publish_raw_identifiers: false
+
+validation:
+  reject_on_wrong_set: true
+  reject_on_wrong_patch: true
+  reject_on_wrong_queue: true
+  reject_on_wrong_game_type: true
+  reject_on_wrong_end_result: true
+  reject_outside_collection_window: true
+  reject_on_unexpected_participant_count: true
+  reject_on_invalid_participant: true
+  require_complete_placement_set: true
+  require_nonempty_units: true
+  require_traits_list: true
+  require_metadata_participant_match: true
+  expected_patch: "17.8"
+  expected_participants_per_match: 8
+  valid_placement_min: 1
+  valid_placement_max: 8
+  sensible_level_min: 1
+  sensible_level_max: 15
+  sensible_game_duration_max_seconds: 14400
+  fail_on_patch_mismatch: true
+  fail_on_end_result_mismatch: true
+  fail_on_duplicate_match_id: true
+  rank_snapshot_required: false
+  validation_code_version: "1.0.0"
+
+features:
+  minimum_category_frequency: 5
+  include_prefixes: [unit, item, trait, augment]
+  prohibited_columns:
+    - placement
+    - top_four
+    - placement_group
+    - last_round
+    - players_eliminated
+    - total_damage_to_players
+    - time_eliminated
+    - rank_snapshot_tier
+    - rank_snapshot_division
+    - rank_snapshot_league_points
+    - rank_snapshot_wins
+    - rank_snapshot_losses
+    - rank_snapshot_queue_type
+    - rank_snapshot_retrieved_at
+    - rank_snapshot_status
+    - rank_snapshot_error_class
+    - participant_hash
+    - match_hash
+
+splits:
+  train_fraction: 0.70
+  validation_fraction: 0.15
+  test_fraction: 0.15
+
+model:
+  primary_metric: log_loss
+  cross_validation_folds: 5
+  bootstrap_iterations: 500
+  logistic_c_values: [0.1, 1.0, 10.0]
+
+paths:
+  input_seed_players: data/input_seed_players.csv
+  seed_players: data/private/metadata/seed_players.csv
+  match_id_sources: data/private/metadata/match_id_sources.csv
+  unique_match_ids: data/private/metadata/unique_match_ids.csv
+  collection_status: data/private/metadata/collection_status.csv
+  accepted_match_ids: data/private/metadata/accepted_match_ids.csv
+  rejected_match_ids: data/private/metadata/rejected_match_ids.csv
+  rank_snapshots: data/private/metadata/rank_snapshots.csv
+  raw_matches: data/private/raw/patch_17_8
+  manifests: data/manifests
+  interim: data/interim
+  processed: data/processed
+  splits: data/splits
+  models: models
+  reports: reports
+  request_log: logs/collection_log.csv
+  quality_report: reports/quality_report.csv
+  validated: data/validated
+  validation_reports: reports/validation

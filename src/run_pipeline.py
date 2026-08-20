@@ -1,0 +1,81 @@
+from __future__ import annotations
+
+import argparse
+import subprocess
+import sys
+
+from .config import ensure_project_directories, load_config, project_path
+from .provenance import (
+    accepted_manifest_checksum,
+    initialise_run_manifest,
+    new_run_id,
+    update_run_manifest,
+    verify_frozen_git_state,
+)
+from .utils import read_csv_rows
+
+
+def run_module(module: str, *arguments: str) -> None:
+    command = [sys.executable, "-m", module, *arguments]
+    print("\n$ " + " ".join(command))
+    subprocess.run(command, check=True)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Run the reproducible patch-17.8 MSc pipeline")
+    parser.add_argument("--config", default=None)
+    parser.add_argument("--run-id", default=None)
+    parser.add_argument("--player-mode", choices=["ladder", "manual"], default="ladder")
+    parser.add_argument("--target", choices=["pilot", "main"], default="pilot")
+    parser.add_argument("--train", action="store_true", help="Train after freezing the dataset and splits")
+    args = parser.parse_args()
+
+    config = load_config(args.config)
+    ensure_project_directories(config)
+    if config["scope"].get("start_time") is None or config["scope"].get("end_time") is None:
+        raise RuntimeError("Set verified scope.start_time and scope.end_time before any API collection")
+    accepted_target = int(config["sampling"][
+        "pilot_accepted_matches" if args.target == "pilot" else "target_accepted_matches"
+    ])
+    git_state = None
+    if args.target == "main" and config["provenance"]["enforce_git_integrity_for_main"]:
+        git_state = verify_frozen_git_state(config)
+    run_id = args.run_id or new_run_id()
+    manifest = initialise_run_manifest(
+        config, run_id, git_state=git_state,
+        requested_accepted_match_target=accepted_target,
+    )
+    common = (["--config", args.config] if args.config else [])
+    run_common = [*common, "--run-id", run_id]
+    try:
+        run_module("src.collect_players", *run_common, "--mode", args.player_mode)
+        run_module("src.collect_match_ids", *run_common)
+        run_module("src.collect_matches", *run_common, "--accepted-target", str(accepted_target))
+        run_module("src.validate_matches", *run_common, "--accepted-target", str(accepted_target))
+        accepted = len([row for row in read_csv_rows(project_path(config, "accepted_match_ids"))
+                        if row.get("run_id") == run_id])
+        if accepted != accepted_target:
+            raise RuntimeError(f"Expected exactly {accepted_target} accepted matches, received {accepted}")
+        run_module("src.collect_rank_snapshots", *run_common)
+        run_module("src.normalise_matches", *run_common)
+        run_module("src.create_splits", *run_common)
+        run_module("src.build_features", *run_common)
+        if args.train:
+            run_module("src.train_model", *run_common, "--experiment-id", run_id)
+        update_run_manifest(manifest, status="complete", stage_counts={
+            "accepted_matches": accepted,
+            "participants": accepted * int(config["scope"]["expected_participants"]),
+        }, metadata={
+            "accepted_match_manifest_id": f"accepted_match_ids.csv#run_id={run_id}",
+            "accepted_match_manifest_sha256": accepted_manifest_checksum(
+                run_id, read_csv_rows(project_path(config, "accepted_match_ids"))
+            ),
+        })
+    except Exception:
+        update_run_manifest(manifest, status="failed")
+        raise
+    print(f"\nPipeline complete. Run ID: {run_id}")
+
+
+if __name__ == "__main__":
+    main()
