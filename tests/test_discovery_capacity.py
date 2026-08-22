@@ -133,8 +133,10 @@ def test_three_history_pages_deduplicate_candidates(tmp_path: Path) -> None:
     write_csv_rows(seeds, [{
         "run_id": "new-v3-run", "puuid": "private-player", "participant_hash": "hash",
         "sampling_tier": "GOLD", "sampling_division": "I",
-    }], ["run_id", "puuid", "participant_hash", "sampling_tier", "sampling_division"])
-    config = {"scope": {"regional_route": "EUROPE"}, "paths": {"seed_players": str(seeds)}}
+        "platform_region": "ME1", "regional_route": "EUROPE", "source": "ranked_ladder",
+    }], ["run_id", "puuid", "participant_hash", "sampling_tier", "sampling_division",
+          "platform_region", "regional_route", "source"])
+    config = {"paths": {"seed_players": str(seeds)}}
     client = HistoryClient()
     stats = {}
     sources, unique = collect_match_ids(
@@ -198,10 +200,10 @@ def test_duplicate_candidate_rows_are_downloaded_and_counted_once(tmp_path: Path
     raw = tmp_path / "raw"
     raw.mkdir()
     write_csv_rows(unique, [
-        {"run_id": "run", "match_id": "MATCH-A"},
-        {"run_id": "run", "match_id": "MATCH-A"},
-        {"run_id": "run", "match_id": "MATCH-B"},
-    ], ["run_id", "match_id"])
+        {"run_id": "run", "match_id": "MATCH-A", "platform_region": "ME1", "regional_route": "EUROPE"},
+        {"run_id": "run", "match_id": "MATCH-A", "platform_region": "ME1", "regional_route": "EUROPE"},
+        {"run_id": "run", "match_id": "MATCH-B", "platform_region": "ME1", "regional_route": "EUROPE"},
+    ], ["run_id", "match_id", "platform_region", "regional_route"])
     config = {
         "sampling": {"random_seed": 4275},
         "scope": {
@@ -241,7 +243,9 @@ def test_existing_verified_is_checksum_checked_revalidated_and_never_inherits_ac
     payload["info"]["game_version"] = "Linux Version 16.14.1 <Releases/16.14>"
     atomic_json_dump(payload, raw / "MATCH-A.json")
     digest = sha256_file(raw / "MATCH-A.json")
-    write_csv_rows(unique, [{"run_id": "v4", "match_id": "MATCH-A"}], ["run_id", "match_id"])
+    write_csv_rows(unique, [{"run_id": "v4", "match_id": "MATCH-A", "platform_region": "ME1",
+                             "regional_route": "EUROPE"}],
+                   ["run_id", "match_id", "platform_region", "regional_route"])
     fields = [
         "run_id", "match_id", "status", "raw_file", "raw_sha256", "first_collected_at",
         "last_checked_at", "validation_accepted", "validation_reasons", "error_class",
@@ -265,7 +269,9 @@ def test_existing_raw_checksum_mismatch_aborts_without_download(tmp_path: Path) 
     unique = tmp_path / "unique.csv"; status = tmp_path / "status.csv"
     raw = tmp_path / "raw"; raw.mkdir()
     atomic_json_dump(valid_match("MATCH-A"), raw / "MATCH-A.json")
-    write_csv_rows(unique, [{"run_id": "v4", "match_id": "MATCH-A"}], ["run_id", "match_id"])
+    write_csv_rows(unique, [{"run_id": "v4", "match_id": "MATCH-A", "platform_region": "ME1",
+                             "regional_route": "EUROPE"}],
+                   ["run_id", "match_id", "platform_region", "regional_route"])
     fields = [
         "run_id", "match_id", "status", "raw_file", "raw_sha256", "first_collected_at",
         "last_checked_at", "validation_accepted", "validation_reasons", "error_class",

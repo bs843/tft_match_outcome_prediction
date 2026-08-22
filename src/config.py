@@ -19,6 +19,7 @@ REQUIRED_SECTIONS = {
     "project",
     "provenance",
     "scope",
+    "platforms",
     "sampling",
     "api",
     "privacy",
@@ -36,8 +37,13 @@ REQUIRED_SCOPE_KEYS = {
     "set_number",
     "allowed_queue_ids",
     "expected_participants",
-    "platform_route",
-    "regional_route",
+}
+
+SUPPORTED_PLATFORM_ROUTES = {
+    "BR1": "AMERICAS", "EUN1": "EUROPE", "EUW1": "EUROPE", "JP1": "ASIA",
+    "KR": "ASIA", "LA1": "AMERICAS", "LA2": "AMERICAS", "ME1": "EUROPE",
+    "NA1": "AMERICAS", "OC1": "SEA", "PH2": "SEA", "RU": "EUROPE",
+    "SG2": "SEA", "TH2": "SEA", "TR1": "EUROPE", "TW2": "SEA", "VN2": "SEA",
 }
 
 
@@ -67,19 +73,19 @@ def load_config(config_path: str | Path | None = None) -> dict[str, Any]:
 
 def _validate_config(config: dict[str, Any]) -> None:
     project = _mapping(config, "project")
-    if project.get("dataset_version") != "tft_set17_patch17_8_v5":
-        raise ConfigurationError("Capacity-gated dataset_version must be tft_set17_patch17_8_v5")
-    if str(project.get("schema_version", "")) != "1.1.0":
-        raise ConfigurationError("Frozen rank-enriched schema_version must be 1.1.0")
+    if project.get("dataset_version") != "tft_set17_patch17_8_v6":
+        raise ConfigurationError("Multi-region dataset_version must be tft_set17_patch17_8_v6")
+    if str(project.get("schema_version", "")) != "1.2.0":
+        raise ConfigurationError("Multi-region schema_version must be 1.2.0")
 
     provenance = _mapping(config, "provenance")
-    if provenance.get("configuration_version") != "tft-patch17.8-final-collection-v4":
+    if provenance.get("configuration_version") != "tft-patch17.8-final-collection-v5":
         raise ConfigurationError(
-            "provenance.configuration_version must identify final collection v4"
+            "provenance.configuration_version must identify final collection v5"
         )
-    if provenance.get("required_git_tag") != "tft-patch17.8-final-collection-v4":
+    if provenance.get("required_git_tag") != "tft-patch17.8-final-collection-v5":
         raise ConfigurationError(
-            "provenance.required_git_tag must be tft-patch17.8-final-collection-v4"
+            "provenance.required_git_tag must be tft-patch17.8-final-collection-v5"
         )
     if provenance.get("enforce_git_integrity_for_main") is not True:
         raise ConfigurationError("provenance.enforce_git_integrity_for_main must be true")
@@ -110,6 +116,26 @@ def _validate_config(config: dict[str, Any]) -> None:
         raise ConfigurationError("scope.allowed_queue_ids cannot be empty")
     if int(scope["expected_participants"]) != 8:
         raise ConfigurationError("Standard ranked TFT requires eight participants")
+    platforms = enabled_platforms(config)
+    if len(platforms) < 2:
+        raise ConfigurationError("Multi-region collection requires at least two enabled platforms")
+    for platform in platforms:
+        platform_region = platform["platform_region"]
+        if SUPPORTED_PLATFORM_ROUTES.get(platform_region) != platform["regional_route"]:
+            raise ConfigurationError(
+                f"Unsupported platform/regional route mapping: {platform_region} -> "
+                f"{platform['regional_route']}"
+            )
+        if platform.get("rank_strata_profile") != "GOLD_TO_MASTER":
+            raise ConfigurationError("Every platform must use GOLD_TO_MASTER")
+        if int(platform.get("ladder_pages_per_division", 0)) != 3:
+            raise ConfigurationError("Every platform requires three non-apex ladder pages")
+        if int(platform.get("apex_pages", 0)) != 1:
+            raise ConfigurationError("Every platform requires one MASTER page")
+        if int(platform.get("seed_players_per_page", 0)) != 160:
+            raise ConfigurationError("Every platform requires 160 seeds per populated page")
+        if int(platform.get("match_history_pages_per_seed", 0)) != 3:
+            raise ConfigurationError("Every platform requires three history pages per seed")
 
     validation = _mapping(config, "validation")
     for key in (
@@ -123,6 +149,8 @@ def _validate_config(config: dict[str, Any]) -> None:
         raise ConfigurationError("scope.allowed_end_results must contain exactly GameComplete")
     if validation.get("reject_on_wrong_end_result") is not True:
         raise ConfigurationError("validation.reject_on_wrong_end_result must be true")
+    if str(validation.get("validation_code_version", "")) != "1.1.0":
+        raise ConfigurationError("Multi-region validation_code_version must be 1.1.0")
 
     prohibited = set(_list(_mapping(config, "features"), "prohibited_columns"))
     required_rank_exclusions = {
@@ -136,6 +164,12 @@ def _validate_config(config: dict[str, Any]) -> None:
         raise ConfigurationError(
             "features.prohibited_columns is missing rank snapshot fields: "
             + ", ".join(sorted(missing_rank_exclusions))
+        )
+    missing_region_exclusions = {"platform_region", "regional_route", "region"}.difference(prohibited)
+    if missing_region_exclusions:
+        raise ConfigurationError(
+            "features.prohibited_columns must exclude region provenance: "
+            + ", ".join(sorted(missing_region_exclusions))
         )
 
     sampling = _mapping(config, "sampling")
@@ -214,6 +248,38 @@ def _list(mapping: dict[str, Any], key: str) -> list[Any]:
     if not isinstance(value, list):
         raise ConfigurationError(f"{key} must be a list")
     return value
+
+
+def enabled_platforms(config: dict[str, Any]) -> list[dict[str, Any]]:
+    """Return normalized enabled platform mappings in configured order."""
+    value = config.get("platforms")
+    if not isinstance(value, list):
+        raise ConfigurationError("platforms must be a list")
+    result: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for row in value:
+        if not isinstance(row, dict):
+            raise ConfigurationError("Each platforms entry must be a mapping")
+        if not bool(row.get("enabled")):
+            continue
+        normalized = dict(row)
+        normalized["platform_region"] = str(row.get("platform_region", "")).upper().strip()
+        normalized["regional_route"] = str(row.get("regional_route", "")).upper().strip()
+        if not normalized["platform_region"] or not normalized["regional_route"]:
+            raise ConfigurationError("Enabled platforms require platform_region and regional_route")
+        if normalized["platform_region"] in seen:
+            raise ConfigurationError(f"Duplicate enabled platform {normalized['platform_region']}")
+        seen.add(normalized["platform_region"])
+        result.append(normalized)
+    return result
+
+
+def route_for_platform(config: dict[str, Any], platform_region: str) -> str:
+    platform = str(platform_region).upper().strip()
+    for row in enabled_platforms(config):
+        if row["platform_region"] == platform:
+            return row["regional_route"]
+    raise ConfigurationError(f"Platform {platform or '<blank>'} is not enabled")
 
 
 def project_path(config: dict[str, Any], path_key: str) -> Path:

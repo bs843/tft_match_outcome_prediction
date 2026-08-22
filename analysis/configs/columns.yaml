@@ -1,0 +1,58 @@
+roles:
+  collection_run_id: AUDIT_METADATA
+  match_hash: IDENTIFIER
+  participant_hash: IDENTIFIER
+  participant_slot: IDENTIFIER
+  game_datetime: AUDIT_METADATA
+  study_patch: AUDIT_METADATA
+  set_number: AUDIT_METADATA
+  queue_id: AUDIT_METADATA
+  platform_region: AUDIT_METADATA
+  regional_route: AUDIT_METADATA
+  placement: TARGET
+  top4: TARGET
+  level: FEATURE
+  composition_size: FEATURE
+  units_json: FEATURE
+  traits_json: FEATURE
+  items_json: FEATURE
+  rank_tier: AUDIT_METADATA
+  rank_division: AUDIT_METADATA
+  rank_status: AUDIT_METADATA
+
+# Exact names and prefixes that may never enter a primary X matrix.
+prohibited_exact:
+  - placement
+  - top4
+  - top_four
+  - placement_group
+  - last_round
+  - players_eliminated
+  - total_damage_to_players
+  - time_eliminated
+  - participant_hash
+  - participant_slot
+  - match_hash
+  - collection_run_id
+  - game_datetime
+  - study_patch
+  - set_number
+  - queue_id
+  - platform_region
+  - regional_route
+  - region
+  - rank_tier
+  - rank_division
+  - rank_status
+prohibited_prefixes:
+  - rank_snapshot_
+  - validation_
+  - acceptance_
+  - accepted_
+  - source_
+  - manifest_
+  - checksum_
+  - outcome_
+  - target_
+  - riot_id
+  - puuid

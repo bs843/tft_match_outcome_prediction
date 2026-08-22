@@ -24,6 +24,8 @@ models/**
 !models/.gitkeep
 reports/**
 !reports/.gitkeep
+outputs/**
+!outputs/.gitkeep
 
 # Python/build tooling
 .venv/

@@ -1,0 +1,24 @@
+random_seed: 4275
+test_fraction: 0.20
+cross_validation_folds: 5
+minimum_category_frequency: 5
+primary_target: top4
+secondary_target: placement
+rank_features_in_primary_models: false
+
+feature_families:
+  F1:
+    description: Basic final-board state
+    groups: [basic]
+  F2:
+    description: F1 plus unit identities and star levels
+    groups: [basic, units]
+  F3:
+    description: F2 plus trait activation and strength
+    groups: [basic, units, traits]
+  F4:
+    description: F3 plus final-board item counts
+    groups: [basic, units, traits, items]
+  F5:
+    description: Full composition with structural summaries
+    groups: [basic, units, traits, items, structure]

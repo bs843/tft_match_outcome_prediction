@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import argparse
-from collections import OrderedDict
+from collections import Counter, OrderedDict
 from typing import Any
 
 from .api_client import RiotAPIError, RiotApiClient, RiotNotFoundError
@@ -10,17 +10,21 @@ from .utils import read_csv_rows, replace_csv_partition, utc_now_iso
 
 SOURCE_FIELDS = [
     "run_id", "match_id", "source_seed_hash", "source_sampling_tier",
-    "source_sampling_division", "history_page", "history_offset", "retrieval_datetime",
+    "source_sampling_division", "source_platform_region", "source_regional_route",
+    "discovery_source", "history_page", "history_offset", "retrieval_datetime",
 ]
 UNIQUE_FIELDS = [
     "run_id", "match_id", "source_seed_count", "source_tiers",
-    "source_divisions", "first_retrieved_at",
+    "source_divisions", "platform_region", "regional_route", "source_platform_regions",
+    "source_regional_routes", "discovery_paths", "first_retrieved_at",
 ]
 CANDIDATE_REPORT_FIELDS = [
-    "run_id", "seed_players", "history_pages_requested_per_seed",
+    "run_id", "report_scope", "platform_region", "regional_route", "seed_players",
+    "history_pages_requested_per_seed",
     "candidate_occurrences", "unique_seed_match_associations",
     "unique_candidate_match_ids", "duplicate_candidate_occurrences_removed",
-    "duplicate_candidate_rate_percentage", "unique_candidate_threshold",
+    "duplicate_candidate_rate_percentage", "cross_region_overlap_candidates",
+    "unique_candidate_threshold",
     "capacity_gate_result",
 ]
 
@@ -35,12 +39,18 @@ def collect_match_ids(
              if row.get("run_id") == run_id]
     if not seeds:
         raise RuntimeError(f"No seed players found for run {run_id}")
-    regional_route = config["scope"]["regional_route"]
     source_map: OrderedDict[tuple[str, str], dict[str, Any]] = OrderedDict()
     failures = 0
     candidate_occurrences = 0
+    region_occurrences: Counter[str] = Counter()
     for index, seed in enumerate(seeds, start=1):
         puuid, seed_hash = seed["puuid"].strip(), seed["participant_hash"].strip()
+        platform_region = (seed.get("platform_region") or seed.get("platform_route") or
+                           config.get("scope", {}).get("platform_route", "")).upper()
+        regional_route = (seed.get("regional_route") or
+                          config.get("scope", {}).get("regional_route", "")).upper()
+        if not platform_region or not regional_route:
+            raise RuntimeError(f"Seed {seed_hash} is missing explicit region routing")
         try:
             for page in range(pages_per_seed):
                 offset = page * page_size
@@ -48,12 +58,16 @@ def collect_match_ids(
                                            start_time=start_time, end_time=end_time)
                 retrieved_at = utc_now_iso()
                 candidate_occurrences += len(ids)
+                region_occurrences[platform_region] += len(ids)
                 for match_id in ids:
-                    source_map.setdefault((match_id, seed_hash), {
+                    source_map.setdefault((match_id, seed_hash, platform_region), {
                         "run_id": run_id, "match_id": match_id,
                         "source_seed_hash": seed_hash,
                         "source_sampling_tier": seed.get("sampling_tier", ""),
                         "source_sampling_division": seed.get("sampling_division", ""),
+                        "source_platform_region": platform_region,
+                        "source_regional_route": regional_route,
+                        "discovery_source": seed.get("source", "ranked_ladder"),
                         "history_page": page + 1, "history_offset": offset,
                         "retrieval_datetime": retrieved_at,
                     })
@@ -73,6 +87,8 @@ def collect_match_ids(
     for row in source_rows:
         record = aggregate.setdefault(row["match_id"], {
             "seed_hashes": set(), "tiers": set(), "divisions": set(),
+            "platforms": set(), "routes": set(), "paths": set(),
+            "platform_routes": {},
             "first_retrieved_at": row["retrieval_datetime"],
         })
         record["seed_hashes"].add(row["source_seed_hash"])
@@ -80,19 +96,32 @@ def collect_match_ids(
             record["tiers"].add(row["source_sampling_tier"])
         if row["source_sampling_division"]:
             record["divisions"].add(row["source_sampling_division"])
+        record["platforms"].add(row["source_platform_region"])
+        record["routes"].add(row["source_regional_route"])
+        record["platform_routes"][row["source_platform_region"]] = row["source_regional_route"]
+        record["paths"].add(
+            f"{row['source_platform_region']}:{row['source_sampling_tier']}:"
+            f"{row['source_sampling_division'] or 'APEX'}:{row['source_seed_hash']}"
+        )
         record["first_retrieved_at"] = min(record["first_retrieved_at"], row["retrieval_datetime"])
     unique_rows = [{
         "run_id": run_id, "match_id": match_id,
         "source_seed_count": len(record["seed_hashes"]),
         "source_tiers": sorted(record["tiers"]),
         "source_divisions": sorted(record["divisions"]),
+        "platform_region": _primary_platform(match_id, record["platforms"]),
+        "regional_route": record["platform_routes"][_primary_platform(match_id, record["platforms"])],
+        "source_platform_regions": sorted(record["platforms"]),
+        "source_regional_routes": sorted(record["routes"]),
+        "discovery_paths": sorted(record["paths"]),
         "first_retrieved_at": record["first_retrieved_at"],
     } for match_id, record in aggregate.items()]
     if stats is not None:
         threshold = int(config.get("sampling", {}).get("candidate_pool_capacity_target", 0))
         duplicates_removed = candidate_occurrences - len(unique_rows)
         stats.update({
-            "run_id": run_id,
+            "run_id": run_id, "report_scope": "global", "platform_region": "ALL",
+            "regional_route": "MULTI",
             "seed_players": len(seeds),
             "history_pages_requested_per_seed": pages_per_seed,
             "candidate_occurrences": candidate_occurrences,
@@ -102,10 +131,48 @@ def collect_match_ids(
             "duplicate_candidate_rate_percentage": round(
                 100 * duplicates_removed / candidate_occurrences, 4
             ) if candidate_occurrences else 0.0,
+            "cross_region_overlap_candidates": sum(
+                len(record["platforms"]) > 1 for record in aggregate.values()
+            ),
             "unique_candidate_threshold": threshold,
             "capacity_gate_result": "pass" if len(unique_rows) >= threshold else "fail",
         })
+        regional_rows = _regional_candidate_stats(
+            run_id, seeds, source_rows, aggregate, region_occurrences, pages_per_seed, threshold
+        )
+        stats["regional_rows"] = regional_rows
     return source_rows, unique_rows
+
+
+def _primary_platform(match_id: str, platforms: set[str]) -> str:
+    prefix = match_id.split("_", 1)[0].upper()
+    return prefix if prefix in platforms else sorted(platforms)[0]
+
+
+def _regional_candidate_stats(run_id: str, seeds: list[dict[str, str]],
+                              sources: list[dict[str, Any]], aggregate: OrderedDict,
+                              occurrences: Counter[str], pages: int, threshold: int) -> list[dict[str, Any]]:
+    rows = []
+    for platform in sorted({seed.get("platform_region") or seed.get("platform_route", "") for seed in seeds}):
+        region_sources = [row for row in sources if row["source_platform_region"] == platform]
+        ids = {row["match_id"] for row in region_sources}
+        count = occurrences[platform]
+        route = next((row["source_regional_route"] for row in region_sources), "")
+        overlap = sum(len(aggregate[match_id]["platforms"]) > 1 for match_id in ids)
+        rows.append({"run_id": run_id, "report_scope": "region",
+                     "platform_region": platform, "regional_route": route,
+                     "seed_players": sum((seed.get("platform_region") or seed.get("platform_route")) == platform
+                                         for seed in seeds),
+                     "history_pages_requested_per_seed": pages,
+                     "candidate_occurrences": count,
+                     "unique_seed_match_associations": len(region_sources),
+                     "unique_candidate_match_ids": len(ids),
+                     "duplicate_candidate_occurrences_removed": count - len(ids),
+                     "duplicate_candidate_rate_percentage": round(100 * (count-len(ids))/count, 4) if count else 0.0,
+                     "cross_region_overlap_candidates": overlap,
+                     "unique_candidate_threshold": threshold,
+                     "capacity_gate_result": "informational"})
+    return rows
 
 
 def main() -> None:
@@ -137,7 +204,8 @@ def main() -> None:
                           partition_field="run_id", partition_value=args.run_id)
     replace_csv_partition(project_path(config, "unique_match_ids"), unique, UNIQUE_FIELDS,
                           partition_field="run_id", partition_value=args.run_id)
-    replace_csv_partition(project_path(config, "candidate_discovery_report"), [stats],
+    regional_rows = stats.pop("regional_rows", [])
+    replace_csv_partition(project_path(config, "candidate_discovery_report"), [stats, *regional_rows],
                           CANDIDATE_REPORT_FIELDS,
                           partition_field="run_id", partition_value=args.run_id)
     print(f"Saved {len(unique)} unique candidate match IDs")

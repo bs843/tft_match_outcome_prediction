@@ -123,6 +123,12 @@ def run_validation(
                                 hash_identifier=pseudonym, rules=rules,
                                 seen_match_ids=seen_match_ids)
         result["source_sha256"] = status_by_id.get(match_id, {}).get("raw_sha256") or _sha256(path)
+        result["platform_region"] = status_by_id.get(match_id, {}).get("platform_region", "")
+        result["regional_route"] = status_by_id.get(match_id, {}).get("regional_route", "")
+        if not result["platform_region"] or not result["regional_route"]:
+            issues.append(Issue("critical", "collection", "missing_region_provenance",
+                                "Accepted match lacks explicit platform routing provenance",
+                                match_hash=pseudonym(match_id)))
         match_results.append(result)
         issues.extend(result["issues"])
 
@@ -210,6 +216,11 @@ def run_validation(
             "source_raw_data_path": str(raw_dir.resolve()),
             "validated_output_path": str(validated_dir.resolve()),
             "configuration_file": config.get("_config_path", str(DEFAULT_CONFIG_PATH)),
+            "enabled_platforms": [
+                {"platform_region": row["platform_region"],
+                 "regional_route": row["regional_route"]}
+                for row in config.get("platforms", []) if row.get("enabled")
+            ],
         },
         counts={
             "downloaded_run_rows": len(status_rows),
@@ -374,7 +385,11 @@ def _sanitize_payload(payload: dict[str, Any], result: dict[str, Any]) -> dict[s
             raw_participant["top_four_reconstruction_flag"] = True
     copied["metadata"] = metadata
     copied["info"] = info
-    copied["validation"] = {"match_hash": result["match_hash"], "status": "valid"}
+    copied["validation"] = {
+        "match_hash": result["match_hash"], "status": "valid",
+        "platform_region": result.get("platform_region", ""),
+        "regional_route": result.get("regional_route", ""),
+    }
     return copied
 
 

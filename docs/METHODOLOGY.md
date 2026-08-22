@@ -62,3 +62,10 @@ therefore increases to three pages and deterministic selection increases to at m
 must establish at least 25,000 unique in-window candidate IDs before match downloads;
 otherwise it terminates as a capacity failure. This gate concerns collection feasibility
 only. Schema 1.1.0, rank strata, validity rules and primary modelling design are unchanged.
+## Multi-region amendment
+
+The v5 collection amendment retains Patch 17.8 and GOLD–MASTER while sampling the
+ME1, EUW1, EUN1, NA1 and KR ladders. Each platform receives the same page and seed
+opportunity, and candidate pools are interleaved before match evaluation. No equal
+accepted-match quota is imposed. Candidate IDs are deduplicated globally before
+the unchanged 25,000-capacity gate, and regional composition is reported.

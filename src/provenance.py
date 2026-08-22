@@ -76,9 +76,17 @@ def verify_frozen_git_state(config: dict[str, Any]) -> dict[str, str]:
 
 
 def accepted_manifest_checksum(run_id: str, rows: list[dict[str, str]]) -> str:
+    fields = (
+        "run_id", "match_id", "platform_region", "regional_route", "source_tiers",
+        "source_divisions", "discovery_paths", "raw_sha256", "validation_accepted",
+    )
+    run_rows = [row for row in rows if row.get("run_id") == run_id]
+    enriched = any(row.get("platform_region") or row.get("regional_route") or
+                   row.get("raw_sha256") for row in run_rows)
     partition = sorted(
-        ({"run_id": run_id, "match_id": row.get("match_id", "")} for row in rows
-         if row.get("run_id") == run_id),
+        ({field: (run_id if field == "run_id" else row.get(field, "")) for field in fields}
+         if enriched else {"run_id": run_id, "match_id": row.get("match_id", "")}
+         for row in run_rows),
         key=lambda row: row["match_id"],
     )
     return stable_json_hash(partition)
@@ -104,6 +112,11 @@ def initialise_run_manifest(
             "git_commit": (git_state or {}).get("git_commit", git_commit()),
             "git_tag": (git_state or {}).get("git_tag", "unavailable"),
             "study_patch": config["scope"]["study_patch"],
+            "enabled_platforms": [
+                {"platform_region": row["platform_region"],
+                 "regional_route": row["regional_route"]}
+                for row in config.get("platforms", []) if row.get("enabled")
+            ],
             "requested_accepted_match_target": requested_accepted_match_target,
             "accepted_match_manifest_id": None,
             "accepted_match_manifest_sha256": None,

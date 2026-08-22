@@ -34,7 +34,8 @@ def test_raw_to_features_is_pseudonymous_and_train_vocabulary_only(monkeypatch, 
     accepted = []
     for match_index in range(10):
         match_id = f"ME1_PRIVATE_{match_index}"
-        accepted.append({"run_id": "run-1", "match_id": match_id})
+        accepted.append({"run_id": "run-1", "match_id": match_id,
+                         "platform_region": "ME1", "regional_route": "EUROPE"})
         participants = []
         for placement in range(1, 9):
             augment = "TEST_ONLY_AUGMENT" if match_index == 9 else "TRAIN_AUGMENT"
@@ -54,12 +55,14 @@ def test_raw_to_features_is_pseudonymous_and_train_vocabulary_only(monkeypatch, 
                      "game_length": 1800, "queue_id": 1100, "tft_game_type": "standard",
                      "tft_set_number": 17, "participants": participants},
         }, raw / f"{match_id}.json")
-    write_csv_rows(private / "accepted.csv", accepted, ["run_id", "match_id"])
+    write_csv_rows(private / "accepted.csv", accepted,
+                   ["run_id", "match_id", "platform_region", "regional_route"])
     snapshot_rows = []
     for match_index in range(10):
         for placement in range(1, 9):
             snapshot_rows.append({
                 "run_id": "run-1",
+                "platform_region": "ME1", "regional_route": "EUROPE",
                 "participant_hash": hash_identifier(
                     f"private-player-{match_index}-{placement}", "x" * 32
                 ),

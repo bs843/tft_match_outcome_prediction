@@ -9,7 +9,7 @@ import pytest
 import src.provenance as provenance
 
 
-TAG = "tft-patch17.8-final-collection-v4"
+TAG = "tft-patch17.8-final-collection-v5"
 
 
 def git(path: Path, *args: str) -> str:
@@ -70,12 +70,23 @@ def test_accepted_manifest_checksum_is_order_independent() -> None:
     )
 
 
-def test_collection_manifest_records_v4_git_and_configuration_provenance(tmp_path: Path) -> None:
+def test_enriched_manifest_checksum_freezes_region_and_raw_checksum() -> None:
+    row = {"run_id": "run", "match_id": "ME1_A", "platform_region": "ME1",
+           "regional_route": "EUROPE", "raw_sha256": "a" * 64,
+           "validation_accepted": "true"}
+    changed = dict(row, platform_region="NA1", regional_route="AMERICAS")
+    assert provenance.accepted_manifest_checksum("run", [row]) != \
+        provenance.accepted_manifest_checksum("run", [changed])
+
+
+def test_collection_manifest_records_v5_git_region_and_configuration_provenance(tmp_path: Path) -> None:
     manifests = tmp_path / "manifests"
     config_value = {
-        "project": {"dataset_version": "dataset-v5", "schema_version": "1.1.0"},
+        "project": {"dataset_version": "dataset-v6", "schema_version": "1.2.0"},
         "provenance": {"configuration_version": TAG},
         "scope": {"study_patch": "17.8"},
+        "platforms": [{"platform_region": "ME1", "regional_route": "EUROPE", "enabled": True},
+                      {"platform_region": "NA1", "regional_route": "AMERICAS", "enabled": True}],
         "paths": {"manifests": str(manifests)},
     }
     path = provenance.initialise_run_manifest(
@@ -88,6 +99,10 @@ def test_collection_manifest_records_v4_git_and_configuration_provenance(tmp_pat
     assert payload["git_tag"] == TAG
     assert payload["configuration_version"] == TAG
     assert payload["requested_accepted_match_target"] == 5000
+    assert payload["enabled_platforms"] == [
+        {"platform_region": "ME1", "regional_route": "EUROPE"},
+        {"platform_region": "NA1", "regional_route": "AMERICAS"},
+    ]
     provenance.update_run_manifest(path, status="capacity_failed")
     failed = json.loads(path.read_text(encoding="utf-8"))
     assert failed["status"] == "capacity_failed"

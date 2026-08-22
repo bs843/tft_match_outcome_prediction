@@ -38,7 +38,7 @@ The raw checksum result in the report establishes that validation did not silent
 change or substitute source responses. Only `PASS` or `PASS_WITH_WARNINGS` creates
 `data/validated/<run-id>/`; critical failures return a non-zero process status.
 
-The amended final collection tag is `tft-patch17.8-final-collection-v4`. At main-run startup,
+The multi-region final collection tag is `tft-patch17.8-final-collection-v5`. At main-run startup,
 the pipeline requires `HEAD` to equal that tag's peeled commit and rejects all
 uncommitted changes to tracked files. The tag must never be moved or recreated after
 collection begins. A later pipeline amendment requires a new commit and tag.
@@ -50,3 +50,9 @@ Run `20260820T212450Z-31431b86` is likewise permanently failed/audit-only. V4 ma
 runs reject supplied run IDs and enforce the 25,000-unique-candidate gate before raw
 match download. `capacity_failed` is a terminal manifest status with no frozen accepted
 partition or downstream analytical output.
+## Multi-region provenance
+
+Configuration v5 manifests record all enabled platform/route mappings. Seed,
+candidate, status, accepted-manifest and rank-snapshot partitions retain structured
+region provenance. The accepted-manifest checksum covers the enriched provenance
+for new runs while retaining legacy checksum compatibility for earlier audit runs.

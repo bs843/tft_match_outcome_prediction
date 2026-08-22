@@ -16,6 +16,7 @@ PROVENANCE_FIELDS = ["run_id", "dataset_version", "schema_version"]
 MATCH_FIELDS = [
     "match_hash", "game_datetime_ms", "game_datetime_utc", "game_length_seconds",
     "patch", "queue_id", "tft_game_type", "tft_set_number", "participant_count",
+    "platform_region", "regional_route",
 ] + PROVENANCE_FIELDS
 PARTICIPANT_FIELDS = [
     "match_hash", "participant_hash", "placement", "top_four", "placement_group",
@@ -25,6 +26,7 @@ PARTICIPANT_FIELDS = [
     "rank_snapshot_division", "rank_snapshot_league_points", "rank_snapshot_wins",
     "rank_snapshot_losses", "rank_snapshot_queue_type", "rank_snapshot_retrieved_at",
     "rank_snapshot_status",
+    "platform_region", "regional_route",
 ] + PROVENANCE_FIELDS
 UNIT_FIELDS = [
     "match_hash", "participant_hash", "unit_index", "character_id", "rarity",
@@ -43,9 +45,11 @@ AUGMENT_FIELDS = [
 
 
 def normalise_matches(config: dict[str, Any], *, run_id: str) -> dict[str, list[dict[str, Any]]]:
-    accepted_ids = [row["match_id"] for row in
+    accepted_rows = [row for row in
                     read_csv_rows(project_path(config, "accepted_match_ids"), ["run_id", "match_id"])
                     if row.get("run_id") == run_id]
+    accepted_ids = [row["match_id"] for row in accepted_rows]
+    accepted_by_id = {row["match_id"]: row for row in accepted_rows}
     if not accepted_ids:
         raise RuntimeError(f"No accepted matches for run {run_id}")
     raw_dir = project_path(config, "raw_matches")
@@ -76,6 +80,11 @@ def normalise_matches(config: dict[str, Any], *, run_id: str) -> dict[str, list[
     for match_id in accepted_ids:
         payload = load_json(raw_dir / f"{safe_filename(match_id)}.json")
         info = payload["info"]
+        accepted = accepted_by_id[match_id]
+        platform_region = accepted.get("platform_region", "")
+        regional_route = accepted.get("regional_route", "")
+        if not platform_region or not regional_route:
+            raise RuntimeError(f"Accepted match {match_id} lacks region provenance")
         match_hash = hash_identifier(match_id, key)
         participants = info["participants"]
         tables["matches"].append({
@@ -88,6 +97,7 @@ def normalise_matches(config: dict[str, Any], *, run_id: str) -> dict[str, list[
             "tft_game_type": info.get("tft_game_type"),
             "tft_set_number": info.get("tft_set_number"),
             "participant_count": len(participants), **provenance,
+            "platform_region": platform_region, "regional_route": regional_route,
         })
         for participant in participants:
             puuid = str(participant["puuid"])
@@ -124,6 +134,7 @@ def normalise_matches(config: dict[str, Any], *, run_id: str) -> dict[str, list[
                 "rank_snapshot_queue_type": snapshot.get("rank_snapshot_queue_type", ""),
                 "rank_snapshot_retrieved_at": snapshot.get("rank_snapshot_retrieved_at", ""),
                 "rank_snapshot_status": snapshot.get("rank_snapshot_status", ""),
+                "platform_region": platform_region, "regional_route": regional_route,
                 **provenance,
             })
             for unit_index, unit in enumerate(units, 1):

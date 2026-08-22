@@ -16,7 +16,10 @@ QUALITY_FIELDS = [
     "missing_puuid_count", "empty_units_count", "missing_traits_count",
     "metadata_participant_mismatch",
 ]
-ID_FIELDS = ["run_id", "match_id"]
+ID_FIELDS = [
+    "run_id", "match_id", "platform_region", "regional_route", "source_tiers",
+    "source_divisions", "discovery_paths", "raw_sha256", "validation_accepted",
+]
 
 
 @dataclass
@@ -226,13 +229,28 @@ def main() -> None:
     replace_csv_partition(project_path(config, "quality_report"),
                           [result.as_row() for result in results], QUALITY_FIELDS,
                           partition_field="run_id", partition_value=args.run_id)
+    status_by_id = {row["match_id"]: row for row in status_rows}
+    source_by_id = {row["match_id"]: row for row in read_csv_rows(
+        project_path(config, "unique_match_ids"), ["run_id", "match_id"]
+    ) if row.get("run_id") == args.run_id}
+    def manifest_row(result: ValidationResult) -> dict[str, Any]:
+        status = status_by_id.get(result.match_id, {})
+        source = source_by_id.get(result.match_id, {})
+        return {
+            "run_id": args.run_id, "match_id": result.match_id,
+            "platform_region": source.get("platform_region", status.get("platform_region", "")),
+            "regional_route": source.get("regional_route", status.get("regional_route", "")),
+            "source_tiers": source.get("source_tiers", ""),
+            "source_divisions": source.get("source_divisions", ""),
+            "discovery_paths": source.get("discovery_paths", ""),
+            "raw_sha256": status.get("raw_sha256", ""),
+            "validation_accepted": result.accepted,
+        }
     replace_csv_partition(project_path(config, "accepted_match_ids"),
-                           [{"run_id": args.run_id, "match_id": result.match_id}
-                            for result in selected], ID_FIELDS,
+                           [manifest_row(result) for result in selected], ID_FIELDS,
                           partition_field="run_id", partition_value=args.run_id)
     replace_csv_partition(project_path(config, "rejected_match_ids"),
-                          [{"run_id": args.run_id, "match_id": result.match_id}
-                           for result in results if not result.accepted], ID_FIELDS,
+                          [manifest_row(result) for result in results if not result.accepted], ID_FIELDS,
                           partition_field="run_id", partition_value=args.run_id)
     eligible = sum(result.accepted for result in results)
     print(f"Validated {len(results)} candidates: {eligible} eligible, {len(selected)} selected")

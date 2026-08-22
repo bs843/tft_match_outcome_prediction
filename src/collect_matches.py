@@ -14,7 +14,8 @@ from .utils import (
 from .validate_matches import validate_match_payload
 
 STATUS_FIELDS = [
-    "run_id", "match_id", "status", "raw_file", "raw_sha256", "first_collected_at",
+    "run_id", "match_id", "platform_region", "regional_route", "status", "raw_file",
+    "raw_sha256", "first_collected_at",
     "last_checked_at", "validation_accepted", "validation_reasons", "error_class",
 ]
 
@@ -38,8 +39,7 @@ def collect_matches(
     ).values())
     if not match_rows:
         raise RuntimeError(f"No candidate match IDs found for run {run_id}")
-    rng = random.Random(int(config["sampling"]["random_seed"]))
-    rng.shuffle(match_rows)
+    match_rows = balanced_candidate_order(match_rows, int(config["sampling"]["random_seed"]))
     if candidate_limit is not None:
         match_rows = match_rows[:max(0, candidate_limit)]
 
@@ -56,7 +56,6 @@ def collect_matches(
         if match_id and digest:
             known_digests.setdefault(match_id, set()).add(digest)
     raw_dir = project_path(config, "raw_matches")
-    regional_route = config["scope"]["regional_route"]
     accepted = 0
     failed = 0
 
@@ -64,6 +63,14 @@ def collect_matches(
         if accepted_target is not None and accepted >= accepted_target:
             break
         match_id = candidate["match_id"].strip()
+        platform_region = str(candidate.get("platform_region", "")).upper()
+        regional_route = str(candidate.get("regional_route", "")).upper()
+        if not platform_region or not regional_route:
+            raise RuntimeError(f"Candidate {match_id} lacks explicit platform routing provenance")
+        if config.get("platforms") and match_id.split("_", 1)[0].upper() != platform_region:
+            raise RuntimeError(
+                f"Candidate {match_id} prefix conflicts with platform {platform_region}"
+            )
         raw_path = raw_dir / f"{safe_filename(match_id)}.json"
         key = (run_id, match_id)
         checked_at = utc_now_iso()
@@ -91,6 +98,7 @@ def collect_matches(
             accepted += int(validation.accepted)
             status_map[key] = {
                 "run_id": run_id, "match_id": match_id, "status": status,
+                "platform_region": platform_region, "regional_route": regional_route,
                 "raw_file": str(raw_path.relative_to(raw_dir.parents[2])), "raw_sha256": digest,
                 "first_collected_at": first_collected, "last_checked_at": checked_at,
                 "validation_accepted": validation.accepted,
@@ -101,13 +109,16 @@ def collect_matches(
         except RiotAuthenticationError:
             raise
         except RiotNotFoundError:
-            status_map[key] = _failure_row(run_id, match_id, "not_found", checked_at)
+            status_map[key] = _failure_row(run_id, match_id, platform_region, regional_route,
+                                           "not_found", checked_at)
         except RawIntegrityError:
             failed += 1
-            status_map[key] = _failure_row(run_id, match_id, "raw_checksum_mismatch", checked_at)
+            status_map[key] = _failure_row(run_id, match_id, platform_region, regional_route,
+                                           "raw_checksum_mismatch", checked_at)
         except RiotAPIError as exc:
             failed += 1
-            status_map[key] = _failure_row(run_id, match_id, type(exc).__name__, checked_at)
+            status_map[key] = _failure_row(run_id, match_id, platform_region, regional_route,
+                                           type(exc).__name__, checked_at)
         # Checkpoint in batches. Raw JSON is already durable, so interruption can
         # lose only a few status rows and those files are revalidated on resume.
         if index % 10 == 0:
@@ -123,9 +134,26 @@ def collect_matches(
     return run_rows
 
 
-def _failure_row(run_id: str, match_id: str, error_class: str, checked_at: str) -> dict[str, Any]:
+def balanced_candidate_order(rows: list[dict[str, Any]], seed: int) -> list[dict[str, Any]]:
+    """Deterministically interleave platform pools without imposing final quotas."""
+    pools: OrderedDict[str, list[dict[str, Any]]] = OrderedDict()
+    for row in sorted(rows, key=lambda value: (value.get("platform_region", ""), value.get("match_id", ""))):
+        pools.setdefault(str(row.get("platform_region", "")), []).append(row)
+    for platform, pool in pools.items():
+        random.Random(f"{seed}:{platform}").shuffle(pool)
+    ordered: list[dict[str, Any]] = []
+    while any(pools.values()):
+        for pool in pools.values():
+            if pool:
+                ordered.append(pool.pop())
+    return ordered
+
+
+def _failure_row(run_id: str, match_id: str, platform_region: str,
+                 regional_route: str, error_class: str, checked_at: str) -> dict[str, Any]:
     return {
-        "run_id": run_id, "match_id": match_id, "status": "failed", "raw_file": "",
+        "run_id": run_id, "match_id": match_id, "platform_region": platform_region,
+        "regional_route": regional_route, "status": "failed", "raw_file": "",
         "raw_sha256": "", "first_collected_at": "", "last_checked_at": checked_at,
         "validation_accepted": False, "validation_reasons": [], "error_class": error_class,
     }

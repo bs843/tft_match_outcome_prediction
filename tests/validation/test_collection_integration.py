@@ -22,9 +22,12 @@ def test_read_only_validation_writes_sanitized_dataset(monkeypatch, tmp_path: Pa
     write_csv_rows(private / "status.csv", [{
         "run_id": run_id, "match_id": match_id, "raw_file": "raw/ME1_TEST.json",
         "raw_sha256": sha256_file(raw / f"{match_id}.json"), "validation_accepted": True,
-    }], ["run_id", "match_id", "raw_file", "raw_sha256", "validation_accepted"])
-    write_csv_rows(private / "accepted.csv", [{"run_id": run_id, "match_id": match_id}],
-                   ["run_id", "match_id"])
+        "platform_region": "ME1", "regional_route": "EUROPE",
+    }], ["run_id", "match_id", "raw_file", "raw_sha256", "validation_accepted",
+          "platform_region", "regional_route"])
+    write_csv_rows(private / "accepted.csv", [{"run_id": run_id, "match_id": match_id,
+                                                "platform_region": "ME1", "regional_route": "EUROPE"}],
+                   ["run_id", "match_id", "platform_region", "regional_route"])
     key = "v" * 32
     rank_rows = [{
         "run_id": run_id, "participant_hash": hash_identifier(f"private-{p}", key),

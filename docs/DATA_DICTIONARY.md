@@ -74,3 +74,14 @@ contain no Riot IDs, PUUIDs or match IDs.
 `existing_verified` means an immutable raw response matched a previously recorded
 SHA-256 digest and was parsed and revalidated for the current run. It never carries
 forward prior acceptance or dataset membership.
+## Multi-region provenance amendment
+
+For configuration v5, `seed_players.csv`, `match_id_sources.csv`,
+`unique_match_ids.csv`, `collection_status.csv`, `accepted_match_ids.csv`, and
+`rank_snapshots.csv` carry explicit `platform_region` and `regional_route` fields.
+Candidate source records also carry discovery rank/division and source type. The
+candidate report contains one global row and one diagnostic row per platform.
+
+Rank status semantics remain explicit: `unranked` is a successful lookup without a
+ranked TFT entry; `not_found` means the player is absent from the expected platform;
+`request_failed` records an API/routing failure and its error class.

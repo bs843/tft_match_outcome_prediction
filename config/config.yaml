@@ -1,14 +1,13 @@
 # Frozen MSc study configuration. Amendments require a new dataset_version.
 project:
   name: tft_outcome_prediction
-  # v5 distinguishes this dataset from the v4 dataset_version embedded in the
-  # frozen final-collection-v3 commit. The relational schema itself is unchanged.
-  dataset_version: tft_set17_patch17_8_v5
-  schema_version: "1.1.0"
+  # v6 adds explicit multi-region provenance to the collection/validated schema.
+  dataset_version: tft_set17_patch17_8_v6
+  schema_version: "1.2.0"
 
 provenance:
-  configuration_version: tft-patch17.8-final-collection-v4
-  required_git_tag: tft-patch17.8-final-collection-v4
+  configuration_version: tft-patch17.8-final-collection-v5
+  required_git_tag: tft-patch17.8-final-collection-v5
   enforce_git_integrity_for_main: true
 
 scope:
@@ -21,12 +20,54 @@ scope:
   allowed_game_types: [standard]
   allowed_end_results: [GameComplete]
   expected_participants: 8
-  platform_route: ME1
-  regional_route: EUROPE
   # Populate with verified UTC Unix seconds before collection. Exact patch
   # membership is still decided from each response's game_version.
   start_time: 1785283200
   end_time: 1787702400
+
+# Expanded Patch 17.8 collection across populated Riot platforms. All platforms
+# use the identical GOLD-MASTER design; only player geography is broadened.
+platforms:
+  - platform_region: ME1
+    regional_route: EUROPE
+    enabled: true
+    rank_strata_profile: GOLD_TO_MASTER
+    ladder_pages_per_division: 3
+    apex_pages: 1
+    seed_players_per_page: 160
+    match_history_pages_per_seed: 3
+  - platform_region: EUW1
+    regional_route: EUROPE
+    enabled: true
+    rank_strata_profile: GOLD_TO_MASTER
+    ladder_pages_per_division: 3
+    apex_pages: 1
+    seed_players_per_page: 160
+    match_history_pages_per_seed: 3
+  - platform_region: EUN1
+    regional_route: EUROPE
+    enabled: true
+    rank_strata_profile: GOLD_TO_MASTER
+    ladder_pages_per_division: 3
+    apex_pages: 1
+    seed_players_per_page: 160
+    match_history_pages_per_seed: 3
+  - platform_region: NA1
+    regional_route: AMERICAS
+    enabled: true
+    rank_strata_profile: GOLD_TO_MASTER
+    ladder_pages_per_division: 3
+    apex_pages: 1
+    seed_players_per_page: 160
+    match_history_pages_per_seed: 3
+  - platform_region: KR
+    regional_route: ASIA
+    enabled: true
+    rank_strata_profile: GOLD_TO_MASTER
+    ladder_pages_per_division: 3
+    apex_pages: 1
+    seed_players_per_page: 160
+    match_history_pages_per_seed: 3
 
 sampling:
   random_seed: 4275
@@ -97,7 +138,7 @@ validation:
   fail_on_end_result_mismatch: true
   fail_on_duplicate_match_id: true
   rank_snapshot_required: false
-  validation_code_version: "1.0.0"
+  validation_code_version: "1.1.0"
 
 features:
   minimum_category_frequency: 5
@@ -121,6 +162,9 @@ features:
     - rank_snapshot_error_class
     - participant_hash
     - match_hash
+    - platform_region
+    - regional_route
+    - region
 
 splits:
   train_fraction: 0.70

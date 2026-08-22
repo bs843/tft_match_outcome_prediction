@@ -37,8 +37,9 @@ def prepare_match(tmp_path: Path) -> None:
     (tmp_path / "raw").mkdir()
     write_csv_rows(
         tmp_path / "accepted.csv",
-        [{"run_id": "run-1", "match_id": "ME1_TEST"}],
-        ["run_id", "match_id"],
+        [{"run_id": "run-1", "match_id": "ME1_TEST", "platform_region": "ME1",
+          "regional_route": "EUROPE"}],
+        ["run_id", "match_id", "platform_region", "regional_route"],
     )
     atomic_json_dump({
         "info": {"participants": [{"puuid": f"player-{index}"} for index in range(1, 5)]}

@@ -4,6 +4,11 @@ This repository collects and analyses **offline, completed** ranked Teamfight Ta
 
 > Among ranked standard TFT Set 17 matches on patch 17.8, how accurately can final-board composition features classify a participant as finishing in the top four?
 
+Collection configuration v5 broadens player discovery across ME1, EUW1, EUN1,
+NA1 and KR while keeping Patch 17.8 and GOLD–MASTER fixed. Platform-to-cluster
+routing and sampling limits are centralized under `platforms` in
+`config/config.yaml`; see `docs/MULTI_REGION_AMENDMENT.md`.
+
 It is not a live-game prediction system. Raw Riot responses are immutable and private; analytical tables contain keyed pseudonyms rather than Riot identifiers.
 
 ## Pipeline guarantees
@@ -81,7 +86,7 @@ The command prints a run ID. Every private collection table, manifest, and exper
 ## Run the frozen final collection
 
 The main collection is bound to the annotated tag
-`tft-patch17.8-final-collection-v4`. Before any API request, the pipeline verifies
+`tft-patch17.8-final-collection-v5`. Before any API request, the pipeline verifies
 that `HEAD` resolves to the tag's exact commit and that no tracked file is modified.
 Untracked runtime files correctly excluded by `.gitignore` do not invalidate the run.
 
@@ -90,7 +95,7 @@ Verify the frozen state and start a new 5,000-match run with:
 ```powershell
 git status
 git rev-parse HEAD
-git rev-parse "tft-patch17.8-final-collection-v4^{commit}"
+git rev-parse "tft-patch17.8-final-collection-v5^{commit}"
 python -m src.run_pipeline --target main --player-mode ladder
 ```
 
@@ -195,3 +200,17 @@ The main collection is permitted only after all tests pass and a 100-accepted-ma
 - `docs/REPRODUCIBILITY.md`: exact artifact and experiment requirements.
 
 Riot's current API and TFT policies remain authoritative and must be rechecked immediately before collection.
+
+## Post-collection thesis analysis
+
+The offline, fail-closed downstream workflow is documented in
+[`analysis/README.md`](analysis/README.md) and
+[`docs/ANALYSIS_PIPELINE.md`](docs/ANALYSIS_PIPELINE.md). Once a 5,000-match run
+has completed and passed post-collection validation, start it with:
+
+```powershell
+python -m analysis.run --validation-run ACTUAL_RUN_ID
+```
+
+`python -m analysis.run --dry-run` uses synthetic engineering records only and
+cannot produce thesis findings.

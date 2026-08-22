@@ -49,6 +49,53 @@ def write_collection_report(config: dict[str, Any], run_id: str) -> Path:
         if row.get("participant_hash", "")
     }
     observed_rank_ids = {row.get("participant_hash", "") for row in rank_rows if row.get("participant_hash", "")}
+    regional_diagnostics: dict[str, Any] = {}
+    for platform in [row.get("platform_region", "") for row in config.get("platforms", [])
+                     if row.get("enabled")]:
+        regional_players = [row for row in player_rows if row.get("platform_region") == platform]
+        regional_pages = [row for row in page_rows if row.get("platform_region") == platform]
+        regional_seeds = [row for row in seed_rows if row.get("platform_region") == platform]
+        regional_discovery = [row for row in discovery_rows if row.get("platform_region") == platform]
+        regional_status = [row for row in status_rows if row.get("platform_region") == platform]
+        regional_rank = [row for row in rank_rows if row.get("platform_region") == platform]
+        evaluated_region = sum(bool(row.get("raw_file")) for row in regional_status)
+        accepted_region = sum(str(row.get("validation_accepted", "")).lower() == "true"
+                              for row in regional_status)
+        region_rejections: Counter[str] = Counter()
+        for row in regional_status:
+            if str(row.get("validation_accepted", "")).lower() == "true":
+                continue
+            try:
+                region_rejections.update(json.loads(row.get("validation_reasons", "") or "[]"))
+            except json.JSONDecodeError:
+                region_rejections["unparseable_validation_reason"] += 1
+        regional_diagnostics[platform] = {
+            "regional_route": next((row.get("regional_route", "") for row in regional_seeds), ""),
+            "ladder_pages_requested": _integer(regional_players, "pages_requested"),
+            "populated_ladder_pages": sum(str(row.get("pagination_exhausted", "")).lower() != "true"
+                                           for row in regional_pages),
+            "ladder_entries_returned": _integer(regional_players, "ladder_entries_returned"),
+            "unique_ladder_players": _integer(regional_players, "unique_seed_players_available"),
+            "unique_seed_players_selected": len(regional_seeds),
+            "seed_players_by_rank_division": dict(sorted(Counter(
+                f"{row.get('sampling_tier', 'UNKNOWN')}:{row.get('sampling_division', '') or 'APEX'}"
+                for row in regional_seeds).items())),
+            "candidate_occurrences": _integer(regional_discovery, "candidate_occurrences"),
+            "unique_candidate_ids_contributed": _integer(regional_discovery, "unique_candidate_match_ids"),
+            "duplicate_candidate_occurrences": _integer(regional_discovery, "duplicate_candidate_occurrences_removed"),
+            "cross_region_overlap_candidates": _integer(regional_discovery, "cross_region_overlap_candidates"),
+            "accepted_matches": accepted_region,
+            "rejection_counts": dict(sorted(region_rejections.items())),
+            "acceptance_rate_percentage": round(100 * accepted_region / evaluated_region, 4)
+                                          if evaluated_region else 0.0,
+            "rank_snapshot_status_counts": dict(sorted(Counter(
+                row.get("rank_snapshot_status", "unknown") for row in regional_rank).items())),
+            "rank_snapshot_counts_by_rank_stratum": dict(sorted(Counter(
+                f"{row.get('rank_snapshot_tier') or 'UNRANKED'}:"
+                f"{row.get('rank_snapshot_division') or 'NONE'}" for row in regional_rank
+            ).items())),
+            "rank_snapshot_count": len(regional_rank),
+        }
     report = {
         "run_id": run_id,
         "status": manifest.get("status", "unknown"),
@@ -58,6 +105,7 @@ def write_collection_report(config: dict[str, Any], run_id: str) -> Path:
         "dataset_version": manifest.get("dataset_version", config["project"]["dataset_version"]),
         "schema_version": manifest.get("schema_version", config["project"]["schema_version"]),
         "study_patch": manifest.get("study_patch", config["scope"]["study_patch"]),
+        "enabled_platforms": manifest.get("enabled_platforms", []),
         "requested_accepted_matches": requested,
         "started_at": manifest.get("started_at"),
         "completed_at": manifest.get("completed_at"),
@@ -99,11 +147,16 @@ def write_collection_report(config: dict[str, Any], run_id: str) -> Path:
         "rank_snapshot_status_counts": dict(sorted(Counter(
             row.get("rank_snapshot_status", "unknown") for row in rank_rows
         ).items())),
+        "rank_snapshot_counts_by_rank_stratum": dict(sorted(Counter(
+            f"{row.get('rank_snapshot_tier') or 'UNRANKED'}:"
+            f"{row.get('rank_snapshot_division') or 'NONE'}" for row in rank_rows
+        ).items())),
         "rank_snapshot_coverage_percentage": round(
             100 * len(expected_rank_ids.intersection(observed_rank_ids)) / len(expected_rank_ids), 4
         ) if expected_rank_ids else 0.0,
         "accepted_match_manifest_id": manifest.get("accepted_match_manifest_id"),
         "accepted_match_manifest_sha256": manifest.get("accepted_match_manifest_sha256"),
+        "regional_diagnostics": regional_diagnostics,
     }
     output = project_path(config, "collection_reports") / f"collection_{run_id}.json"
     atomic_json_dump(report, output)
