@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import pytest
@@ -192,6 +193,34 @@ def test_capacity_failure_stops_before_download_manifest_and_rank(monkeypatch) -
     assert "src.collect_matches" not in calls
     assert "src.validate_matches" not in calls
     assert "src.collect_rank_snapshots" not in calls
+
+
+def test_keyboard_interrupt_marks_run_partial(monkeypatch, tmp_path: Path) -> None:
+    manifest = tmp_path / "collection_run_interrupted.json"
+    recorded: dict = {}
+    config = {
+        "scope": {"start_time": 1, "end_time": 2, "expected_participants": 8},
+        "sampling": {"pilot_accepted_matches": 100, "target_accepted_matches": 5000},
+        "provenance": {"enforce_git_integrity_for_main": False},
+    }
+    monkeypatch.setattr(sys, "argv", ["run_pipeline", "--target", "pilot"])
+    monkeypatch.setattr(pipeline, "load_config", lambda _: config)
+    monkeypatch.setattr(pipeline, "ensure_project_directories", lambda _: None)
+    monkeypatch.setattr(pipeline, "new_run_id", lambda: "interrupted")
+    monkeypatch.setattr(pipeline, "initialise_run_manifest", lambda *args, **kwargs: manifest)
+    monkeypatch.setattr(
+        pipeline, "run_acquisition_stages",
+        lambda *args, **kwargs: (_ for _ in ()).throw(KeyboardInterrupt()),
+    )
+    monkeypatch.setattr(
+        pipeline, "update_run_manifest",
+        lambda path, **kwargs: recorded.update(kwargs),
+    )
+    monkeypatch.setattr(pipeline, "write_collection_report", lambda *args: tmp_path / "report.json")
+    with pytest.raises(KeyboardInterrupt):
+        pipeline.main()
+    assert recorded["status"] == "partial"
+    assert recorded["metadata"]["interruption_reason"] == "keyboard_interrupt"
 
 
 def test_duplicate_candidate_rows_are_downloaded_and_counted_once(tmp_path: Path) -> None:

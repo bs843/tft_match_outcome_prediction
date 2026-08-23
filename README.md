@@ -4,7 +4,7 @@ This repository collects and analyses **offline, completed** ranked Teamfight Ta
 
 > Among ranked standard TFT Set 17 matches on patch 17.8, how accurately can final-board composition features classify a participant as finishing in the top four?
 
-Collection configuration v6 broadens player discovery across ME1, EUW1, EUN1,
+Collection configuration v7 broadens player discovery across ME1, EUW1, EUN1,
 NA1 and KR while keeping Patch 17.8 and GOLD–MASTER fixed. Platform-to-cluster
 routing and sampling limits are centralized under `platforms` in
 `config/config.yaml`; see `docs/MULTI_REGION_AMENDMENT.md`.
@@ -61,6 +61,12 @@ In `config/config.yaml`:
 
 Development keys expire regularly and personal keys have restrictive rate limits. The collector is intentionally conservative and may take hours for the main dataset.
 
+If Riot returns HTTP 401/403, the collector pauses for up to 24 hours and checks
+the ignored local `.env` every 30 seconds. Replace `RIOT_API_KEY` there with a new
+key; the running process loads only a changed, non-empty value and retries the
+interrupted request. Keys are never printed or written to request logs. Pressing
+`Ctrl+C` during collection records the run as `partial` audit evidence.
+
 ## Run the pilot
 
 For ladder sampling:
@@ -86,7 +92,7 @@ The command prints a run ID. Every private collection table, manifest, and exper
 ## Run the frozen final collection
 
 The main collection is bound to the annotated tag
-`tft-patch17.8-final-collection-v6`. Before any API request, the pipeline verifies
+`tft-patch17.8-final-collection-v7`. Before any API request, the pipeline verifies
 that `HEAD` resolves to the tag's exact commit and that no tracked file is modified.
 Untracked runtime files correctly excluded by `.gitignore` do not invalidate the run.
 
@@ -95,13 +101,13 @@ Verify the frozen state and start a new 5,000-match run with:
 ```powershell
 git status
 git rev-parse HEAD
-git rev-parse "tft-patch17.8-final-collection-v6^{commit}"
+git rev-parse "tft-patch17.8-final-collection-v7^{commit}"
 python -m src.run_pipeline --target main --player-mode ladder
 ```
 
 Do not reuse the interrupted runs `20260811T174646Z-34d8ca25` or
 `20260820T152821Z-9df0ecbb`, `20260820T212450Z-31431b86`, or
-`20260822T192049Z-84373556`. A main run rejects an explicit run ID and aborts
+`20260822T192049Z-84373556`, or `20260823T104747Z-7fee1987`. A main run rejects an explicit run ID and aborts
 before collection if the tag is missing, points elsewhere, or tracked files are dirty.
 Any behaviour-changing amendment requires a reviewed commit and a new version/tag.
 

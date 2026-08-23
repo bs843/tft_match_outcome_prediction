@@ -1,13 +1,13 @@
 # Frozen MSc study configuration. Amendments require a new dataset_version.
 project:
   name: tft_outcome_prediction
-  # v7 makes match-ID platform prefixes authoritative for download routing.
-  dataset_version: tft_set17_patch17_8_v7
+  # v8 adds bounded credential rotation recovery without changing study scope.
+  dataset_version: tft_set17_patch17_8_v8
   schema_version: "1.2.1"
 
 provenance:
-  configuration_version: tft-patch17.8-final-collection-v6
-  required_git_tag: tft-patch17.8-final-collection-v6
+  configuration_version: tft-patch17.8-final-collection-v7
+  required_git_tag: tft-patch17.8-final-collection-v7
   enforce_git_integrity_for_main: true
 
 scope:
@@ -108,6 +108,11 @@ api:
   fallback_requests_per_window: 95
   fallback_window_seconds: 120
   minimum_interval_seconds: 0.06
+  # A 401/403 pauses the current request while the ignored .env is checked for
+  # a changed key. Ctrl+C still records a terminal partial run.
+  authentication_recovery_enabled: true
+  authentication_poll_seconds: 30
+  authentication_max_wait_seconds: 86400
 
 privacy:
   hash_key_env: PARTICIPANT_HASH_KEY

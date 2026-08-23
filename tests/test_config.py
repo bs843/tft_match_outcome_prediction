@@ -12,10 +12,11 @@ def test_repository_config_is_strictly_valid() -> None:
     assert config["scope"]["allowed_patches"] == ["17.8"]
     assert config["scope"]["allowed_client_patches"] == ["16.15"]
     assert config["validation"]["reject_on_wrong_patch"] is True
-    assert config["project"]["dataset_version"] == "tft_set17_patch17_8_v7"
+    assert config["project"]["dataset_version"] == "tft_set17_patch17_8_v8"
     assert config["project"]["schema_version"] == "1.2.1"
-    assert config["provenance"]["configuration_version"] == "tft-patch17.8-final-collection-v6"
-    assert config["provenance"]["required_git_tag"] == "tft-patch17.8-final-collection-v6"
+    assert config["provenance"]["configuration_version"] == "tft-patch17.8-final-collection-v7"
+    assert config["provenance"]["required_git_tag"] == "tft-patch17.8-final-collection-v7"
+    assert config["api"]["authentication_recovery_enabled"] is True
     assert config["provenance"]["enforce_git_integrity_for_main"] is True
     assert config["sampling"]["target_accepted_matches"] == 5000
     assert config["sampling"]["seed_players_per_stratum"] == 160

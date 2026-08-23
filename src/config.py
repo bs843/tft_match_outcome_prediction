@@ -73,19 +73,19 @@ def load_config(config_path: str | Path | None = None) -> dict[str, Any]:
 
 def _validate_config(config: dict[str, Any]) -> None:
     project = _mapping(config, "project")
-    if project.get("dataset_version") != "tft_set17_patch17_8_v7":
-        raise ConfigurationError("Routing-amended dataset_version must be tft_set17_patch17_8_v7")
+    if project.get("dataset_version") != "tft_set17_patch17_8_v8":
+        raise ConfigurationError("Recovery-amended dataset_version must be tft_set17_patch17_8_v8")
     if str(project.get("schema_version", "")) != "1.2.1":
         raise ConfigurationError("Routing-amended schema_version must be 1.2.1")
 
     provenance = _mapping(config, "provenance")
-    if provenance.get("configuration_version") != "tft-patch17.8-final-collection-v6":
+    if provenance.get("configuration_version") != "tft-patch17.8-final-collection-v7":
         raise ConfigurationError(
-            "provenance.configuration_version must identify final collection v6"
+            "provenance.configuration_version must identify final collection v7"
         )
-    if provenance.get("required_git_tag") != "tft-patch17.8-final-collection-v6":
+    if provenance.get("required_git_tag") != "tft-patch17.8-final-collection-v7":
         raise ConfigurationError(
-            "provenance.required_git_tag must be tft-patch17.8-final-collection-v6"
+            "provenance.required_git_tag must be tft-patch17.8-final-collection-v7"
         )
     if provenance.get("enforce_git_integrity_for_main") is not True:
         raise ConfigurationError("provenance.enforce_git_integrity_for_main must be true")
@@ -151,6 +151,14 @@ def _validate_config(config: dict[str, Any]) -> None:
         raise ConfigurationError("validation.reject_on_wrong_end_result must be true")
     if str(validation.get("validation_code_version", "")) != "1.1.0":
         raise ConfigurationError("Multi-region validation_code_version must be 1.1.0")
+
+    api = _mapping(config, "api")
+    if api.get("authentication_recovery_enabled") is not True:
+        raise ConfigurationError("api.authentication_recovery_enabled must be true")
+    if float(api.get("authentication_poll_seconds", 0)) < 1:
+        raise ConfigurationError("api.authentication_poll_seconds must be at least one second")
+    if float(api.get("authentication_max_wait_seconds", 0)) < 60:
+        raise ConfigurationError("api.authentication_max_wait_seconds must be at least 60 seconds")
 
     prohibited = set(_list(_mapping(config, "features"), "prohibited_columns"))
     required_rank_exclusions = {

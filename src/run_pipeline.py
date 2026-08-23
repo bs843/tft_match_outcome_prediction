@@ -117,6 +117,13 @@ def main() -> None:
         update_run_manifest(manifest, status="capacity_failed")
         write_collection_report(config, run_id)
         raise
+    except KeyboardInterrupt:
+        update_run_manifest(
+            manifest, status="partial",
+            metadata={"interruption_reason": "keyboard_interrupt"},
+        )
+        write_collection_report(config, run_id)
+        raise
     except Exception:
         update_run_manifest(manifest, status="failed")
         write_collection_report(config, run_id)

@@ -38,7 +38,7 @@ The raw checksum result in the report establishes that validation did not silent
 change or substitute source responses. Only `PASS` or `PASS_WITH_WARNINGS` creates
 `data/validated/<run-id>/`; critical failures return a non-zero process status.
 
-The routing-amended final collection tag is `tft-patch17.8-final-collection-v6`. At main-run startup,
+The credential-recovery final collection tag is `tft-patch17.8-final-collection-v7`. At main-run startup,
 the pipeline requires `HEAD` to equal that tag's peeled commit and rejects all
 uncommitted changes to tracked files. The tag must never be moved or recreated after
 collection begins. A later pipeline amendment requires a new commit and tag.
@@ -52,7 +52,7 @@ match download. `capacity_failed` is a terminal manifest status with no frozen a
 partition or downstream analytical output.
 ## Multi-region provenance
 
-Configuration v6 manifests record all enabled platform/route mappings. Seed,
+Configuration v7 manifests record all enabled platform/route mappings. Seed,
 candidate, status, accepted-manifest and rank-snapshot partitions retain structured
 region provenance. The accepted-manifest checksum covers the enriched provenance
 for new runs while retaining legacy checksum compatibility for earlier audit runs.
@@ -62,3 +62,14 @@ not assumed from the seed platform used for cluster-wide history discovery. Sour
 platform fields continue to record how a candidate was found. Candidate prefixes
 outside the frozen enabled-platform list are counted and excluded before the global
 capacity gate.
+
+## Credential expiry during collection
+
+On an authentication response, the current request pauses for at most 24 hours.
+The process checks the ignored `.env` every 30 seconds and resumes only after
+`RIOT_API_KEY` changes to a non-empty value. Neither the rejected nor replacement
+credential is logged. If the wait expires, authentication still fails closed.
+`Ctrl+C` remains available and changes the manifest to terminal status `partial`;
+partial and failed main runs are audit-only and are not resumed or merged.
+Run `20260823T104747Z-7fee1987` was deliberately interrupted during discovery and
+is preserved with terminal status `partial`.

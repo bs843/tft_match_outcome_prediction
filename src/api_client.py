@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import random
+import os
 import time
 from collections import deque
 from pathlib import Path
@@ -8,8 +9,9 @@ from typing import Any, Callable
 from urllib.parse import quote
 
 import requests
+from dotenv import dotenv_values
 
-from .config import normalise_route, project_path, required_environment_value
+from .config import PROJECT_ROOT, normalise_route, project_path, required_environment_value
 from .utils import append_csv_row, stable_json_hash, utc_now_iso
 
 REQUEST_LOG_FIELDS = [
@@ -107,15 +109,27 @@ class RiotApiClient:
         *,
         session: requests.Session | None = None,
         sleeper: Callable[[float], None] = time.sleep,
+        credential_loader: Callable[[], str] | None = None,
     ) -> None:
         self.config = config
+        self.credential_env = str(config["api"]["key_env"])
         self.api_key = required_environment_value(config, "api.key_env")
         api = config["api"]
         self.timeout = int(api.get("timeout_seconds", 30))
         self.max_retries = int(api.get("max_retries", 5))
         self.base_backoff = float(api.get("base_backoff_seconds", 2))
+        self.authentication_recovery_enabled = bool(
+            api.get("authentication_recovery_enabled", False)
+        )
+        self.authentication_poll_seconds = float(
+            api.get("authentication_poll_seconds", 30)
+        )
+        self.authentication_max_wait_seconds = float(
+            api.get("authentication_max_wait_seconds", 86400)
+        )
         self.request_log_path: Path = project_path(config, "request_log")
         self.sleeper = sleeper
+        self.credential_loader = credential_loader or self._load_credential_from_env_file
         self.limiter = SlidingWindowLimiter(
             int(api.get("fallback_requests_per_window", 95)),
             float(api.get("fallback_window_seconds", 120)),
@@ -165,6 +179,10 @@ class RiotApiClient:
                 if status in {401, 403}:
                     self._log(endpoint_type, route_value, status, attempt, False, elapsed,
                               error_class="authentication")
+                    if self._wait_for_rotated_credential():
+                        # Authentication recovery has its own bounded wait and
+                        # must not consume the transient-error retry budget.
+                        return self._request_json(route, path, endpoint_type, params)
                     raise RiotAuthenticationError("Riot rejected the API credential")
                 if status == 404:
                     self._log(endpoint_type, route_value, status, attempt, False, elapsed,
@@ -205,6 +223,40 @@ class RiotApiClient:
                     continue
                 raise RiotAPIError(f"Request retries exhausted for {endpoint_type}: {last_error}") from exc
         raise RiotAPIError(f"Request failed for {endpoint_type}: {last_error}")
+
+    def _load_credential_from_env_file(self) -> str:
+        # Read only the requested credential from disk. Do not reload unrelated
+        # environment values such as the participant HMAC key mid-run.
+        file_value = dotenv_values(PROJECT_ROOT / ".env").get(self.credential_env)
+        return str(file_value or os.getenv(self.credential_env, "")).strip()
+
+    def _wait_for_rotated_credential(self) -> bool:
+        """Pause after 401/403 until .env contains a different non-empty key.
+
+        Credentials are compared only in memory and are never printed or logged.
+        Ctrl+C remains available and is recorded by the parent pipeline as a
+        partial run. A bounded wait prevents an unattended process hanging forever.
+        """
+        if not self.authentication_recovery_enabled:
+            return False
+        poll = max(1.0, self.authentication_poll_seconds)
+        max_wait = max(0.0, self.authentication_max_wait_seconds)
+        polls = max(1, int(max_wait // poll) + 1)
+        print(
+            "Riot rejected the API credential. Collection is paused; replace "
+            f"{self.credential_env} in the ignored .env file. No key value is logged."
+        )
+        for index in range(polls):
+            candidate = self.credential_loader().strip()
+            if candidate and candidate != self.api_key:
+                self.api_key = candidate
+                self.session.headers.update({"X-Riot-Token": candidate})
+                print("A changed Riot API credential was loaded; retrying the request.")
+                return True
+            if index < polls - 1:
+                self.sleeper(poll)
+        print("Authentication recovery wait expired without a changed credential.")
+        return False
 
     def get_account_by_riot_id(self, regional_route: str, game_name: str, tag_line: str) -> dict[str, Any]:
         path = f"/riot/account/v1/accounts/by-riot-id/{quote(game_name, safe='')}/{quote(tag_line, safe='')}"

@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from src.api_client import RiotApiClient
+import pytest
+
+from src.api_client import RiotApiClient, RiotAuthenticationError
 
 
 class FakeResponse:
@@ -59,3 +61,43 @@ def test_429_is_retried_after_global_block(monkeypatch, tmp_path: Path) -> None:
     client = RiotApiClient(api_config(tmp_path / "requests.csv"), session=session, sleeper=lambda _: None)
     assert client.get_match("EUROPE", "ME1_1")["info"] == {}
     assert "rate_limit" in (tmp_path / "requests.csv").read_text(encoding="utf-8")
+
+
+def test_expired_key_pauses_loads_changed_key_and_retries(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("RIOT_API_KEY", "expired-key")
+    config = api_config(tmp_path / "requests.csv")
+    config["api"].update({
+        "max_retries": 2,
+        "authentication_recovery_enabled": True,
+        "authentication_poll_seconds": 1,
+        "authentication_max_wait_seconds": 2,
+    })
+    session = FakeSession([
+        FakeResponse(403, {}),
+        FakeResponse(200, ["EUW1_1"]),
+    ])
+    client = RiotApiClient(
+        config, session=session, sleeper=lambda _: None,
+        credential_loader=lambda: "replacement-key",
+    )
+    assert client.get_match_ids("EUROPE", "private-puuid") == ["EUW1_1"]
+    assert session.headers["X-Riot-Token"] == "replacement-key"
+    logged = (tmp_path / "requests.csv").read_text(encoding="utf-8")
+    assert "expired-key" not in logged
+    assert "replacement-key" not in logged
+
+
+def test_expired_key_still_fails_when_recovery_wait_expires(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("RIOT_API_KEY", "unchanged-key")
+    config = api_config(tmp_path / "requests.csv")
+    config["api"].update({
+        "authentication_recovery_enabled": True,
+        "authentication_poll_seconds": 1,
+        "authentication_max_wait_seconds": 1,
+    })
+    client = RiotApiClient(
+        config, session=FakeSession([FakeResponse(403, {})]), sleeper=lambda _: None,
+        credential_loader=lambda: "unchanged-key",
+    )
+    with pytest.raises(RiotAuthenticationError):
+        client.get_match_ids("EUROPE", "private-puuid")
