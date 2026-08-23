@@ -69,3 +69,9 @@ ME1, EUW1, EUN1, NA1 and KR ladders. Each platform receives the same page and se
 opportunity, and candidate pools are interleaved before match evaluation. No equal
 accepted-match quota is imposed. Candidate IDs are deduplicated globally before
 the unchanged 25,000-capacity gate, and regional composition is reported.
+
+The v6 routing amendment does not change the study population or sampling strata.
+It recognizes that match history is retrieved at cluster level: the match-ID prefix
+therefore determines candidate platform and download route, while the seed platform
+remains discovery provenance. IDs from platforms outside the frozen five-platform
+scope are reported and excluded before the capacity gate.

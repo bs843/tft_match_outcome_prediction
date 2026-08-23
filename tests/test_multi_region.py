@@ -35,6 +35,17 @@ class RegionalHistoryClient:
         return ["SHARED_MATCH", f"{puuid}_MATCH"]
 
 
+class CrossPlatformHistoryClient:
+    def get_match_ids(self, route, puuid, *, start, count, start_time, end_time):
+        assert route == "EUROPE"
+        return ["EUW1_7955249354"]
+
+
+class OutOfScopeHistoryClient:
+    def get_match_ids(self, route, puuid, *, start, count, start_time, end_time):
+        return ["EUW1_IN_SCOPE", "TR1_OUT_OF_SCOPE"]
+
+
 class RegionalRankClient:
     def __init__(self) -> None:
         self.calls: list[tuple[str, str]] = []
@@ -114,6 +125,54 @@ def test_history_routing_global_candidate_dedup_and_overlap(tmp_path: Path) -> N
     shared = next(row for row in unique if row["match_id"] == "SHARED_MATCH")
     assert set(shared["source_platform_regions"]) == {"ME1", "NA1"}
     assert stats["cross_region_overlap_candidates"] == 1
+
+
+def test_match_id_prefix_overrides_seed_platform_for_download_routing(tmp_path: Path) -> None:
+    seeds = tmp_path / "seeds.csv"
+    write_csv_rows(seeds, [
+        {"run_id": "run", "puuid": "transferred-player", "participant_hash": "hash",
+         "platform_region": "ME1", "regional_route": "EUROPE",
+         "sampling_tier": "GOLD", "sampling_division": "I", "source": "ranked_ladder"},
+    ], ["run_id", "puuid", "participant_hash", "platform_region", "regional_route",
+        "sampling_tier", "sampling_division", "source"])
+    config = two_region_config()
+    config["platforms"].insert(1, {
+        "platform_region": "EUW1", "regional_route": "EUROPE", "enabled": True,
+        "seed_players_per_page": 10, "ladder_pages_per_division": 1, "apex_pages": 1,
+    })
+    config["paths"] = {"seed_players": str(seeds)}
+    _, unique = collect_match_ids(
+        config, CrossPlatformHistoryClient(), run_id="run", page_size=100,
+        pages_per_seed=1, start_time=1, end_time=2,
+    )
+    assert unique[0]["platform_region"] == "EUW1"
+    assert unique[0]["regional_route"] == "EUROPE"
+    assert unique[0]["source_platform_regions"] == ["ME1"]
+
+
+def test_match_prefix_outside_frozen_platforms_is_reported_and_excluded(tmp_path: Path) -> None:
+    seeds = tmp_path / "seeds.csv"
+    write_csv_rows(seeds, [
+        {"run_id": "run", "puuid": "player", "participant_hash": "hash",
+         "platform_region": "ME1", "regional_route": "EUROPE"},
+    ], ["run_id", "puuid", "participant_hash", "platform_region", "regional_route"])
+    config = two_region_config()
+    config["platforms"].append({
+        "platform_region": "EUW1", "regional_route": "EUROPE", "enabled": True,
+        "seed_players_per_page": 10, "ladder_pages_per_division": 1, "apex_pages": 1,
+    })
+    config["paths"] = {"seed_players": str(seeds)}
+    config["sampling"]["candidate_pool_capacity_target"] = 1
+    stats: dict = {}
+    sources, unique = collect_match_ids(
+        config, OutOfScopeHistoryClient(), run_id="run", page_size=100,
+        pages_per_seed=1, start_time=1, end_time=2, stats=stats,
+    )
+    assert {row["match_id"] for row in sources} == {"EUW1_IN_SCOPE", "TR1_OUT_OF_SCOPE"}
+    assert [row["match_id"] for row in unique] == ["EUW1_IN_SCOPE"]
+    assert stats["out_of_scope_platform_candidate_ids"] == 1
+    assert stats["unique_candidate_match_ids"] == 1
+    assert stats["capacity_gate_result"] == "pass"
 
 
 def test_balanced_candidate_order_interleaves_regions() -> None:

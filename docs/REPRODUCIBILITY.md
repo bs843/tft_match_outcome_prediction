@@ -38,7 +38,7 @@ The raw checksum result in the report establishes that validation did not silent
 change or substitute source responses. Only `PASS` or `PASS_WITH_WARNINGS` creates
 `data/validated/<run-id>/`; critical failures return a non-zero process status.
 
-The multi-region final collection tag is `tft-patch17.8-final-collection-v5`. At main-run startup,
+The routing-amended final collection tag is `tft-patch17.8-final-collection-v6`. At main-run startup,
 the pipeline requires `HEAD` to equal that tag's peeled commit and rejects all
 uncommitted changes to tracked files. The tag must never be moved or recreated after
 collection begins. A later pipeline amendment requires a new commit and tag.
@@ -52,7 +52,13 @@ match download. `capacity_failed` is a terminal manifest status with no frozen a
 partition or downstream analytical output.
 ## Multi-region provenance
 
-Configuration v5 manifests record all enabled platform/route mappings. Seed,
+Configuration v6 manifests record all enabled platform/route mappings. Seed,
 candidate, status, accepted-manifest and rank-snapshot partitions retain structured
 region provenance. The accepted-manifest checksum covers the enriched provenance
 for new runs while retaining legacy checksum compatibility for earlier audit runs.
+
+Candidate platform and download route are derived from the Riot match-ID prefix,
+not assumed from the seed platform used for cluster-wide history discovery. Source
+platform fields continue to record how a candidate was found. Candidate prefixes
+outside the frozen enabled-platform list are counted and excluded before the global
+capacity gate.

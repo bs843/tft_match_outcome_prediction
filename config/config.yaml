@@ -1,13 +1,13 @@
 # Frozen MSc study configuration. Amendments require a new dataset_version.
 project:
   name: tft_outcome_prediction
-  # v6 adds explicit multi-region provenance to the collection/validated schema.
-  dataset_version: tft_set17_patch17_8_v6
-  schema_version: "1.2.0"
+  # v7 makes match-ID platform prefixes authoritative for download routing.
+  dataset_version: tft_set17_patch17_8_v7
+  schema_version: "1.2.1"
 
 provenance:
-  configuration_version: tft-patch17.8-final-collection-v5
-  required_git_tag: tft-patch17.8-final-collection-v5
+  configuration_version: tft-patch17.8-final-collection-v6
+  required_git_tag: tft-patch17.8-final-collection-v6
   enforce_git_integrity_for_main: true
 
 scope:

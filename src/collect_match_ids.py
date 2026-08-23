@@ -5,7 +5,10 @@ from collections import Counter, OrderedDict
 from typing import Any
 
 from .api_client import RiotAPIError, RiotApiClient, RiotNotFoundError
-from .config import ensure_project_directories, load_config, project_path
+from .config import (
+    SUPPORTED_PLATFORM_ROUTES, enabled_platforms, ensure_project_directories,
+    load_config, project_path,
+)
 from .utils import read_csv_rows, replace_csv_partition, utc_now_iso
 
 SOURCE_FIELDS = [
@@ -24,6 +27,7 @@ CANDIDATE_REPORT_FIELDS = [
     "candidate_occurrences", "unique_seed_match_associations",
     "unique_candidate_match_ids", "duplicate_candidate_occurrences_removed",
     "duplicate_candidate_rate_percentage", "cross_region_overlap_candidates",
+    "out_of_scope_platform_candidate_ids",
     "unique_candidate_threshold",
     "capacity_gate_result",
 ]
@@ -39,7 +43,7 @@ def collect_match_ids(
              if row.get("run_id") == run_id]
     if not seeds:
         raise RuntimeError(f"No seed players found for run {run_id}")
-    source_map: OrderedDict[tuple[str, str], dict[str, Any]] = OrderedDict()
+    source_map: OrderedDict[tuple[str, str, str], dict[str, Any]] = OrderedDict()
     failures = 0
     candidate_occurrences = 0
     region_occurrences: Counter[str] = Counter()
@@ -104,21 +108,29 @@ def collect_match_ids(
             f"{row['source_sampling_division'] or 'APEX'}:{row['source_seed_hash']}"
         )
         record["first_retrieved_at"] = min(record["first_retrieved_at"], row["retrieval_datetime"])
-    unique_rows = [{
-        "run_id": run_id, "match_id": match_id,
-        "source_seed_count": len(record["seed_hashes"]),
-        "source_tiers": sorted(record["tiers"]),
-        "source_divisions": sorted(record["divisions"]),
-        "platform_region": _primary_platform(match_id, record["platforms"]),
-        "regional_route": record["platform_routes"][_primary_platform(match_id, record["platforms"])],
-        "source_platform_regions": sorted(record["platforms"]),
-        "source_regional_routes": sorted(record["routes"]),
-        "discovery_paths": sorted(record["paths"]),
-        "first_retrieved_at": record["first_retrieved_at"],
-    } for match_id, record in aggregate.items()]
+    unique_rows = []
+    out_of_scope_ids: set[str] = set()
+    for match_id, record in aggregate.items():
+        routing = _candidate_route(config, match_id, record)
+        if routing is None:
+            out_of_scope_ids.add(match_id)
+            continue
+        platform, route = routing
+        unique_rows.append({
+            "run_id": run_id, "match_id": match_id,
+            "source_seed_count": len(record["seed_hashes"]),
+            "source_tiers": sorted(record["tiers"]),
+            "source_divisions": sorted(record["divisions"]),
+            "platform_region": platform,
+            "regional_route": route,
+            "source_platform_regions": sorted(record["platforms"]),
+            "source_regional_routes": sorted(record["routes"]),
+            "discovery_paths": sorted(record["paths"]),
+            "first_retrieved_at": record["first_retrieved_at"],
+        })
     if stats is not None:
         threshold = int(config.get("sampling", {}).get("candidate_pool_capacity_target", 0))
-        duplicates_removed = candidate_occurrences - len(unique_rows)
+        duplicates_removed = candidate_occurrences - len(aggregate)
         stats.update({
             "run_id": run_id, "report_scope": "global", "platform_region": "ALL",
             "regional_route": "MULTI",
@@ -132,30 +144,57 @@ def collect_match_ids(
                 100 * duplicates_removed / candidate_occurrences, 4
             ) if candidate_occurrences else 0.0,
             "cross_region_overlap_candidates": sum(
-                len(record["platforms"]) > 1 for record in aggregate.values()
+                match_id not in out_of_scope_ids and len(record["platforms"]) > 1
+                for match_id, record in aggregate.items()
             ),
+            "out_of_scope_platform_candidate_ids": len(out_of_scope_ids),
             "unique_candidate_threshold": threshold,
             "capacity_gate_result": "pass" if len(unique_rows) >= threshold else "fail",
         })
         regional_rows = _regional_candidate_stats(
-            run_id, seeds, source_rows, aggregate, region_occurrences, pages_per_seed, threshold
+            run_id, seeds, source_rows, aggregate, region_occurrences, pages_per_seed,
+            threshold, out_of_scope_ids,
         )
         stats["regional_rows"] = regional_rows
     return source_rows, unique_rows
 
 
-def _primary_platform(match_id: str, platforms: set[str]) -> str:
+def _candidate_route(config: dict[str, Any], match_id: str,
+                     record: dict[str, Any]) -> tuple[str, str] | None:
+    """Resolve download routing from the match ID, not the discovering seed.
+
+    Match-history endpoints are regional-cluster scoped. A seed sampled on ME1
+    can therefore return an EUW1-prefixed match (for example after a platform
+    transfer). Riot's match ID prefix is the authoritative platform provenance;
+    the seed platform remains separately recorded in source_platform_regions.
+    """
     prefix = match_id.split("_", 1)[0].upper()
-    return prefix if prefix in platforms else sorted(platforms)[0]
+    if prefix in SUPPORTED_PLATFORM_ROUTES:
+        if config.get("platforms"):
+            configured = {row["platform_region"]: row["regional_route"]
+                          for row in enabled_platforms(config)}
+            if prefix not in configured:
+                # Retain its discovery-source row for audit, but do not permit a
+                # migrated player's out-of-scope platform match into the pool.
+                return None
+            return prefix, configured[prefix]
+        return prefix, SUPPORTED_PLATFORM_ROUTES[prefix]
+
+    # Legacy/synthetic IDs have no Riot platform prefix. Preserve the previous
+    # source-based fallback for offline tests and backwards-compatible tooling.
+    platform = sorted(record["platforms"])[0]
+    return platform, record["platform_routes"][platform]
 
 
 def _regional_candidate_stats(run_id: str, seeds: list[dict[str, str]],
                               sources: list[dict[str, Any]], aggregate: OrderedDict,
-                              occurrences: Counter[str], pages: int, threshold: int) -> list[dict[str, Any]]:
+                              occurrences: Counter[str], pages: int, threshold: int,
+                              out_of_scope_ids: set[str]) -> list[dict[str, Any]]:
     rows = []
     for platform in sorted({seed.get("platform_region") or seed.get("platform_route", "") for seed in seeds}):
         region_sources = [row for row in sources if row["source_platform_region"] == platform]
-        ids = {row["match_id"] for row in region_sources}
+        all_ids = {row["match_id"] for row in region_sources}
+        ids = all_ids.difference(out_of_scope_ids)
         count = occurrences[platform]
         route = next((row["source_regional_route"] for row in region_sources), "")
         overlap = sum(len(aggregate[match_id]["platforms"]) > 1 for match_id in ids)
@@ -167,9 +206,14 @@ def _regional_candidate_stats(run_id: str, seeds: list[dict[str, str]],
                      "candidate_occurrences": count,
                      "unique_seed_match_associations": len(region_sources),
                      "unique_candidate_match_ids": len(ids),
-                     "duplicate_candidate_occurrences_removed": count - len(ids),
-                     "duplicate_candidate_rate_percentage": round(100 * (count-len(ids))/count, 4) if count else 0.0,
+                     "duplicate_candidate_occurrences_removed": count - len(all_ids),
+                     "duplicate_candidate_rate_percentage": round(
+                         100 * (count-len(all_ids))/count, 4
+                     ) if count else 0.0,
                      "cross_region_overlap_candidates": overlap,
+                     "out_of_scope_platform_candidate_ids": len(
+                         all_ids.intersection(out_of_scope_ids)
+                     ),
                      "unique_candidate_threshold": threshold,
                      "capacity_gate_result": "informational"})
     return rows

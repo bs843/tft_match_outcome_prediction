@@ -1,6 +1,6 @@
 # Patch 17.8 multi-region collection amendment
 
-Collection configuration `tft-patch17.8-final-collection-v5` expands Patch 17.8
+Collection configuration `tft-patch17.8-final-collection-v6` expands Patch 17.8
 collection across multiple Riot platform regions while preserving GOLD–MASTER
 strata and all eligibility rules. The change addresses insufficient unique
 seed-player coverage observed in previous single-region collection attempts
@@ -34,8 +34,15 @@ row, accepted-manifest entry and rank snapshot records explicit platform and rou
 provenance. Stored raw JSON may be reused only after checksum verification and is
 revalidated for the new run. Acceptance is never inherited.
 
-Runs `20260820T152821Z-9df0ecbb` and `20260820T212450Z-31431b86` remain immutable,
-audit-only failures and cannot be resumed or merged.
+Match-history requests are cluster scoped, so a seed from one platform can return
+a match whose ID is prefixed by another platform in that cluster. Configuration v6
+uses the Riot match-ID prefix as authoritative download provenance, retains the seed
+platform separately as discovery provenance, and excludes prefixes outside the five
+enabled platforms. The candidate discovery report counts these exclusions explicitly.
+
+Runs `20260820T152821Z-9df0ecbb`, `20260820T212450Z-31431b86`, and
+`20260822T192049Z-84373556` remain immutable, audit-only failures and cannot be
+resumed or merged.
 
 Region is audit metadata for diagnostics and robustness checks. It is prohibited
 from the primary feature matrix. Held-out-region modelling is not performed here.

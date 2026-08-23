@@ -76,11 +76,16 @@ SHA-256 digest and was parsed and revalidated for the current run. It never carr
 forward prior acceptance or dataset membership.
 ## Multi-region provenance amendment
 
-For configuration v5, `seed_players.csv`, `match_id_sources.csv`,
+For configuration v6, `seed_players.csv`, `match_id_sources.csv`,
 `unique_match_ids.csv`, `collection_status.csv`, `accepted_match_ids.csv`, and
 `rank_snapshots.csv` carry explicit `platform_region` and `regional_route` fields.
 Candidate source records also carry discovery rank/division and source type. The
-candidate report contains one global row and one diagnostic row per platform.
+candidate report contains one global row and one diagnostic row per platform, plus
+`out_of_scope_platform_candidate_ids` so the capacity gate is auditable.
+
+In `unique_match_ids.csv`, `platform_region` is the authoritative match-ID prefix
+and may differ from `source_platform_regions`, which describes the seed platforms
+that discovered the ID through a regional-cluster history request.
 
 Rank status semantics remain explicit: `unranked` is a successful lookup without a
 ranked TFT entry; `not_found` means the player is absent from the expected platform;
