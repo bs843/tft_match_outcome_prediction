@@ -38,7 +38,7 @@ The raw checksum result in the report establishes that validation did not silent
 change or substitute source responses. Only `PASS` or `PASS_WITH_WARNINGS` creates
 `data/validated/<run-id>/`; critical failures return a non-zero process status.
 
-The rank-recovery amendment tag is `tft-patch17.8-final-collection-v9`. At main-run startup,
+The rank-recovery amendment tag is `tft-patch17.8-final-collection-v10`. At main-run startup,
 the pipeline requires `HEAD` to equal that tag's peeled commit and rejects all
 uncommitted changes to tracked files. The tag must never be moved or recreated after
 collection begins. A later pipeline amendment requires a new commit and tag.
@@ -80,7 +80,7 @@ is preserved with terminal status `partial`.
 
 ## Downstream-only rank recovery
 
-The `rank_snapshot_recovery_v3` amendment is narrowly authorized for run
+The `rank_snapshot_recovery_v4` amendment is narrowly authorized for run
 `20260823T124729Z-673b6e6c`. It verifies the frozen 5,000-row accepted partition,
 match-ID set, accepted CSV, and every accepted raw checksum before and after work.
 It cannot invoke seed, candidate, or match collection. The original failure remains
@@ -92,7 +92,10 @@ participant-level and are routed through the platform associated with the partic
 most recent accepted match. Earlier platform observations are retained as provenance
 and do not generate additional rank snapshot rows. Equal match timestamps use the
 lexicographically greatest immutable match ID as the deterministic tie-break.
-Routing remains `rank_snapshot_routing_v2`; recovery v3 changes only ambiguous-403
-handling and uses a new manifest name so the interrupted v2 recovery record remains
-immutable. Existing successful snapshot rows are reused, and only rows already
-marked `request_failed` are retried.
+Routing remains `rank_snapshot_routing_v2`; recovery v3 changed ambiguous-403
+handling. Recovery v4 corrects the final leakage assertion to distinguish the
+modelling table's grouping/split/target carriers from columns actually supplied to
+estimators. It still rejects prohibited predictors and every rank-snapshot column.
+Each recovery version has a distinct manifest, preserving failed v2 and v3 records.
+Existing successful snapshot rows are reused, and only rows already marked
+`request_failed` are retried.

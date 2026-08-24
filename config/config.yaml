@@ -1,13 +1,13 @@
 # Frozen MSc study configuration. Amendments require a new dataset_version.
 project:
   name: tft_outcome_prediction
-  # v10 distinguishes resource-specific rank 403s from expired credentials.
-  dataset_version: tft_set17_patch17_8_v10
-  schema_version: "1.3.1"
+  # v11 validates predictor columns separately from target/audit carriers.
+  dataset_version: tft_set17_patch17_8_v11
+  schema_version: "1.3.2"
 
 provenance:
-  configuration_version: tft-patch17.8-final-collection-v9
-  required_git_tag: tft-patch17.8-final-collection-v9
+  configuration_version: tft-patch17.8-final-collection-v10
+  required_git_tag: tft-patch17.8-final-collection-v10
   enforce_git_integrity_for_main: true
 
 scope:
@@ -144,7 +144,7 @@ validation:
   fail_on_end_result_mismatch: true
   fail_on_duplicate_match_id: true
   rank_snapshot_required: false
-  validation_code_version: "1.2.1"
+  validation_code_version: "1.2.2"
 
 features:
   minimum_category_frequency: 5
@@ -186,7 +186,7 @@ model:
 # Narrow authorization for the downstream-only recovery of the completed v7
 # acquisition. These hashes bind recovery to the unchanged accepted cohort.
 downstream_recovery:
-  amendment_version: rank_snapshot_recovery_v3
+  amendment_version: rank_snapshot_recovery_v4
   authorized_run_id: 20260823T124729Z-673b6e6c
   original_configuration_version: tft-patch17.8-final-collection-v7
   expected_accepted_matches: 5000

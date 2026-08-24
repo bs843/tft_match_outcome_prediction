@@ -74,19 +74,19 @@ def load_config(config_path: str | Path | None = None) -> dict[str, Any]:
 
 def _validate_config(config: dict[str, Any]) -> None:
     project = _mapping(config, "project")
-    if project.get("dataset_version") != "tft_set17_patch17_8_v10":
-        raise ConfigurationError("Rank-recovery dataset_version must be tft_set17_patch17_8_v10")
-    if str(project.get("schema_version", "")) != "1.3.1":
-        raise ConfigurationError("Rank-recovery schema_version must be 1.3.1")
+    if project.get("dataset_version") != "tft_set17_patch17_8_v11":
+        raise ConfigurationError("Rank-recovery dataset_version must be tft_set17_patch17_8_v11")
+    if str(project.get("schema_version", "")) != "1.3.2":
+        raise ConfigurationError("Rank-recovery schema_version must be 1.3.2")
 
     provenance = _mapping(config, "provenance")
-    if provenance.get("configuration_version") != "tft-patch17.8-final-collection-v9":
+    if provenance.get("configuration_version") != "tft-patch17.8-final-collection-v10":
         raise ConfigurationError(
-            "provenance.configuration_version must identify final collection v9"
+            "provenance.configuration_version must identify final collection v10"
         )
-    if provenance.get("required_git_tag") != "tft-patch17.8-final-collection-v9":
+    if provenance.get("required_git_tag") != "tft-patch17.8-final-collection-v10":
         raise ConfigurationError(
-            "provenance.required_git_tag must be tft-patch17.8-final-collection-v9"
+            "provenance.required_git_tag must be tft-patch17.8-final-collection-v10"
         )
     if provenance.get("enforce_git_integrity_for_main") is not True:
         raise ConfigurationError("provenance.enforce_git_integrity_for_main must be true")
@@ -150,12 +150,12 @@ def _validate_config(config: dict[str, Any]) -> None:
         raise ConfigurationError("scope.allowed_end_results must contain exactly GameComplete")
     if validation.get("reject_on_wrong_end_result") is not True:
         raise ConfigurationError("validation.reject_on_wrong_end_result must be true")
-    if str(validation.get("validation_code_version", "")) != "1.2.1":
-        raise ConfigurationError("Rank-recovery validation_code_version must be 1.2.1")
+    if str(validation.get("validation_code_version", "")) != "1.2.2":
+        raise ConfigurationError("Rank-recovery validation_code_version must be 1.2.2")
 
     recovery = _mapping(config, "downstream_recovery")
     expected_recovery = {
-        "amendment_version": "rank_snapshot_recovery_v3",
+        "amendment_version": "rank_snapshot_recovery_v4",
         "authorized_run_id": "20260823T124729Z-673b6e6c",
         "original_configuration_version": "tft-patch17.8-final-collection-v7",
         "expected_accepted_matches": 5000,
@@ -166,7 +166,7 @@ def _validate_config(config: dict[str, Any]) -> None:
         "accepted_file_sha256": "3dccf0e0ec2145a0511fab8943d57a5d687c498e4f3b4c68a5424138a842a416",
     }
     if recovery != expected_recovery:
-        raise ConfigurationError("downstream_recovery must match the frozen v3 recovery authorization")
+        raise ConfigurationError("downstream_recovery must match the frozen v4 recovery authorization")
 
     api = _mapping(config, "api")
     if api.get("authentication_recovery_enabled") is not True:

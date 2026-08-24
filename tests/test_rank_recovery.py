@@ -6,7 +6,8 @@ import pytest
 
 from src.provenance import accepted_manifest_checksum
 from src.recover_rank_snapshots import (
-    RECOVERY_STAGE_MODULES, RankRecoveryError, validate_recovery_authorization,
+    RECOVERY_STAGE_MODULES, RankRecoveryError, assert_predictive_feature_schema,
+    validate_recovery_authorization,
 )
 from src.utils import (
     atomic_json_dump, read_csv_rows, sha256_file, stable_json_hash, write_csv_rows,
@@ -40,7 +41,7 @@ def recovery_fixture(monkeypatch, tmp_path: Path) -> tuple[dict, str]:
     write_csv_rows(accepted, accepted_rows, fields)
     stored_rows = read_csv_rows(accepted)
     authorization = {
-        "amendment_version": "rank_snapshot_recovery_v3",
+        "amendment_version": "rank_snapshot_recovery_v4",
         "authorized_run_id": run_id,
         "original_configuration_version": "old-version",
         "expected_accepted_matches": 2,
@@ -95,3 +96,27 @@ def test_recovery_stage_allowlist_cannot_collect_candidates_or_matches() -> None
     assert "src.collect_players" not in RECOVERY_STAGE_MODULES
     assert "src.collect_match_ids" not in RECOVERY_STAGE_MODULES
     assert "src.collect_matches" not in RECOVERY_STAGE_MODULES
+
+
+def test_feature_gate_excludes_carriers_but_checks_actual_predictors() -> None:
+    config = {"features": {"prohibited_columns": [
+        "match_hash", "participant_hash", "placement", "top_four",
+        "rank_snapshot_status",
+    ]}}
+    fields = [
+        "match_hash", "participant_hash", "split", "top_four", "placement",
+        "board_size", "unit__safe",
+    ]
+    assert assert_predictive_feature_schema(config, fields) == [
+        "board_size", "unit__safe"
+    ]
+
+
+def test_feature_gate_still_rejects_rank_predictor() -> None:
+    config = {"features": {"prohibited_columns": ["rank_snapshot_status"]}}
+    fields = [
+        "match_hash", "participant_hash", "split", "top_four", "placement",
+        "board_size", "rank_snapshot_status",
+    ]
+    with pytest.raises(RankRecoveryError, match="Rank/leakage"):
+        assert_predictive_feature_schema(config, fields)

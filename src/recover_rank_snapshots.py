@@ -8,6 +8,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+from .build_features import ID_FIELDS
 from .collection_report import write_collection_report
 from .collect_rank_snapshots import (
     RANK_ROUTING_VERSION, RANK_SNAPSHOT_STATUSES, resolve_rank_routing,
@@ -28,7 +29,7 @@ RECOVERY_STAGE_MODULES = (
     "src.create_splits",
     "src.build_features",
 )
-RECOVERY_AMENDMENT_VERSION = "rank_snapshot_recovery_v3"
+RECOVERY_AMENDMENT_VERSION = "rank_snapshot_recovery_v4"
 ORIGINAL_FAILURE_REASON = (
     "collect_rank_snapshots rejected a participant observed on both ME1 and EUW1 "
     "under the superseded one-platform invariant"
@@ -173,10 +174,7 @@ def _assert_rank_and_feature_outputs(config: dict[str, Any], run_id: str) -> dic
     features = project_path(config, "processed") / run_id / "features.csv"
     with features.open("r", encoding="utf-8-sig", newline="") as handle:
         fields = next(csv.reader(handle), [])
-    prohibited = set(config["features"]["prohibited_columns"])
-    leaked = [field for field in fields if field in prohibited or field.startswith("rank_snapshot_")]
-    if leaked:
-        raise RankRecoveryError(f"Rank/leakage fields entered primary features: {leaked}")
+    predictive_fields = assert_predictive_feature_schema(config, fields)
     return {
         "rank_snapshot_count": len(rank_rows),
         "rank_status_counts": dict(sorted(Counter(
@@ -186,8 +184,34 @@ def _assert_rank_and_feature_outputs(config: dict[str, Any], run_id: str) -> dic
             row["rank_snapshot_status"] == "request_failed" for row in rank_rows
         ),
         "routing_provenance_count": len(routing_rows),
-        "primary_feature_columns_checked": len(fields),
+        "primary_feature_columns_checked": len(predictive_fields),
     }
+
+
+def assert_predictive_feature_schema(
+    config: dict[str, Any], fields: list[str],
+) -> list[str]:
+    """Validate only columns passed to estimators, not target/audit carriers.
+
+    ``features.csv`` is a modelling table: ID_FIELDS carry grouping, split and
+    outcome data needed to construct and evaluate the experiment, but
+    ``train_model`` removes them before creating X. Treating those carrier fields
+    as predictors here caused recovery v3 to fail after producing valid outputs.
+    """
+    missing_carriers = set(ID_FIELDS).difference(fields)
+    if missing_carriers:
+        raise RankRecoveryError(
+            f"Feature table is missing required carrier columns: {sorted(missing_carriers)}"
+        )
+    predictive_fields = [field for field in fields if field not in set(ID_FIELDS)]
+    prohibited = set(config["features"]["prohibited_columns"])
+    leaked = [
+        field for field in predictive_fields
+        if field in prohibited or field.startswith("rank_snapshot_")
+    ]
+    if leaked:
+        raise RankRecoveryError(f"Rank/leakage fields entered primary features: {leaked}")
+    return predictive_fields
 
 
 def _proposed_completed_manifest(
