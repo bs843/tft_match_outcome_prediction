@@ -90,3 +90,13 @@ that discovered the ID through a regional-cluster history request.
 Rank status semantics remain explicit: `unranked` is a successful lookup without a
 ranked TFT entry; `not_found` means the player is absent from the expected platform;
 `request_failed` records an API/routing failure and its error class.
+
+## Rank routing amendment
+
+`rank_snapshot_routing.csv` contains one row per participant and records
+`selected_platform_region`, `selected_regional_route`, `selected_from_match_id`,
+the authoritative selected match timestamp, all `observed_platforms`, occurrence
+and platform counts, `platform_transfer_detected`, and the routing version. The
+primary `rank_snapshots.csv` remains exactly one logical row per participant.
+Earlier platform observations are provenance only and never duplicate a participant
+snapshot or enter the primary predictive feature matrix.

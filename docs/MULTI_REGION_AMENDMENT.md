@@ -1,6 +1,6 @@
 # Patch 17.8 multi-region collection amendment
 
-Collection configuration `tft-patch17.8-final-collection-v7` expands Patch 17.8
+Collection configuration `tft-patch17.8-final-collection-v8` expands Patch 17.8
 collection across multiple Riot platform regions while preserving GOLD–MASTER
 strata and all eligibility rules. The change addresses insufficient unique
 seed-player coverage observed in previous single-region collection attempts

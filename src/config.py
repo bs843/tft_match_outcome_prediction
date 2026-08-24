@@ -27,6 +27,7 @@ REQUIRED_SECTIONS = {
     "features",
     "splits",
     "model",
+    "downstream_recovery",
     "paths",
 }
 
@@ -73,19 +74,19 @@ def load_config(config_path: str | Path | None = None) -> dict[str, Any]:
 
 def _validate_config(config: dict[str, Any]) -> None:
     project = _mapping(config, "project")
-    if project.get("dataset_version") != "tft_set17_patch17_8_v8":
-        raise ConfigurationError("Recovery-amended dataset_version must be tft_set17_patch17_8_v8")
-    if str(project.get("schema_version", "")) != "1.2.1":
-        raise ConfigurationError("Routing-amended schema_version must be 1.2.1")
+    if project.get("dataset_version") != "tft_set17_patch17_8_v9":
+        raise ConfigurationError("Rank-routing dataset_version must be tft_set17_patch17_8_v9")
+    if str(project.get("schema_version", "")) != "1.3.0":
+        raise ConfigurationError("Rank-routing schema_version must be 1.3.0")
 
     provenance = _mapping(config, "provenance")
-    if provenance.get("configuration_version") != "tft-patch17.8-final-collection-v7":
+    if provenance.get("configuration_version") != "tft-patch17.8-final-collection-v8":
         raise ConfigurationError(
-            "provenance.configuration_version must identify final collection v7"
+            "provenance.configuration_version must identify final collection v8"
         )
-    if provenance.get("required_git_tag") != "tft-patch17.8-final-collection-v7":
+    if provenance.get("required_git_tag") != "tft-patch17.8-final-collection-v8":
         raise ConfigurationError(
-            "provenance.required_git_tag must be tft-patch17.8-final-collection-v7"
+            "provenance.required_git_tag must be tft-patch17.8-final-collection-v8"
         )
     if provenance.get("enforce_git_integrity_for_main") is not True:
         raise ConfigurationError("provenance.enforce_git_integrity_for_main must be true")
@@ -149,8 +150,23 @@ def _validate_config(config: dict[str, Any]) -> None:
         raise ConfigurationError("scope.allowed_end_results must contain exactly GameComplete")
     if validation.get("reject_on_wrong_end_result") is not True:
         raise ConfigurationError("validation.reject_on_wrong_end_result must be true")
-    if str(validation.get("validation_code_version", "")) != "1.1.0":
-        raise ConfigurationError("Multi-region validation_code_version must be 1.1.0")
+    if str(validation.get("validation_code_version", "")) != "1.2.0":
+        raise ConfigurationError("Rank-routing validation_code_version must be 1.2.0")
+
+    recovery = _mapping(config, "downstream_recovery")
+    expected_recovery = {
+        "amendment_version": "rank_snapshot_routing_v2",
+        "authorized_run_id": "20260823T124729Z-673b6e6c",
+        "original_configuration_version": "tft-patch17.8-final-collection-v7",
+        "expected_accepted_matches": 5000,
+        "expected_unique_participants": 32625,
+        "expected_multi_platform_participants": 1,
+        "accepted_manifest_sha256": "5f3e67c9eac8bc01c395eb2d80ebdbff3113b124c2f0929b92dd1321b43ff581",
+        "accepted_match_id_set_sha256": "6474260ce01d7312dee635bedfefa043c44ee7e0f1f0657f7355b0be3953d6e5",
+        "accepted_file_sha256": "3dccf0e0ec2145a0511fab8943d57a5d687c498e4f3b4c68a5424138a842a416",
+    }
+    if recovery != expected_recovery:
+        raise ConfigurationError("downstream_recovery must match the frozen v2 recovery authorization")
 
     api = _mapping(config, "api")
     if api.get("authentication_recovery_enabled") is not True:
@@ -228,7 +244,7 @@ def _validate_config(config: dict[str, Any]) -> None:
         "collection_status", "player_sampling_report", "player_sampling_pages",
         "candidate_discovery_report",
         "accepted_match_ids", "rejected_match_ids",
-        "rank_snapshots",
+        "rank_snapshots", "rank_snapshot_routing",
         "raw_matches", "manifests", "interim", "processed", "splits",
         "models", "reports", "request_log", "quality_report",
         "validated", "validation_reports", "collection_reports",
@@ -241,6 +257,10 @@ def _validate_config(config: dict[str, Any]) -> None:
     if paths["rank_snapshots"] != "data/private/metadata/rank_snapshots.csv":
         raise ConfigurationError(
             "paths.rank_snapshots must be data/private/metadata/rank_snapshots.csv"
+        )
+    if paths["rank_snapshot_routing"] != "data/private/metadata/rank_snapshot_routing.csv":
+        raise ConfigurationError(
+            "paths.rank_snapshot_routing must be data/private/metadata/rank_snapshot_routing.csv"
         )
 
 
@@ -322,7 +342,7 @@ def ensure_project_directories(config: dict[str, Any]) -> None:
         "collection_status", "player_sampling_report", "player_sampling_pages",
         "candidate_discovery_report",
         "accepted_match_ids", "rejected_match_ids",
-        "rank_snapshots",
+        "rank_snapshots", "rank_snapshot_routing",
         "request_log", "quality_report",
     ):
         project_path(config, key).parent.mkdir(parents=True, exist_ok=True)

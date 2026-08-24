@@ -26,6 +26,7 @@ ISSUE_FIELDS = ["severity", "scope", "reason_code", "reason", "match_hash", "par
 def run_validation(
     config: dict[str, Any], *, run_id: str,
     report_dir: Path | None = None, validated_dir: Path | None = None,
+    manifest_override: dict[str, Any] | None = None,
 ) -> tuple[ValidationSummary, list[Issue]]:
     raw_dir = project_path(config, "raw_matches")
     report_dir = report_dir or project_path(config, "validation_reports") / run_id
@@ -39,7 +40,8 @@ def run_validation(
     manifest_path = project_path(config, "manifests") / f"collection_run_{run_id}.json"
     if not manifest_path.exists():
         raise RuntimeError(f"Collection manifest not found for run {run_id}")
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest = (dict(manifest_override) if manifest_override is not None else
+                json.loads(manifest_path.read_text(encoding="utf-8")))
     collection_complete = manifest.get("status") == "complete"
     if not collection_complete:
         issues.append(Issue("critical", "collection", "collection_not_complete",

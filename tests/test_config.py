@@ -12,10 +12,10 @@ def test_repository_config_is_strictly_valid() -> None:
     assert config["scope"]["allowed_patches"] == ["17.8"]
     assert config["scope"]["allowed_client_patches"] == ["16.15"]
     assert config["validation"]["reject_on_wrong_patch"] is True
-    assert config["project"]["dataset_version"] == "tft_set17_patch17_8_v8"
-    assert config["project"]["schema_version"] == "1.2.1"
-    assert config["provenance"]["configuration_version"] == "tft-patch17.8-final-collection-v7"
-    assert config["provenance"]["required_git_tag"] == "tft-patch17.8-final-collection-v7"
+    assert config["project"]["dataset_version"] == "tft_set17_patch17_8_v9"
+    assert config["project"]["schema_version"] == "1.3.0"
+    assert config["provenance"]["configuration_version"] == "tft-patch17.8-final-collection-v8"
+    assert config["provenance"]["required_git_tag"] == "tft-patch17.8-final-collection-v8"
     assert config["api"]["authentication_recovery_enabled"] is True
     assert config["provenance"]["enforce_git_integrity_for_main"] is True
     assert config["sampling"]["target_accepted_matches"] == 5000
@@ -33,6 +33,8 @@ def test_repository_config_is_strictly_valid() -> None:
     assert all(row["pages_per_division"] == (1 if row["tier"] == "MASTER" else 3)
                for row in config["sampling"]["rank_strata"])
     assert config["paths"]["rank_snapshots"].endswith("rank_snapshots.csv")
+    assert config["paths"]["rank_snapshot_routing"].endswith("rank_snapshot_routing.csv")
+    assert config["downstream_recovery"]["amendment_version"] == "rank_snapshot_routing_v2"
     required_rank_exclusions = {
         "rank_snapshot_tier", "rank_snapshot_division", "rank_snapshot_league_points",
         "rank_snapshot_wins", "rank_snapshot_losses", "rank_snapshot_queue_type",

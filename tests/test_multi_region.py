@@ -192,12 +192,15 @@ def test_rank_snapshots_use_each_accepted_match_platform(monkeypatch, tmp_path: 
         {"run_id": "run", "match_id": "ME1_A", "platform_region": "ME1", "regional_route": "EUROPE"},
         {"run_id": "run", "match_id": "NA1_A", "platform_region": "NA1", "regional_route": "AMERICAS"},
     ], ["run_id", "match_id", "platform_region", "regional_route"])
-    atomic_json_dump({"info": {"participants": [{"puuid": "me-player"}]}}, raw / "ME1_A.json")
-    atomic_json_dump({"info": {"participants": [{"puuid": "na-player"}]}}, raw / "NA1_A.json")
+    atomic_json_dump({"info": {"game_datetime": 1000,
+                                "participants": [{"puuid": "me-player"}]}}, raw / "ME1_A.json")
+    atomic_json_dump({"info": {"game_datetime": 1000,
+                                "participants": [{"puuid": "na-player"}]}}, raw / "NA1_A.json")
     config = {"sampling": {"queue_type": "RANKED_TFT"},
               "privacy": {"hash_key_env": "PARTICIPANT_HASH_KEY"},
               "paths": {"accepted_match_ids": str(accepted), "raw_matches": str(raw),
-                        "rank_snapshots": str(rank)}}
+                        "rank_snapshots": str(rank),
+                        "rank_snapshot_routing": str(tmp_path / "routing.csv")}}
     client = RegionalRankClient()
     rows = collect_rank_snapshots(config, client, run_id="run")
     assert client.calls == [("ME1", "me-player"), ("NA1", "na-player")]

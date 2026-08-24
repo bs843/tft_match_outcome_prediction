@@ -38,7 +38,7 @@ The raw checksum result in the report establishes that validation did not silent
 change or substitute source responses. Only `PASS` or `PASS_WITH_WARNINGS` creates
 `data/validated/<run-id>/`; critical failures return a non-zero process status.
 
-The credential-recovery final collection tag is `tft-patch17.8-final-collection-v7`. At main-run startup,
+The rank-routing amendment tag is `tft-patch17.8-final-collection-v8`. At main-run startup,
 the pipeline requires `HEAD` to equal that tag's peeled commit and rejects all
 uncommitted changes to tracked files. The tag must never be moved or recreated after
 collection begins. A later pipeline amendment requires a new commit and tag.
@@ -73,3 +73,18 @@ credential is logged. If the wait expires, authentication still fails closed.
 partial and failed main runs are audit-only and are not resumed or merged.
 Run `20260823T104747Z-7fee1987` was deliberately interrupted during discovery and
 is preserved with terminal status `partial`.
+
+## Downstream-only rank recovery
+
+The `rank_snapshot_routing_v2` amendment is narrowly authorized for run
+`20260823T124729Z-673b6e6c`. It verifies the frozen 5,000-row accepted partition,
+match-ID set, accepted CSV, and every accepted raw checksum before and after work.
+It cannot invoke seed, candidate, or match collection. The original failure remains
+in manifest history and a linked recovery manifest records the transition.
+
+Participants may legitimately appear under more than one Riot platform within the
+frozen observation window because of account/platform transfers. Rank snapshots are
+participant-level and are routed through the platform associated with the participant's
+most recent accepted match. Earlier platform observations are retained as provenance
+and do not generate additional rank snapshot rows. Equal match timestamps use the
+lexicographically greatest immutable match ID as the deterministic tie-break.
