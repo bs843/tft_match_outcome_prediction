@@ -33,6 +33,10 @@ class RiotAuthenticationError(RiotAPIError):
     pass
 
 
+class RiotForbiddenError(RiotAPIError):
+    """A resource rejected a request made with an otherwise healthy credential."""
+
+
 class SlidingWindowLimiter:
     """Conservative process-local limiter with response-header adaptation."""
 
@@ -176,12 +180,32 @@ class RiotApiClient:
                     self._log(endpoint_type, route_value, status, attempt, True, elapsed,
                               response_hash=stable_json_hash(payload))
                     return payload
-                if status in {401, 403}:
+                if status == 401:
                     self._log(endpoint_type, route_value, status, attempt, False, elapsed,
                               error_class="authentication")
                     if self._wait_for_rotated_credential():
                         # Authentication recovery has its own bounded wait and
                         # must not consume the transient-error retry budget.
+                        return self._request_json(route, path, endpoint_type, params)
+                    raise RiotAuthenticationError("Riot rejected the API credential")
+                if status == 403:
+                    # Riot also returns 403 for some resource-specific denials. For
+                    # the participant league lookup, distinguish that case using a
+                    # non-private endpoint on the same platform host. A successful
+                    # probe proves that the current key is accepted without exposing
+                    # or logging the participant PUUID.
+                    credential_healthy = self._credential_health_probe(
+                        route_value, endpoint_type
+                    )
+                    if credential_healthy is True:
+                        self._log(endpoint_type, route_value, status, attempt, False, elapsed,
+                                  error_class="resource_forbidden")
+                        raise RiotForbiddenError(
+                            "Riot denied this resource while accepting the API credential"
+                        )
+                    self._log(endpoint_type, route_value, status, attempt, False, elapsed,
+                              error_class="authentication")
+                    if self._wait_for_rotated_credential():
                         return self._request_json(route, path, endpoint_type, params)
                     raise RiotAuthenticationError("Riot rejected the API credential")
                 if status == 404:
@@ -230,8 +254,53 @@ class RiotApiClient:
         file_value = dotenv_values(PROJECT_ROOT / ".env").get(self.credential_env)
         return str(file_value or os.getenv(self.credential_env, "")).strip()
 
+    def _credential_health_probe(self, route: str, endpoint_type: str) -> bool | None:
+        """Return credential health for an ambiguous participant-league 403.
+
+        ``True`` means the same key was accepted by a non-private TFT league
+        endpoint on the same platform. ``False`` means that endpoint also rejected
+        authentication. ``None`` means health could not be established, so callers
+        retain fail-closed credential recovery behaviour.
+        """
+        if endpoint_type != "league_entries_by_puuid":
+            return None
+        url = (
+            f"https://{route}.api.riotgames.com"
+            "/tft/league/v1/entries/GOLD/I"
+        )
+        self.limiter.acquire()
+        started = time.monotonic()
+        response: requests.Response | None = None
+        try:
+            response = self.session.get(
+                url,
+                params={"page": 1, "queue": "RANKED_TFT"},
+                timeout=self.timeout,
+            )
+            elapsed = time.monotonic() - started
+            self.limiter.observe_headers(response.headers)
+            status = response.status_code
+            healthy = status == 200
+            self._log(
+                "credential_health_probe", route, status, 1, healthy, elapsed,
+                error_class=("" if healthy else "authentication_probe_failed"),
+            )
+            if healthy:
+                return True
+            if status in {401, 403}:
+                return False
+            return None
+        except (requests.RequestException, ValueError) as exc:
+            elapsed = time.monotonic() - started
+            self._log(
+                "credential_health_probe", route,
+                response.status_code if response is not None else None,
+                1, False, elapsed, error_class=type(exc).__name__,
+            )
+            return None
+
     def _wait_for_rotated_credential(self) -> bool:
-        """Pause after 401/403 until .env contains a different non-empty key.
+        """Pause after a verified authentication failure until the key changes.
 
         Credentials are compared only in memory and are never printed or logged.
         Ctrl+C remains available and is recorded by the parent pipeline as a
@@ -353,6 +422,7 @@ def _path_template(endpoint_type: str) -> str:
         "match_ids_by_puuid": "/tft/match/v1/matches/by-puuid/{puuid}/ids",
         "match_by_id": "/tft/match/v1/matches/{match_id}",
         "league_entries_by_puuid": "/tft/league/v1/by-puuid/{puuid}",
+        "credential_health_probe": "/tft/league/v1/entries/{tier}/{division}",
         "league_entries_by_division": "/tft/league/v1/entries/{tier}/{division}",
         "master_league": "/tft/league/v1/master",
         "grandmaster_league": "/tft/league/v1/grandmaster",

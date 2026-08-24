@@ -61,11 +61,13 @@ In `config/config.yaml`:
 
 Development keys expire regularly and personal keys have restrictive rate limits. The collector is intentionally conservative and may take hours for the main dataset.
 
-If Riot returns HTTP 401/403, the collector pauses for up to 24 hours and checks
-the ignored local `.env` every 30 seconds. Replace `RIOT_API_KEY` there with a new
-key; the running process loads only a changed, non-empty value and retries the
-interrupted request. Keys are never printed or written to request logs. Pressing
-`Ctrl+C` during collection records the run as `partial` audit evidence.
+If Riot returns HTTP 401, or a 403 confirmed as an authentication failure, the
+collector pauses for up to 24 hours and checks the ignored local `.env` every 30
+seconds. A 403 from the participant rank endpoint is ambiguous, so the client uses
+a non-private ladder request on the same platform as a credential-health probe. If
+that probe succeeds, the affected snapshot is recorded as `request_failed` and the
+checkpointed collection continues. Keys and PUUIDs are never written to request
+logs. Pressing `Ctrl+C` preserves the checkpoint and failed recovery audit record.
 
 ## Run the pilot
 
@@ -92,7 +94,7 @@ The command prints a run ID. Every private collection table, manifest, and exper
 ## Run the frozen final collection
 
 The main collection is bound to the annotated tag
-`tft-patch17.8-final-collection-v8`. Before any API request, the pipeline verifies
+`tft-patch17.8-final-collection-v9`. Before any API request, the pipeline verifies
 that `HEAD` resolves to the tag's exact commit and that no tracked file is modified.
 Untracked runtime files correctly excluded by `.gitignore` do not invalidate the run.
 
@@ -101,7 +103,7 @@ Verify the frozen state and start a new 5,000-match run with:
 ```powershell
 git status
 git rev-parse HEAD
-git rev-parse "tft-patch17.8-final-collection-v8^{commit}"
+git rev-parse "tft-patch17.8-final-collection-v9^{commit}"
 python -m src.run_pipeline --target main --player-mode ladder
 ```
 
@@ -115,7 +117,7 @@ Any behaviour-changing amendment requires a reviewed commit and a new version/ta
 
 Run `20260823T124729Z-673b6e6c` completed and froze its 5,000-match acquisition
 but failed during rank routing because one transferred participant appeared first
-on ME1 and later on EUW1. Configuration v8 authorizes only a downstream recovery
+on ME1 and later on EUW1. Configuration v9 authorizes only a downstream recovery
 bound to the frozen cohort hashes. Review the routing-only gate first:
 
 ```powershell
@@ -125,6 +127,8 @@ python -m src.recover_rank_snapshots --run-id 20260823T124729Z-673b6e6c --dry-ru
 After review, the same command without `--dry-run` collects/reuses rank snapshots,
 materializes downstream tables/splits/features and performs final validation. Its
 module allowlist contains no player, candidate or match collection stage.
+The `rank_snapshot_recovery_v3` manifest is distinct from the preserved failed
+`rank_snapshot_routing_v2` attempt and reuses its successfully checkpointed rows.
 
 The v4 amendment preserves the GOLD, PLATINUM, EMERALD, DIAMOND and MASTER strata
 and all eligibility rules. It reads three ladder pages per non-apex division, selects

@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from src.api_client import RiotAPIError, RiotNotFoundError
+from src.api_client import RiotAPIError, RiotForbiddenError, RiotNotFoundError
 from src.collect_rank_snapshots import collect_rank_snapshots, resolve_rank_routing
 from src.utils import atomic_json_dump, read_csv_rows, sha256_file, write_csv_rows
 
@@ -199,3 +199,15 @@ def test_rank_request_failure_never_changes_accepted_cohort(monkeypatch, tmp_pat
     rows = collect_rank_snapshots(snapshot_config(tmp_path), client, run_id="run-1")
     assert all(row["rank_snapshot_status"] == "request_failed" for row in rows)
     assert sha256_file(tmp_path / "accepted.csv") == before
+
+
+def test_resource_forbidden_is_persisted_as_request_failed(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("PARTICIPANT_HASH_KEY", "k" * 32)
+    prepare_match(tmp_path)
+    client = SnapshotClient({
+        f"player-{index}": RiotForbiddenError("resource denied")
+        for index in range(1, 5)
+    })
+    rows = collect_rank_snapshots(snapshot_config(tmp_path), client, run_id="run-1")
+    assert all(row["rank_snapshot_status"] == "request_failed" for row in rows)
+    assert all(row["rank_snapshot_error_class"] == "RiotForbiddenError" for row in rows)

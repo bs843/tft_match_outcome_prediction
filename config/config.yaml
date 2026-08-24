@@ -1,13 +1,13 @@
 # Frozen MSc study configuration. Amendments require a new dataset_version.
 project:
   name: tft_outcome_prediction
-  # v9 adds deterministic participant-level rank routing for platform transfers.
-  dataset_version: tft_set17_patch17_8_v9
-  schema_version: "1.3.0"
+  # v10 distinguishes resource-specific rank 403s from expired credentials.
+  dataset_version: tft_set17_patch17_8_v10
+  schema_version: "1.3.1"
 
 provenance:
-  configuration_version: tft-patch17.8-final-collection-v8
-  required_git_tag: tft-patch17.8-final-collection-v8
+  configuration_version: tft-patch17.8-final-collection-v9
+  required_git_tag: tft-patch17.8-final-collection-v9
   enforce_git_integrity_for_main: true
 
 scope:
@@ -108,8 +108,9 @@ api:
   fallback_requests_per_window: 95
   fallback_window_seconds: 120
   minimum_interval_seconds: 0.06
-  # A 401/403 pauses the current request while the ignored .env is checked for
-  # a changed key. Ctrl+C still records a terminal partial run.
+  # A 401 or probe-confirmed authentication 403 pauses the current request while
+  # the ignored .env is checked for a changed key. A participant-specific 403
+  # with a healthy credential is checkpointed as request_failed instead.
   authentication_recovery_enabled: true
   authentication_poll_seconds: 30
   authentication_max_wait_seconds: 86400
@@ -143,7 +144,7 @@ validation:
   fail_on_end_result_mismatch: true
   fail_on_duplicate_match_id: true
   rank_snapshot_required: false
-  validation_code_version: "1.2.0"
+  validation_code_version: "1.2.1"
 
 features:
   minimum_category_frequency: 5
@@ -185,7 +186,7 @@ model:
 # Narrow authorization for the downstream-only recovery of the completed v7
 # acquisition. These hashes bind recovery to the unchanged accepted cohort.
 downstream_recovery:
-  amendment_version: rank_snapshot_routing_v2
+  amendment_version: rank_snapshot_recovery_v3
   authorized_run_id: 20260823T124729Z-673b6e6c
   original_configuration_version: tft-patch17.8-final-collection-v7
   expected_accepted_matches: 5000

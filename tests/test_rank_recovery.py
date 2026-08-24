@@ -40,7 +40,7 @@ def recovery_fixture(monkeypatch, tmp_path: Path) -> tuple[dict, str]:
     write_csv_rows(accepted, accepted_rows, fields)
     stored_rows = read_csv_rows(accepted)
     authorization = {
-        "amendment_version": "rank_snapshot_routing_v2",
+        "amendment_version": "rank_snapshot_recovery_v3",
         "authorized_run_id": run_id,
         "original_configuration_version": "old-version",
         "expected_accepted_matches": 2,

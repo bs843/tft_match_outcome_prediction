@@ -38,7 +38,7 @@ The raw checksum result in the report establishes that validation did not silent
 change or substitute source responses. Only `PASS` or `PASS_WITH_WARNINGS` creates
 `data/validated/<run-id>/`; critical failures return a non-zero process status.
 
-The rank-routing amendment tag is `tft-patch17.8-final-collection-v8`. At main-run startup,
+The rank-recovery amendment tag is `tft-patch17.8-final-collection-v9`. At main-run startup,
 the pipeline requires `HEAD` to equal that tag's peeled commit and rejects all
 uncommitted changes to tracked files. The tag must never be moved or recreated after
 collection begins. A later pipeline amendment requires a new commit and tag.
@@ -65,10 +65,14 @@ capacity gate.
 
 ## Credential expiry during collection
 
-On an authentication response, the current request pauses for at most 24 hours.
-The process checks the ignored `.env` every 30 seconds and resumes only after
-`RIOT_API_KEY` changes to a non-empty value. Neither the rejected nor replacement
-credential is logged. If the wait expires, authentication still fails closed.
+On HTTP 401, or a 403 confirmed by a failed credential-health probe, the current
+request pauses for at most 24 hours. The process checks the ignored `.env` every 30
+seconds and resumes only after `RIOT_API_KEY` changes to a non-empty value. A 403
+limited to `/tft/league/v1/by-puuid/{puuid}` is tested against the non-private GOLD I
+ladder endpoint on the same platform. A successful probe proves the credential is
+healthy; the participant row is checkpointed as `request_failed` with
+`RiotForbiddenError`, allowing recovery to continue. Neither credentials nor PUUIDs
+are logged. If credential health cannot be established, authentication fails closed.
 `Ctrl+C` remains available and changes the manifest to terminal status `partial`;
 partial and failed main runs are audit-only and are not resumed or merged.
 Run `20260823T104747Z-7fee1987` was deliberately interrupted during discovery and
@@ -76,7 +80,7 @@ is preserved with terminal status `partial`.
 
 ## Downstream-only rank recovery
 
-The `rank_snapshot_routing_v2` amendment is narrowly authorized for run
+The `rank_snapshot_recovery_v3` amendment is narrowly authorized for run
 `20260823T124729Z-673b6e6c`. It verifies the frozen 5,000-row accepted partition,
 match-ID set, accepted CSV, and every accepted raw checksum before and after work.
 It cannot invoke seed, candidate, or match collection. The original failure remains
@@ -88,3 +92,7 @@ participant-level and are routed through the platform associated with the partic
 most recent accepted match. Earlier platform observations are retained as provenance
 and do not generate additional rank snapshot rows. Equal match timestamps use the
 lexicographically greatest immutable match ID as the deterministic tie-break.
+Routing remains `rank_snapshot_routing_v2`; recovery v3 changes only ambiguous-403
+handling and uses a new manifest name so the interrupted v2 recovery record remains
+immutable. Existing successful snapshot rows are reused, and only rows already
+marked `request_failed` are retried.

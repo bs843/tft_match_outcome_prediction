@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from src.api_client import RiotApiClient, RiotAuthenticationError
+from src.api_client import RiotApiClient, RiotAuthenticationError, RiotForbiddenError
 
 
 class FakeResponse:
@@ -101,3 +101,45 @@ def test_expired_key_still_fails_when_recovery_wait_expires(monkeypatch, tmp_pat
     )
     with pytest.raises(RiotAuthenticationError):
         client.get_match_ids("EUROPE", "private-puuid")
+
+
+def test_resource_403_with_healthy_key_is_checkpointable(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("RIOT_API_KEY", "healthy-key-never-logged")
+    secret_puuid = "private-puuid-never-logged"
+    session = FakeSession([
+        FakeResponse(403, {}),
+        FakeResponse(200, []),
+    ])
+    client = RiotApiClient(
+        api_config(tmp_path / "requests.csv"), session=session, sleeper=lambda _: None,
+    )
+    with pytest.raises(RiotForbiddenError):
+        client.get_league_entries_by_puuid("KR", secret_puuid)
+    logged = (tmp_path / "requests.csv").read_text(encoding="utf-8")
+    assert "resource_forbidden" in logged
+    assert "credential_health_probe" in logged
+    assert secret_puuid not in logged
+    assert "healthy-key-never-logged" not in logged
+
+
+def test_resource_403_with_failed_probe_rotates_key(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("RIOT_API_KEY", "expired-key")
+    config = api_config(tmp_path / "requests.csv")
+    config["api"].update({
+        "authentication_recovery_enabled": True,
+        "authentication_poll_seconds": 1,
+        "authentication_max_wait_seconds": 2,
+    })
+    session = FakeSession([
+        FakeResponse(403, {}),
+        FakeResponse(403, {}),
+        FakeResponse(200, [{"queueType": "RANKED_TFT"}]),
+    ])
+    client = RiotApiClient(
+        config, session=session, sleeper=lambda _: None,
+        credential_loader=lambda: "replacement-key",
+    )
+    assert client.get_league_entries_by_puuid("KR", "private-puuid") == [
+        {"queueType": "RANKED_TFT"}
+    ]
+    assert session.headers["X-Riot-Token"] == "replacement-key"

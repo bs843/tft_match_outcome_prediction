@@ -28,6 +28,7 @@ RECOVERY_STAGE_MODULES = (
     "src.create_splits",
     "src.build_features",
 )
+RECOVERY_AMENDMENT_VERSION = "rank_snapshot_recovery_v3"
 ORIGINAL_FAILURE_REASON = (
     "collect_rank_snapshots rejected a participant observed on both ME1 and EUW1 "
     "under the superseded one-platform invariant"
@@ -122,7 +123,8 @@ def routing_summary(
     transfers = [row for row in routing_rows if row["platform_transfer_detected"]]
     return {
         "run_id": run_id,
-        "amendment_version": RANK_ROUTING_VERSION,
+        "amendment_version": RECOVERY_AMENDMENT_VERSION,
+        "routing_version": RANK_ROUTING_VERSION,
         "dataset_version": config["project"]["dataset_version"],
         "schema_version": config["project"]["schema_version"],
         "accepted_cohort": fingerprint,
@@ -230,7 +232,8 @@ def _proposed_completed_manifest(
             "reason": ORIGINAL_FAILURE_REASON,
         }],
         "downstream_recovery": {
-            "amendment_version": RANK_ROUTING_VERSION,
+            "amendment_version": RECOVERY_AMENDMENT_VERSION,
+            "routing_version": RANK_ROUTING_VERSION,
             "recovered_at": utc_now_iso(),
             "recovery_manifest": str(recovery_path.name),
             "multi_platform_participants": transfer_count,
@@ -253,7 +256,7 @@ def recover(config: dict[str, Any], run_id: str, *, dry_run: bool) -> Path:
         return path
 
     recovery_path = project_path(config, "manifests") / (
-        f"rank_snapshot_recovery_{run_id}_{RANK_ROUTING_VERSION}.json"
+        f"rank_snapshot_recovery_{run_id}_{RECOVERY_AMENDMENT_VERSION}.json"
     )
     if recovery_path.exists() and load_json(recovery_path).get("status") == "complete":
         raise RankRecoveryError("A completed recovery manifest already exists")
