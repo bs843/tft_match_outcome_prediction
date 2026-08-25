@@ -20,7 +20,8 @@ from .src.eda import run_eda
 from .src.features import (build_feature_families, transform_feature_families,
                            validate_matrix_contract)
 from .src.gate import AnalysisGateError
-from .src.models import run_development_selection, run_final_evaluation
+from .src.models import (PLACEMENT_TASK, TOP4_TASK, authorize_final_test_access,
+                         run_development_selection, run_final_evaluation)
 from .src.provenance import write_artifact_sidecar, write_provenance
 from .src.roles import load_roles, validate_declared_columns
 from .src.splits import FrozenSplitError, create_match_split
@@ -101,6 +102,7 @@ def run(*, validation_run: str | None, dry_run: bool, config_path: str | None,
         "target_tasks": list(contract["targets"]),
         "test_accessed": False,
         "test_evaluation_count": 0,
+        "test_access_by_task": {},
     }
     write_json(manifest_path, run_manifest)
 
@@ -142,30 +144,55 @@ def run(*, validation_run: str | None, dry_run: bool, config_path: str | None,
                            compression=DETERMINISTIC_GZIP)
             validation_x.to_csv(family_dir / "validation_X.csv.gz", index=False,
                                 compression=DETERMINISTIC_GZIP)
-        joblib.dump(encoder, data_dir / "fitted_train_encoder.joblib")
+        encoder_path = data_dir / "fitted_train_encoder.joblib"
+        joblib.dump(encoder, encoder_path)
         write_json(data_dir / "feature_vocabulary.json", encoder.vocabulary_metadata())
         development = pd.concat([train, validation], ignore_index=True)
         eda = run_eda(development, output / "eda")
-        selection = run_development_selection(
+        selections = run_development_selection(
             train, validation, families, output / "modelling", seed=seed,
             folds=int(experiments["cross_validation_folds"]),
+            context={
+                "analysis_run_id": run_id,
+                "contract_version": contract["analysis_contract_version"],
+                "analysis_tag": preflight.analysis_tag,
+                "git_commit": preflight.analysis_commit,
+                "dataset_version": preflight.approval.dataset_version,
+                "split_hash": preflight.split_hash,
+                "preprocessing_sha256": sha256_file(encoder_path),
+            },
         )
+        top4_selection = selections[TOP4_TASK]
+        placement_selection = selections[PLACEMENT_TASK]
         run_manifest.update({
             "status": "development_complete",
             "development_completed_at_utc": utc_now(),
-            "selected_model": selection["selected_model"],
-            "selected_feature_family": selection["selected_feature_family"],
-            "selection_metric": selection["selection_metric"],
-            "validation_score": selection["selection_score"],
-            "selected_model_contract": contract["models"]["primary_registry"][selection["selected_model"]],
+            "task_selections": {
+                TOP4_TASK: {
+                    "selected_model": top4_selection["selected_model"],
+                    "selection_metric": "f1",
+                    "validation_score": top4_selection["validation_metrics"]["f1"],
+                    "selection_manifest_sha256": top4_selection["manifest_sha256"],
+                },
+                PLACEMENT_TASK: {
+                    "selected_model": placement_selection["selected_model"],
+                    "selection_metric": "mae",
+                    "validation_score": placement_selection["validation_metrics"]["mae"],
+                    "selection_manifest_sha256": placement_selection["manifest_sha256"],
+                },
+            },
+            "validation_results": {
+                TOP4_TASK: top4_selection["candidate_validation_results"],
+                PLACEMENT_TASK: placement_selection["candidate_validation_results"],
+            },
         })
         write_json(manifest_path, run_manifest)
 
-        # The selection manifest is now locked. Record access before opening any
-        # sanitized payload belonging to the frozen test partition.
-        run_manifest.update({"test_accessed": True, "test_accessed_at_utc": utc_now(),
-                             "test_evaluation_count": 1})
-        write_json(manifest_path, run_manifest)
+        # Verify both independently locked selections and record task-aware access
+        # before opening any sanitized payload belonging to the test partition.
+        access_events = authorize_final_test_access(
+            output / "modelling", selections, run_manifest, manifest_path,
+        )
         test = build_participant_dataset(preflight.approval, config, match_ids=split_ids["test"])
         validate_declared_columns(test.columns, column_rules)
         test.to_csv(data_dir / "test_participants.csv.gz", index=False,
@@ -181,7 +208,8 @@ def run(*, validation_run: str | None, dry_run: bool, config_path: str | None,
                           compression=DETERMINISTIC_GZIP)
         final = run_final_evaluation(
             train, validation, test, train_features, validation_features, test_features,
-            output / "modelling", selection=selection, seed=seed,
+            output / "modelling", selections=selections, seed=seed,
+            access_events=access_events,
         )
         run_manifest.update({
             "status": "final_evaluation_complete",
@@ -189,6 +217,7 @@ def run(*, validation_run: str | None, dry_run: bool, config_path: str | None,
             "test_accessed": final["test_accessed"],
             "test_accessed_at_utc": final["test_accessed_at_utc"],
             "test_evaluation_count": final["test_evaluation_count"],
+            "test_access_by_task": final["test_access_by_task"],
             "final_test_metrics_sha256": final["final_metrics_sha256"],
             "required_artifacts": contract["production_artifacts"]["required"],
         })
@@ -200,7 +229,10 @@ def run(*, validation_run: str | None, dry_run: bool, config_path: str | None,
             "analysis_mode": "PRODUCTION", "collection": preflight.approval.collection_run_id,
             "train_rows": len(train), "validation_rows": len(validation), "test_rows": len(test),
             "feature_families": list(families), "eda": eda,
-            "selected_model": selection["selected_model"],
+            "selected_models": {
+                TOP4_TASK: top4_selection["selected_model"],
+                PLACEMENT_TASK: placement_selection["selected_model"],
+            },
         })
         write_provenance(
             output, analysis_run_id=run_id, mode="PRODUCTION",

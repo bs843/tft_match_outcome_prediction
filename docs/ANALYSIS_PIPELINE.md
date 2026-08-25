@@ -31,9 +31,10 @@ configured frequency are omitted; unseen test categories do not create columns.
 Production consumes the existing chronological match-group split: 3,500 train,
 750 validation and 750 test matches. It never generates assignments and fails if
 the frozen manifest/hash/counts/cohort differ. Seed 4275 governs model randomness
-and five-fold grouped diagnostics within train. Validation alone selects the
-primary model. Test remains unopened until selection is locked, then is evaluated
-once. No match can cross partitions or folds.
+and five-fold grouped diagnostics within train. Validation alone selects each
+task's model. Test remains unopened until both task-specific selections are
+independently locked and verified, then is evaluated once. No match can cross
+partitions or folds.
 
 Top-four metrics are accuracy, precision, recall, F1, ROC-AUC, PR-AUC, and the
 confusion matrix. Exact-placement metrics are MAE, accuracy, macro F1, and
@@ -41,6 +42,12 @@ weighted F1. Primary baselines are dummy, logistic regression, random forest,
 XGBoost 3.0.2, LightGBM 4.6.0, and CatBoost 1.2.8. Dummy and random forest provide
 secondary placement baselines. Boosting parameters are intentionally conservative;
 this stage is baseline comparison rather than extensive hyperparameter optimisation.
+
+Exact placement follows six governed steps: train both registered candidates on
+train; evaluate both on validation; select the lowest validation MAE (registry
+order `dummy`, `random_forest` breaks exact ties); lock the task-specific manifest;
+record test access; and evaluate only the selected model once on test. The test
+partition is not used to compare exact-placement candidate models.
 
 ## Provenance and eligibility
 
@@ -54,14 +61,21 @@ point.
 
 ## Frozen Analysis Protocol
 
-Contract `1.0.2` is machine-readable at `config/analysis_contract.yaml`. It binds
+Contract `1.0.3` is machine-readable at `config/analysis_contract.yaml`. It binds
 dataset `tft_set17_patch17_8_v11`, collection tag
 `tft-patch17.8-final-collection-v10`, the 70/15/15 split, configuration hashes,
 features, models, hyperparameters, targets, metrics, seeds, artefacts and test
-policy. The analysis release tag is `tft-patch17.8-analysis-contract-v3`.
+policy. The analysis release tag is `tft-patch17.8-analysis-contract-v4`.
 Production preflight requires a clean checkout at the exact annotated tag commit.
 Any scientific change requires a new contract version and immutable release tag.
 
 The earlier 80/20 split is deprecated and non-production. Rank-snapshot fields,
 identifiers, targets, provenance, timestamps and progression outcomes are excluded
 from primary X matrices. There is no production bypass for a contract mismatch.
+
+Version 1.0.3 changes only exact-placement model-selection and test-access
+governance. Version 1.0.2/v3 remains immutable historical evidence but is not
+authorized for production modelling: it evaluated placement candidates on test
+without first selecting one on validation. Dataset, cohort, split and canonical
+split hash, feature contract, seeds, preprocessing, and top-four protocol are
+unchanged.

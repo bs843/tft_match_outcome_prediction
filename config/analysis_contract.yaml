@@ -1,10 +1,17 @@
-analysis_contract_version: "1.0.2"
+analysis_contract_version: "1.0.3"
 release:
-  required_analysis_tag: tft-patch17.8-analysis-contract-v3
+  required_analysis_tag: tft-patch17.8-analysis-contract-v4
   required_analysis_commit: resolve_from_required_analysis_tag
   require_annotated_tag: true
   require_clean_worktree: true
-  release_manifest: reports/analysis_contract_releases/analysis_contract_v3.json
+  release_manifest: reports/analysis_contract_releases/analysis_contract_v4.json
+
+amendment:
+  supersedes_contract: "1.0.2"
+  scope: exact_placement_validation_selection_and_test_access_only
+  defect: v1.0.2 allowed exact-placement candidate models to reach test without validation selection
+  correction: select by validation MAE and permit only the independently locked winner on test
+  unchanged: [dataset, accepted_cohort, split, features, prohibited_features, seeds, preprocessing, top4_target, top4_registry, top4_selection, collection_provenance]
 
 dataset:
   collection_run_id: 20260823T124729Z-673b6e6c
@@ -118,6 +125,16 @@ selection:
   refit_after_selection: train_plus_validation
   early_stopping: disabled
   threshold_optimisation: disabled_fixed_0_5
+  exact_placement:
+    enabled: true
+    train_partition: train
+    selection_partition: validation
+    primary_metric: mae
+    direction: minimize
+    tie_break: secondary_placement_registry_order
+    registry_order: [dummy, random_forest]
+    locked_manifest: placement_selection_manifest.json
+    selection_rule_version: "1"
 
 test_access:
   policy: final_evaluation_only_after_selection_manifest_written
@@ -125,9 +142,14 @@ test_access:
   require_access_timestamp: true
   require_access_record_in_run_manifest: true
   maximum_final_evaluations_per_run: 1
+  task_aware_locked_manifests: true
+  independently_locked_tasks: [top_four_classification, exact_placement]
+  exact_placement_requires_locked_selection: true
+  exact_placement_manifest_integrity_required: true
+  direct_multi_model_placement_test_evaluation: false
 
 production_artifacts:
-  required: [run_manifest.json, provenance.json, artifact_manifest.csv, data/frozen_split_assignments.csv, data/feature_vocabulary.json, modelling/selection_manifest.json, modelling/tables/validation_metrics.csv, modelling/tables/final_test_metrics.csv, modelling/models/selected_top4_f5.joblib]
+  required: [run_manifest.json, provenance.json, artifact_manifest.csv, data/frozen_split_assignments.csv, data/feature_vocabulary.json, modelling/selection_manifest.json, modelling/placement_selection_manifest.json, modelling/tables/validation_metrics.csv, modelling/tables/final_test_metrics.csv, modelling/models/selected_top4_f5.joblib, modelling/models/selected_placement_f5.joblib]
 
 audit:
   require_input_checksums: true

@@ -28,8 +28,8 @@ prove all of the following:
   run-specific sanitized directory;
 - dataset, schema, configuration, and collection provenance match the frozen study.
 
-Production analysis requires contract `1.0.2`, a clean worktree, and HEAD exactly
-at annotated tag `tft-patch17.8-analysis-contract-v3`. The contract binds the
+Production analysis requires contract `1.0.3`, a clean worktree, and HEAD exactly
+at annotated tag `tft-patch17.8-analysis-contract-v4`. The contract binds the
 collection/dataset manifests, authoritative split, scientific configuration,
 column roles, model and metric registries, seeds and test-access policy by hashes.
 
@@ -52,8 +52,10 @@ separate code path and cannot authorise a failed or undersized real collection.
 Each production invocation consumes the immutable chronological 70/15/15 split:
 3,500 train, 750 validation and 750 test matches. No split is regenerated.
 Feature vocabularies and preprocessing are fitted on train only. Validation alone
-selects the model; after a locked selection manifest is written, test is opened
-once for final evaluation. Every access is recorded in `run_manifest.json`.
+selects each task's model. Independently locked top-four and exact-placement
+selection manifests must pass integrity checks before test is opened once for
+final evaluation. Every task access is recorded in `run_manifest.json` before the
+test payload is read.
 
 The old deterministic 80/20 helper is deprecated engineering-only behaviour. It
 is unreachable from the production entry point and can never produce thesis-valid
@@ -89,15 +91,26 @@ Dataset freeze and analysis freeze are separate milestones. The immutable datase
 is `tft_set17_patch17_8_v11`, sourced from collection tag
 `tft-patch17.8-final-collection-v10`. The analysis protocol is defined by
 `config/analysis_contract.yaml` and released as
-`tft-patch17.8-analysis-contract-v3` only after the complete test suite and
+`tft-patch17.8-analysis-contract-v4` only after the complete test suite and
 candidate preflight pass. Configuration changes require a new contract version
 and tag; production has no force or ignore-contract bypass.
 
-Contract `1.0.2` supersedes but does not move the immutable v1/v2 tags. It makes the
+Contract `1.0.2` superseded but did not move the immutable v1/v2 tags. It made the
 CI tests self-contained because private/ignored collection artifacts are not
 present in source checkouts; real-data verification remains the responsibility of
 the production preflight on the authorized analysis host. Text configuration
 hashes normalize LF/CRLF so the same approved YAML verifies on Linux and Windows.
+
+Contract `1.0.3` is the minimal exact-placement governance amendment. Version
+1.0.2/v3 remains immutable historical evidence but is not authorized for
+production modelling because it allowed both placement candidates to reach test
+without validation selection. Under v1.0.3, dummy and random forest are fitted on
+train and compared on validation MAE; lowest MAE wins, with registry order
+(`dummy`, then `random_forest`) resolving exact ties. The placement selection is
+locked and integrity-checked before test access, and only its winner is evaluated
+on test. The test partition is not used to compare exact-placement candidate
+models. Dataset, split, features, seed, preprocessing and top-four behaviour are
+unchanged.
 
 Rank-snapshot variables remain descriptive metadata only and are rejected from
 all primary matrices. Train is used for fitting, validation for selection, and

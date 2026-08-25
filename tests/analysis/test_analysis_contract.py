@@ -13,9 +13,8 @@ from analysis.src.contract import (AnalysisContractError, load_contract,
                                    run_analysis_preflight, verify_analysis_release)
 from analysis.src.gate import AnalysisApproval
 from analysis.src.features import validate_matrix_contract
-from analysis.src.models import run_final_evaluation
-from analysis.src.models import _estimators
-from analysis.src.common import write_json
+from analysis.src.models import (PLACEMENT_TASK, TOP4_TASK, _estimators,
+                                 run_final_evaluation)
 from analysis.src.splits import (FrozenSplitError, canonical_split_hash,
                                  load_frozen_match_split, validate_frozen_assignments)
 from src.config import load_config
@@ -155,36 +154,19 @@ def test_feature_contract_accepts_approved_and_rejects_rank_or_missing() -> None
 
 
 def test_final_evaluation_cannot_open_before_selection_is_locked(tmp_path: Path) -> None:
-    with pytest.raises(RuntimeError, match="locked selection"):
+    with pytest.raises(RuntimeError, match="Locked selection"):
         run_final_evaluation(
             pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), {}, {}, {}, tmp_path,
-            selection={"status": "draft"}, seed=4275,
+            selections={}, seed=4275, access_events={},
         )
 
 
-def test_final_evaluation_records_single_test_access(tmp_path: Path) -> None:
-    output = tmp_path / "modelling"
-    selection = {
-        "status": "locked", "selected_feature_family": "F5",
-        "selected_model": "dummy", "test_accessed": False,
-    }
-    write_json(output / "selection_manifest.json", selection)
-    base = pd.DataFrame({
-        "match_hash": ["m1"] * 8,
-        "top4": [1, 1, 1, 1, 0, 0, 0, 0],
-        "placement": list(range(1, 9)),
-    })
-    matrix = pd.DataFrame({"level": [8.0] * 8, "composition_size": [9.0] * 8})
-    result = run_final_evaluation(
-        base, base, base, {"F5": matrix}, {"F5": matrix}, {"F5": matrix},
-        output, selection=selection, seed=4275,
-    )
-    assert result["test_accessed"] is True
-    assert result["test_evaluation_count"] == 1
-    with pytest.raises(RuntimeError, match="already been accessed"):
+def test_final_evaluation_requires_both_task_selections(tmp_path: Path) -> None:
+    with pytest.raises(RuntimeError, match="independently for both production tasks"):
         run_final_evaluation(
-            base, base, base, {"F5": matrix}, {"F5": matrix}, {"F5": matrix},
-            output, selection=result, seed=4275,
+            pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), {}, {}, {}, tmp_path,
+            selections={TOP4_TASK: {"selected_model": "dummy"}}, seed=4275,
+            access_events={PLACEMENT_TASK: {}},
         )
 
 

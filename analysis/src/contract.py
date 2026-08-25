@@ -13,7 +13,8 @@ from src.build_features import ID_FIELDS
 
 from .common import read_csv, sha256_file, sha256_text_file
 from .gate import AnalysisApproval, require_analysis_approval
-from .models import approved_metric_registry, approved_model_registry
+from .models import (approved_metric_registry, approved_model_registry,
+                     approved_selection_protocol)
 from .splits import canonical_split_hash, validate_frozen_assignments
 
 
@@ -41,9 +42,9 @@ def load_contract(path: Path | None = None) -> dict[str, Any]:
         raise AnalysisContractError(f"Analysis contract cannot be loaded: {exc}") from exc
     if not isinstance(value, dict):
         raise AnalysisContractError("Analysis contract must be a mapping")
-    if value.get("analysis_contract_version") != "1.0.2":
+    if value.get("analysis_contract_version") != "1.0.3":
         raise AnalysisContractError(
-            "Analysis contract version must be 1.0.2; a new release is required"
+            "Analysis contract version must be 1.0.3; a new release is required"
         )
     value["_path"] = str(contract_path.resolve())
     return value
@@ -92,7 +93,8 @@ def run_analysis_preflight(
     experiments = _yaml(PROJECT_ROOT / configuration["experiments_file"])
     _verify_scientific_configuration(contract, experiments)
     checks.extend(["feature_contract", "model_registry", "metric_registry", "seed_policy",
-                   "test_access_policy"])
+                   "test_access_policy", "exact_placement_validation_selection",
+                   "task_aware_locked_manifests", "placement_test_isolation"])
 
     split = _mapping(contract, "split")
     split_path = PROJECT_ROOT / split["manifest"]
@@ -175,7 +177,38 @@ def _verify_scientific_configuration(contract: dict[str, Any], experiments: dict
         _equal(contract["targets"][target]["secondary_metrics"], expected["secondary_metrics"],
                f"{target} secondary metrics")
     _equal(contract["test_access"]["policy"],
-           "final_evaluation_only_after_selection_manifest_written", "test access policy")
+            "final_evaluation_only_after_selection_manifest_written", "test access policy")
+    protocol = approved_selection_protocol()
+    exact = contract["selection"].get("exact_placement", {})
+    _equal(exact.get("enabled"), protocol["exact_placement_validation_selection"],
+           "exact-placement validation selection")
+    _equal(exact.get("primary_metric"), protocol["exact_placement_metric"],
+           "exact-placement selection metric")
+    _equal(exact.get("direction"), protocol["exact_placement_direction"],
+           "exact-placement metric direction")
+    _equal(exact.get("tie_break"), protocol["exact_placement_tie_break"],
+           "exact-placement tie break")
+    _equal(exact.get("registry_order"), list(registry["secondary_placement_registry"]),
+           "exact-placement registry order")
+    _equal(exact.get("locked_manifest"), protocol["exact_placement_manifest"],
+           "exact-placement locked manifest")
+    test_access = contract["test_access"]
+    _equal(test_access.get("task_aware_locked_manifests"),
+           protocol["task_aware_locked_manifests"], "task-aware locked manifests")
+    _equal(test_access.get("exact_placement_requires_locked_selection"), True,
+           "exact-placement locked selection gate")
+    _equal(test_access.get("exact_placement_manifest_integrity_required"), True,
+           "exact-placement manifest integrity gate")
+    _equal(test_access.get("direct_multi_model_placement_test_evaluation"),
+           protocol["direct_multi_model_placement_test_evaluation"],
+           "direct multi-model placement test prohibition")
+    required = contract.get("production_artifacts", {}).get("required", [])
+    for artifact in (
+        "modelling/placement_selection_manifest.json",
+        "modelling/models/selected_placement_f5.joblib",
+    ):
+        if artifact not in required:
+            raise AnalysisContractError(f"Required placement artifact is missing: {artifact}")
 
 
 def _verify_bound_file(section: dict[str, Any], path_key: str, hash_key: str) -> None:
