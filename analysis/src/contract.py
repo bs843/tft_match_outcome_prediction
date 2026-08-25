@@ -41,9 +41,9 @@ def load_contract(path: Path | None = None) -> dict[str, Any]:
         raise AnalysisContractError(f"Analysis contract cannot be loaded: {exc}") from exc
     if not isinstance(value, dict):
         raise AnalysisContractError("Analysis contract must be a mapping")
-    if value.get("analysis_contract_version") != "1.0.0":
+    if value.get("analysis_contract_version") != "1.0.1":
         raise AnalysisContractError(
-            "Analysis contract version must be 1.0.0; a new release is required"
+            "Analysis contract version must be 1.0.1; a new release is required"
         )
     value["_path"] = str(contract_path.resolve())
     return value

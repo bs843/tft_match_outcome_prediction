@@ -32,7 +32,8 @@ def main() -> None:
         )
     if _tag_exists(tag):
         raise AnalysisContractError(f"Analysis release tag already exists and cannot be moved: {tag}")
-    _git("tag", "-a", tag, "-m", "Frozen TFT Patch 17.8 analysis contract v1")
+    _git("tag", "-a", tag, "-m",
+         f"Frozen TFT Patch 17.8 analysis contract {contract['analysis_contract_version']}")
     commit, _ = verify_analysis_release(contract)
     release_path = PROJECT_ROOT / contract["release"]["release_manifest"]
     write_json(release_path, {

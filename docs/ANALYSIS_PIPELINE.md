@@ -54,11 +54,11 @@ point.
 
 ## Frozen Analysis Protocol
 
-Contract `1.0.0` is machine-readable at `config/analysis_contract.yaml`. It binds
+Contract `1.0.1` is machine-readable at `config/analysis_contract.yaml`. It binds
 dataset `tft_set17_patch17_8_v11`, collection tag
 `tft-patch17.8-final-collection-v10`, the 70/15/15 split, configuration hashes,
 features, models, hyperparameters, targets, metrics, seeds, artefacts and test
-policy. The analysis release tag is `tft-patch17.8-analysis-contract-v1`.
+policy. The analysis release tag is `tft-patch17.8-analysis-contract-v2`.
 Production preflight requires a clean checkout at the exact annotated tag commit.
 Any scientific change requires a new contract version and immutable release tag.
 

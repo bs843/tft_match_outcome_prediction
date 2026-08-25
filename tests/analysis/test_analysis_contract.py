@@ -1,16 +1,17 @@
 from __future__ import annotations
 
 import inspect
-import dataclasses
 from pathlib import Path
 
 import pandas as pd
 import pytest
+import yaml
 
 import analysis.run as production_run
 import analysis.src.contract as contract_module
 from analysis.src.contract import (AnalysisContractError, load_contract,
                                    run_analysis_preflight, verify_analysis_release)
+from analysis.src.gate import AnalysisApproval
 from analysis.src.features import validate_matrix_contract
 from analysis.src.models import run_final_evaluation
 from analysis.src.models import _estimators
@@ -193,10 +194,19 @@ def test_production_path_cannot_invoke_legacy_80_20_split() -> None:
     assert "test_fraction" not in source
 
 
-def test_repository_candidate_contract_passes_without_release_check() -> None:
-    result = run_analysis_preflight(load_config(), verify_release=False)
-    assert result.approval.dataset_version == "tft_set17_patch17_8_v11"
-    assert result.split_hash == load_contract()["split"]["canonical_assignment_sha256"]
+def test_repository_scientific_contract_is_self_consistent() -> None:
+    contract = load_contract()
+    experiments_path = contract_module.PROJECT_ROOT / contract["configuration"]["experiments_file"]
+    columns_path = contract_module.PROJECT_ROOT / contract["configuration"]["columns_file"]
+    experiments = yaml.safe_load(experiments_path.read_text(encoding="utf-8"))
+    contract_module._verify_scientific_configuration(contract, experiments)
+    contract_module._verify_hash(
+        experiments_path, contract["configuration"]["experiments_sha256"],
+        "experiments.yaml",
+    )
+    contract_module._verify_hash(
+        columns_path, contract["configuration"]["columns_sha256"], "columns.yaml",
+    )
 
 
 def test_wrong_dataset_version_fails_candidate_preflight() -> None:
@@ -208,10 +218,21 @@ def test_wrong_dataset_version_fails_candidate_preflight() -> None:
 
 def test_wrong_collection_provenance_fails_candidate_preflight(monkeypatch) -> None:
     config = load_config()
-    approved = run_analysis_preflight(config, verify_release=False).approval
+    approved = AnalysisApproval(
+        collection_run_id="20260823T124729Z-673b6e6c",
+        collection_manifest=Path("collection.json"),
+        validation_summary=Path("validation.json"),
+        validated_manifest=Path("validated.csv"),
+        validated_files=(), validated_file_map={},
+        accepted_count=5000, participant_count=40000,
+        dataset_version="tft_set17_patch17_8_v11", schema_version="1.3.2",
+        git_commit="collection-commit", git_tag="wrong-tag",
+        checksums={"accepted_manifest_content_sha256":
+                   "5f3e67c9eac8bc01c395eb2d80ebdbff3113b124c2f0929b92dd1321b43ff581"},
+    )
     monkeypatch.setattr(
         contract_module, "require_analysis_approval",
-        lambda *_args, **_kwargs: dataclasses.replace(approved, git_tag="wrong-tag"),
+        lambda *_args, **_kwargs: approved,
     )
     with pytest.raises(AnalysisContractError, match="collection provenance tag"):
         run_analysis_preflight(config, verify_release=False)

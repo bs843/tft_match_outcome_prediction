@@ -1,10 +1,10 @@
-analysis_contract_version: "1.0.0"
+analysis_contract_version: "1.0.1"
 release:
-  required_analysis_tag: tft-patch17.8-analysis-contract-v1
+  required_analysis_tag: tft-patch17.8-analysis-contract-v2
   required_analysis_commit: resolve_from_required_analysis_tag
   require_annotated_tag: true
   require_clean_worktree: true
-  release_manifest: reports/analysis_contract_releases/analysis_contract_v1.json
+  release_manifest: reports/analysis_contract_releases/analysis_contract_v2.json
 
 dataset:
   collection_run_id: 20260823T124729Z-673b6e6c

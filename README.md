@@ -218,8 +218,8 @@ The dataset freeze and analysis freeze are separate. Dataset
 python -m analysis.preflight
 ```
 
-Contract `1.0.0` requires annotated analysis tag
-`tft-patch17.8-analysis-contract-v1`, exact configuration and split hashes, a
+Contract `1.0.1` requires annotated analysis tag
+`tft-patch17.8-analysis-contract-v2`, exact configuration and split hashes, a
 clean exact-tag checkout, train-only preprocessing, validation-only model
 selection and one audited final test evaluation. The legacy 80/20 analysis split
 is deprecated and unreachable from production. Rank snapshots remain excluded
