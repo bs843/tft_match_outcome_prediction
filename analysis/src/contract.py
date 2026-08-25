@@ -11,7 +11,7 @@ import yaml
 from src.config import PROJECT_ROOT
 from src.build_features import ID_FIELDS
 
-from .common import read_csv, sha256_file
+from .common import read_csv, sha256_file, sha256_text_file
 from .gate import AnalysisApproval, require_analysis_approval
 from .models import approved_metric_registry, approved_model_registry
 from .splits import canonical_split_hash, validate_frozen_assignments
@@ -41,9 +41,9 @@ def load_contract(path: Path | None = None) -> dict[str, Any]:
         raise AnalysisContractError(f"Analysis contract cannot be loaded: {exc}") from exc
     if not isinstance(value, dict):
         raise AnalysisContractError("Analysis contract must be a mapping")
-    if value.get("analysis_contract_version") != "1.0.1":
+    if value.get("analysis_contract_version") != "1.0.2":
         raise AnalysisContractError(
-            "Analysis contract version must be 1.0.1; a new release is required"
+            "Analysis contract version must be 1.0.2; a new release is required"
         )
     value["_path"] = str(contract_path.resolve())
     return value
@@ -85,8 +85,8 @@ def run_analysis_preflight(
     _verify_bound_file(dataset, "collection_manifest", "collection_manifest_sha256")
     _verify_bound_file(dataset, "dataset_manifest", "dataset_manifest_sha256")
     configuration = _mapping(contract, "configuration")
-    _verify_bound_file(configuration, "experiments_file", "experiments_sha256")
-    _verify_bound_file(configuration, "columns_file", "columns_sha256")
+    _verify_bound_text_file(configuration, "experiments_file", "experiments_sha256")
+    _verify_bound_text_file(configuration, "columns_file", "columns_sha256")
     checks.extend(["dataset_manifest_hash", "experiments_hash", "columns_hash"])
 
     experiments = _yaml(PROJECT_ROOT / configuration["experiments_file"])
@@ -182,6 +182,10 @@ def _verify_bound_file(section: dict[str, Any], path_key: str, hash_key: str) ->
     _verify_hash(PROJECT_ROOT / str(section[path_key]), str(section[hash_key]), path_key)
 
 
+def _verify_bound_text_file(section: dict[str, Any], path_key: str, hash_key: str) -> None:
+    _verify_text_hash(PROJECT_ROOT / str(section[path_key]), str(section[hash_key]), path_key)
+
+
 def _verify_hash(path: Path, expected: str, label: str) -> None:
     if not path.is_file():
         raise AnalysisContractError(f"Contract-bound file is missing: {path}")
@@ -190,6 +194,17 @@ def _verify_hash(path: Path, expected: str, label: str) -> None:
         raise AnalysisContractError(
             f"{label} hash mismatch for {path}: expected {expected}, observed {observed}; "
             "a new analysis-contract version/tag is required"
+        )
+
+
+def _verify_text_hash(path: Path, expected: str, label: str) -> None:
+    if not path.is_file():
+        raise AnalysisContractError(f"Contract-bound file is missing: {path}")
+    observed = sha256_text_file(path)
+    if observed != expected:
+        raise AnalysisContractError(
+            f"{label} canonical-text hash mismatch for {path}: expected {expected}, "
+            f"observed {observed}; a new analysis-contract version/tag is required"
         )
 
 

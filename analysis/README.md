@@ -28,8 +28,8 @@ prove all of the following:
   run-specific sanitized directory;
 - dataset, schema, configuration, and collection provenance match the frozen study.
 
-Production analysis requires contract `1.0.1`, a clean worktree, and HEAD exactly
-at annotated tag `tft-patch17.8-analysis-contract-v2`. The contract binds the
+Production analysis requires contract `1.0.2`, a clean worktree, and HEAD exactly
+at annotated tag `tft-patch17.8-analysis-contract-v3`. The contract binds the
 collection/dataset manifests, authoritative split, scientific configuration,
 column roles, model and metric registries, seeds and test-access policy by hashes.
 
@@ -89,14 +89,15 @@ Dataset freeze and analysis freeze are separate milestones. The immutable datase
 is `tft_set17_patch17_8_v11`, sourced from collection tag
 `tft-patch17.8-final-collection-v10`. The analysis protocol is defined by
 `config/analysis_contract.yaml` and released as
-`tft-patch17.8-analysis-contract-v2` only after the complete test suite and
+`tft-patch17.8-analysis-contract-v3` only after the complete test suite and
 candidate preflight pass. Configuration changes require a new contract version
 and tag; production has no force or ignore-contract bypass.
 
-Contract `1.0.1` supersedes but does not move the immutable v1 tag. It makes the
+Contract `1.0.2` supersedes but does not move the immutable v1/v2 tags. It makes the
 CI tests self-contained because private/ignored collection artifacts are not
 present in source checkouts; real-data verification remains the responsibility of
-the production preflight on the authorized analysis host.
+the production preflight on the authorized analysis host. Text configuration
+hashes normalize LF/CRLF so the same approved YAML verifies on Linux and Windows.
 
 Rank-snapshot variables remain descriptive metadata only and are rejected from
 all primary matrices. Train is used for fitting, validation for selection, and

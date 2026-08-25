@@ -200,13 +200,23 @@ def test_repository_scientific_contract_is_self_consistent() -> None:
     columns_path = contract_module.PROJECT_ROOT / contract["configuration"]["columns_file"]
     experiments = yaml.safe_load(experiments_path.read_text(encoding="utf-8"))
     contract_module._verify_scientific_configuration(contract, experiments)
-    contract_module._verify_hash(
+    contract_module._verify_text_hash(
         experiments_path, contract["configuration"]["experiments_sha256"],
         "experiments.yaml",
     )
-    contract_module._verify_hash(
+    contract_module._verify_text_hash(
         columns_path, contract["configuration"]["columns_sha256"], "columns.yaml",
     )
+
+
+def test_text_configuration_hash_is_newline_invariant(tmp_path: Path) -> None:
+    lf = tmp_path / "lf.yaml"
+    crlf = tmp_path / "crlf.yaml"
+    lf.write_bytes(b"key: value\nitems:\n  - one\n")
+    crlf.write_bytes(b"key: value\r\nitems:\r\n  - one\r\n")
+    expected = contract_module.sha256_text_file(lf)
+    assert contract_module.sha256_text_file(crlf) == expected
+    contract_module._verify_text_hash(crlf, expected, "portable.yaml")
 
 
 def test_wrong_dataset_version_fails_candidate_preflight() -> None:
