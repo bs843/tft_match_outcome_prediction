@@ -21,12 +21,15 @@ def build_participant_dataset(
     config: dict[str, Any],
     *,
     include_descriptive_rank: bool = True,
+    match_ids: set[str] | None = None,
 ) -> pd.DataFrame:
     """Build one final-board row per participant from approved sanitized JSON only."""
     rank = _load_clean_rank(config, approval.collection_run_id) if include_descriptive_rank else {}
     rows: list[dict[str, Any]] = []
     seen_files: set[Path] = set()
-    for path in approval.validated_files:
+    paths = (approval.validated_files if match_ids is None else
+             tuple(approval.validated_file_map[match_id] for match_id in sorted(match_ids)))
+    for path in paths:
         if path in seen_files:
             raise DatasetIntegrityError(f"Duplicate validated file reference: {path.name}")
         seen_files.add(path)
@@ -36,7 +39,7 @@ def build_participant_dataset(
             study_patch=str(config["scope"]["study_patch"]),
         ))
     frame = pd.DataFrame(rows)
-    validate_participant_dataset(frame, approval)
+    validate_participant_dataset(frame, approval if match_ids is None else None)
     return frame.sort_values(["match_hash", "participant_slot"], kind="stable").reset_index(drop=True)
 
 

@@ -1,10 +1,17 @@
 random_seed: 4275
-test_fraction: 0.20
+split_source: frozen_collection_manifest
+split_names: [train, validation, test]
+expected_split_counts: {train: 3500, validation: 750, test: 750}
 cross_validation_folds: 5
 minimum_category_frequency: 5
 primary_target: top4
 secondary_target: placement
 rank_features_in_primary_models: false
+primary_feature_family: F5
+primary_model_selection_metric: f1
+classification_threshold: 0.5
+class_imbalance_strategy: none
+test_access_policy: final_evaluation_after_validation_selection
 
 feature_families:
   F1:

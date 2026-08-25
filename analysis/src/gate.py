@@ -23,6 +23,7 @@ class AnalysisApproval:
     validation_summary: Path
     validated_manifest: Path
     validated_files: tuple[Path, ...]
+    validated_file_map: dict[str, Path]
     accepted_count: int
     participant_count: int
     dataset_version: str
@@ -130,6 +131,7 @@ def require_analysis_approval(config: dict[str, Any], run_id: str) -> AnalysisAp
     if len(set(hashes)) != target:
         _fail("validated manifest contains duplicate match hashes")
     files: list[Path] = []
+    file_map: dict[str, Path] = {}
     for row in validated_rows:
         _equal(row.get("run_id"), run_id, "validated manifest run_id")
         _equal(row.get("validation_status"), "valid", "validated row status")
@@ -139,6 +141,7 @@ def require_analysis_approval(config: dict[str, Any], run_id: str) -> AnalysisAp
         if not candidate.is_file():
             _fail(f"validated file is missing: {candidate.name}")
         files.append(candidate)
+        file_map[row["match_hash"]] = candidate
 
     return AnalysisApproval(
         collection_run_id=run_id,
@@ -146,6 +149,7 @@ def require_analysis_approval(config: dict[str, Any], run_id: str) -> AnalysisAp
         validation_summary=report_path,
         validated_manifest=validated_manifest,
         validated_files=tuple(files),
+        validated_file_map=file_map,
         accepted_count=target,
         participant_count=expected_participants,
         dataset_version=str(manifest["dataset_version"]),

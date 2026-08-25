@@ -11,6 +11,7 @@ Install the pinned environment, then run:
 ```powershell
 python -m pip install -r requirements.txt
 python -m pytest -q
+python -m analysis.preflight
 python -m analysis.run --validation-run ACTUAL_RUN_ID
 ```
 
@@ -27,8 +28,10 @@ prove all of the following:
   run-specific sanitized directory;
 - dataset, schema, configuration, and collection provenance match the frozen study.
 
-Production analysis also requires the `analysis` package and dependency files to
-be committed, so the exact executing code has an immutable Git SHA.
+Production analysis requires contract `1.0.0`, a clean worktree, and HEAD exactly
+at annotated tag `tft-patch17.8-analysis-contract-v1`. The contract binds the
+collection/dataset manifests, authoritative split, scientific configuration,
+column roles, model and metric registries, seeds and test-access policy by hashes.
 
 The analysis reads only sanitized JSON named by
 `data/validated/<run-id>/validated_manifest.csv`. Private raw JSON is never an
@@ -46,11 +49,15 @@ separate code path and cannot authorise a failed or undersized real collection.
 
 ## Outputs
 
-Each invocation creates `outputs/<analysis-run-id>/` containing the participant
-dataset, persisted match-grouped 80/20 split, F1–F5 matrices, EDA tables and SVG
-figures, cross-validation and untouched-test metrics, fitted models, provenance,
-and artifact checksums. Large tabular datasets/matrices use gzip-compressed CSV;
-feature vocabularies are learned on development data only.
+Each production invocation consumes the immutable chronological 70/15/15 split:
+3,500 train, 750 validation and 750 test matches. No split is regenerated.
+Feature vocabularies and preprocessing are fitted on train only. Validation alone
+selects the model; after a locked selection manifest is written, test is opened
+once for final evaluation. Every access is recorded in `run_manifest.json`.
+
+The old deterministic 80/20 helper is deprecated engineering-only behaviour. It
+is unreachable from the production entry point and can never produce thesis-valid
+artifacts.
 
 ## Rank and leakage policy
 
@@ -75,3 +82,17 @@ Forest, XGBoost 3.0.2, LightGBM 4.6.0, and CatBoost 1.2.8. The three boosting
 libraries are mandatory for production analysis. A dry run records a clearly
 marked `dependency_unavailable` row for any booster not installed in the current
 development environment.
+
+## Frozen Analysis Protocol
+
+Dataset freeze and analysis freeze are separate milestones. The immutable dataset
+is `tft_set17_patch17_8_v11`, sourced from collection tag
+`tft-patch17.8-final-collection-v10`. The analysis protocol is defined by
+`config/analysis_contract.yaml` and released as
+`tft-patch17.8-analysis-contract-v1` only after the complete test suite and
+candidate preflight pass. Configuration changes require a new contract version
+and tag; production has no force or ignore-contract bypass.
+
+Rank-snapshot variables remain descriptive metadata only and are rejected from
+all primary matrices. Train is used for fitting, validation for selection, and
+test only for one final locked evaluation. Contract mismatches are always NO-GO.

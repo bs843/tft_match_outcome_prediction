@@ -113,23 +113,61 @@ class CompositionFeatureEncoder:
 
 
 def build_feature_families(
-    development: pd.DataFrame,
-    test: pd.DataFrame,
+    train: pd.DataFrame,
+    validation: pd.DataFrame,
     experiments: dict[str, Any],
     column_rules: dict[str, Any],
 ) -> tuple[CompositionFeatureEncoder, dict[str, tuple[pd.DataFrame, pd.DataFrame]]]:
     encoder = CompositionFeatureEncoder(int(experiments["minimum_category_frequency"]))
-    encoder.fit(development)
+    # Scientific preprocessing is fitted on the frozen train partition only.
+    # Validation is transform-only; the test partition is not accepted here.
+    encoder.fit(train)
     result = {}
     for family, details in experiments["feature_families"].items():
         groups = details["groups"]
-        train_x = encoder.transform(development, groups)
-        test_x = encoder.transform(test, groups)
-        if list(train_x.columns) != list(test_x.columns):
-            raise RuntimeError(f"{family} train/test feature schemas differ")
+        train_x = encoder.transform(train, groups)
+        validation_x = encoder.transform(validation, groups)
+        if list(train_x.columns) != list(validation_x.columns):
+            raise RuntimeError(f"{family} train/validation feature schemas differ")
         assert_no_leakage(train_x.columns, column_rules)
-        result[family] = (train_x, test_x)
+        result[family] = (train_x, validation_x)
     return encoder, result
+
+
+def transform_feature_families(
+    encoder: CompositionFeatureEncoder, frame: pd.DataFrame,
+    experiments: dict[str, Any], column_rules: dict,
+) -> dict[str, pd.DataFrame]:
+    """Transform a held-out partition using an already frozen train encoder."""
+    result: dict[str, pd.DataFrame] = {}
+    for family, details in experiments["feature_families"].items():
+        matrix = encoder.transform(frame, details["groups"])
+        assert_no_leakage(matrix.columns, column_rules)
+        result[family] = matrix
+    return result
+
+
+def validate_matrix_contract(
+    columns: list[str], *, family: str, contract: dict[str, Any],
+) -> None:
+    features = contract["features"]
+    groups = set(features["families"][family])
+    required: set[str] = set()
+    for group in groups:
+        required.update(features.get("required_exact_by_group", {}).get(group, []))
+    missing = required.difference(columns)
+    if missing:
+        raise RuntimeError(f"{family} is missing contracted features: {sorted(missing)}")
+    allowed_exact = set().union(*(
+        set(values) for values in features.get("required_exact_by_group", {}).values()
+    ))
+    prefixes = tuple(features["allowed_dynamic_prefixes"])
+    if any(column.startswith("rank_snapshot_") for column in columns):
+        raise RuntimeError("Rank snapshot fields entered a production feature matrix")
+    unexpected = [column for column in columns
+                  if column not in allowed_exact and not column.startswith(prefixes)]
+    if unexpected:
+        raise RuntimeError(f"{family} contains unexpected production features: {unexpected}")
 
 
 def _vocabulary(counts: Counter[str], minimum: int) -> tuple[str, ...]:

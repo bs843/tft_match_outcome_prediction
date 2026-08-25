@@ -207,6 +207,25 @@ status code 1; interrupted runs are audit-only and cannot produce a validated da
 
 Reproducibility means rebuilding results from the frozen raw snapshot and manifests. Re-querying a live API later is not expected to reconstruct the same sample.
 
+## Frozen Analysis Protocol
+
+The dataset freeze and analysis freeze are separate. Dataset
+`tft_set17_patch17_8_v11` retains collection provenance
+`tft-patch17.8-final-collection-v10` and the authoritative chronological
+70/15/15 split (3,500/750/750 matches). Production analysis must pass:
+
+```powershell
+python -m analysis.preflight
+```
+
+Contract `1.0.0` requires annotated analysis tag
+`tft-patch17.8-analysis-contract-v1`, exact configuration and split hashes, a
+clean exact-tag checkout, train-only preprocessing, validation-only model
+selection and one audited final test evaluation. The legacy 80/20 analysis split
+is deprecated and unreachable from production. Rank snapshots remain excluded
+from the primary predictive matrix. Any contract mismatch is NO-GO and has no
+normal force/ignore bypass.
+
 For a completed main run, `collection_run_<run-id>.json` records the full Git SHA,
 immutable tag, dataset/schema versions, Patch 17.8, requested target, actual start and
 completion status/timestamps, counts, and the checksum of that run's accepted-match
