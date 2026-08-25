@@ -61,11 +61,11 @@ point.
 
 ## Frozen Analysis Protocol
 
-Contract `1.0.3` is machine-readable at `config/analysis_contract.yaml`. It binds
+Contract `1.0.4` is machine-readable at `config/analysis_contract.yaml`. It binds
 dataset `tft_set17_patch17_8_v11`, collection tag
 `tft-patch17.8-final-collection-v10`, the 70/15/15 split, configuration hashes,
 features, models, hyperparameters, targets, metrics, seeds, artefacts and test
-policy. The analysis release tag is `tft-patch17.8-analysis-contract-v4`.
+policy. The analysis release tag is `tft-patch17.8-analysis-contract-v5`.
 Production preflight requires a clean checkout at the exact annotated tag commit.
 Any scientific change requires a new contract version and immutable release tag.
 
@@ -79,3 +79,7 @@ authorized for production modelling: it evaluated placement candidates on test
 without first selecting one on validation. Dataset, cohort, split and canonical
 split hash, feature contract, seeds, preprocessing, and top-four protocol are
 unchanged.
+
+Version 1.0.4 is an implementation-only CI portability correction. It replaces a
+historical-tag-dependent regression test with a frozen semantic hash and preserves
+the complete v1.0.3 scientific and test-access protocol.

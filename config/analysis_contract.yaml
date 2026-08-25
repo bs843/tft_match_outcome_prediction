@@ -1,17 +1,18 @@
-analysis_contract_version: "1.0.3"
+analysis_contract_version: "1.0.4"
 release:
-  required_analysis_tag: tft-patch17.8-analysis-contract-v4
+  required_analysis_tag: tft-patch17.8-analysis-contract-v5
   required_analysis_commit: resolve_from_required_analysis_tag
   require_annotated_tag: true
   require_clean_worktree: true
-  release_manifest: reports/analysis_contract_releases/analysis_contract_v4.json
+  release_manifest: reports/analysis_contract_releases/analysis_contract_v5.json
 
 amendment:
-  supersedes_contract: "1.0.2"
-  scope: exact_placement_validation_selection_and_test_access_only
-  defect: v1.0.2 allowed exact-placement candidate models to reach test without validation selection
-  correction: select by validation MAE and permit only the independently locked winner on test
-  unchanged: [dataset, accepted_cohort, split, features, prohibited_features, seeds, preprocessing, top4_target, top4_registry, top4_selection, collection_provenance]
+  supersedes_contract: "1.0.3"
+  scope: ci_test_portability_only
+  defect: v1.0.3 regression test required a historical Git tag absent from shallow CI checkouts
+  correction: compare the scientific contract against a frozen self-contained semantic hash
+  scientific_protocol: unchanged_from_1.0.3
+  unchanged: [dataset, accepted_cohort, split, features, prohibited_features, seeds, preprocessing, targets, model_registries, metrics, selection, test_access, collection_provenance]
 
 dataset:
   collection_run_id: 20260823T124729Z-673b6e6c

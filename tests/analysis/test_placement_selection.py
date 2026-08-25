@@ -2,14 +2,12 @@ from __future__ import annotations
 
 import inspect
 import json
-import subprocess
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 import pandas as pd
 import pytest
-import yaml
 from sklearn.dummy import DummyClassifier
 
 import analysis.src.models as model_module
@@ -19,7 +17,6 @@ from analysis.src.models import (PLACEMENT_TASK, SELECTION_MANIFESTS, TOP4_TASK,
                                  _selection_manifest, approved_model_registry,
                                  authorize_final_test_access, run_development_selection,
                                  run_final_evaluation, verify_locked_selection)
-from src.config import PROJECT_ROOT
 
 
 def _frame(matches: int, prefix: str) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -41,8 +38,8 @@ def _frame(matches: int, prefix: str) -> tuple[pd.DataFrame, pd.DataFrame]:
 def _context(run_id: str = "analysis-test") -> dict[str, str]:
     return {
         "analysis_run_id": run_id,
-        "contract_version": "1.0.3",
-        "analysis_tag": "tft-patch17.8-analysis-contract-v4",
+        "contract_version": "1.0.4",
+        "analysis_tag": "tft-patch17.8-analysis-contract-v5",
         "git_commit": "test-commit",
         "dataset_version": "tft_set17_patch17_8_v11",
         "split_hash": "da64ca53fb584738b9db85c5364fd95644d399fe8202f9ad5b6619f271a95242",
@@ -246,27 +243,24 @@ def test_only_selected_placement_model_reaches_final_test(
     assert final_rows.loc[final_rows["target"] == "placement", "model"].tolist() == ["dummy"]
 
 
-def test_v103_preserves_frozen_science_except_placement_governance() -> None:
-    previous = yaml.safe_load(subprocess.check_output(
-        ["git", "show", "tft-patch17.8-analysis-contract-v3:config/analysis_contract.yaml"],
-        cwd=PROJECT_ROOT, text=True,
-    ))
+def test_v104_preserves_frozen_science_without_historical_git_tags() -> None:
     current = load_contract()
-    for value in (previous, current):
-        value.pop("_path", None)
-        value.pop("analysis_contract_version", None)
-        value.pop("release", None)
-        value.pop("amendment", None)
-        value["selection"].pop("exact_placement", None)
-        for key in (
-            "task_aware_locked_manifests", "independently_locked_tasks",
-            "exact_placement_requires_locked_selection",
-            "exact_placement_manifest_integrity_required",
-            "direct_multi_model_placement_test_evaluation",
-        ):
-            value["test_access"].pop(key, None)
-        value["production_artifacts"].pop("required", None)
-    assert current == previous
+    current.pop("_path", None)
+    current.pop("analysis_contract_version", None)
+    current.pop("release", None)
+    current.pop("amendment", None)
+    current["selection"].pop("exact_placement", None)
+    for key in (
+        "task_aware_locked_manifests", "independently_locked_tasks",
+        "exact_placement_requires_locked_selection",
+        "exact_placement_manifest_integrity_required",
+        "direct_multi_model_placement_test_evaluation",
+    ):
+        current["test_access"].pop(key, None)
+    current["production_artifacts"].pop("required", None)
+    assert stable_hash(current) == (
+        "666a38ce411958a647cbcf06ad5f4b08e928defe50b464547b3f02cd023f53e0"
+    )
     frozen = load_contract()
     assert frozen["split"]["counts"] == {"train": 3500, "validation": 750, "test": 750}
     assert frozen["split"]["canonical_assignment_sha256"] == (

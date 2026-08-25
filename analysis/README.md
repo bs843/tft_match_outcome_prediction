@@ -28,8 +28,8 @@ prove all of the following:
   run-specific sanitized directory;
 - dataset, schema, configuration, and collection provenance match the frozen study.
 
-Production analysis requires contract `1.0.3`, a clean worktree, and HEAD exactly
-at annotated tag `tft-patch17.8-analysis-contract-v4`. The contract binds the
+Production analysis requires contract `1.0.4`, a clean worktree, and HEAD exactly
+at annotated tag `tft-patch17.8-analysis-contract-v5`. The contract binds the
 collection/dataset manifests, authoritative split, scientific configuration,
 column roles, model and metric registries, seeds and test-access policy by hashes.
 
@@ -91,7 +91,7 @@ Dataset freeze and analysis freeze are separate milestones. The immutable datase
 is `tft_set17_patch17_8_v11`, sourced from collection tag
 `tft-patch17.8-final-collection-v10`. The analysis protocol is defined by
 `config/analysis_contract.yaml` and released as
-`tft-patch17.8-analysis-contract-v4` only after the complete test suite and
+`tft-patch17.8-analysis-contract-v5` only after the complete test suite and
 candidate preflight pass. Configuration changes require a new contract version
 and tag; production has no force or ignore-contract bypass.
 
@@ -111,6 +111,12 @@ locked and integrity-checked before test access, and only its winner is evaluate
 on test. The test partition is not used to compare exact-placement candidate
 models. Dataset, split, features, seed, preprocessing and top-four behaviour are
 unchanged.
+
+Contract `1.0.4` preserves the v1.0.3 scientific protocol exactly. It replaces a
+CI regression test that depended on the historical v3 Git tag with a self-contained
+frozen semantic hash, allowing shallow source checkouts to verify the same
+invariants. No modelling, data, split, feature, metric, seed, selection, or
+test-access rule changed.
 
 Rank-snapshot variables remain descriptive metadata only and are rejected from
 all primary matrices. Train is used for fitting, validation for selection, and
