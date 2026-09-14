@@ -1,0 +1,2 @@
+comparison,folds,mean_paired_f1_difference,sd_paired_difference,ci95_low,ci95_high,paired_t_pvalue,wilcoxon_pvalue
+lightgbm_minus_xgboost,5,0.0006064160634339233,0.001487598995109576,-0.0012406820525577348,0.0024535141794255816,0.4135825008489561,0.625

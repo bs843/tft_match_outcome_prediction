@@ -1,0 +1,259 @@
+{
+  "analysis_contract": "1.0.4",
+  "augments": {
+    "available": false,
+    "reason": "No augment field in frozen participant schema"
+  },
+  "cohort": {
+    "matches": 5000,
+    "participants": 40000,
+    "top_four_rate": 0.5
+  },
+  "completed_item_rule": {
+    "excluded_components_and_placeholders": [
+      "TFT_Item_BFSword",
+      "TFT_Item_ChainVest",
+      "TFT_Item_EmptyBag",
+      "TFT_Item_FryingPan",
+      "TFT_Item_GiantsBelt",
+      "TFT_Item_NeedlesslyLargeRod",
+      "TFT_Item_NegatronCloak",
+      "TFT_Item_RecurveBow",
+      "TFT_Item_SparringGloves",
+      "TFT_Item_Spatula",
+      "TFT_Item_TearOfTheGoddess"
+    ],
+    "special_completed_and_artifact_items_retained": true
+  },
+  "composition_analysis_version": "1.0.0",
+  "counts": {
+    "items": 168,
+    "reported_interactions": 150,
+    "trait_thresholds": 175,
+    "units": 67
+  },
+  "created_at_utc": "2026-08-31T21:29:56+00:00",
+  "dataset_version": "tft_set17_patch17_8_v11",
+  "generated_files": [
+    {
+      "bytes": 2122,
+      "path": "composition_analysis_summary.md",
+      "sha256": "b4175f4d99d2aaa9a9b9c10753648fe57bae83d938c73a9457d0d42427e3385f"
+    },
+    {
+      "bytes": 49914,
+      "path": "figures/feature_family_contribution.png",
+      "sha256": "32cee3690c7b8823cc97a3112a7c44d7c46bd191328f2ecd70bea2728a27509b"
+    },
+    {
+      "bytes": 122056,
+      "path": "figures/rank_tier_feature_heatmap.png",
+      "sha256": "174e5593d143ef69f5f626d5a2f686cd3db912eb7e1e98c1760363dad0a1f3e5"
+    },
+    {
+      "bytes": 525491,
+      "path": "figures/shap_summary_beeswarm.png",
+      "sha256": "26cc60fcb70fb800e0fc5afb688f3c2ac320d850ae3d0d466a44568c6b340c1c"
+    },
+    {
+      "bytes": 138333,
+      "path": "figures/top_items_uplift.png",
+      "sha256": "674911da8a235cb01e7a58a071ae227b7f86bc584f7b2e0fc70c865a7dd71233"
+    },
+    {
+      "bytes": 88761,
+      "path": "figures/top_units_uplift.png",
+      "sha256": "9524e8059a8bc360f9283d24322e29b6ebc9d09e4580887fd11f3ddcc7f81b4d"
+    },
+    {
+      "bytes": 141754,
+      "path": "figures/trait_threshold_performance.png",
+      "sha256": "7411d30d18a8dbd5f5fa50c4f7c3aaf9c81b70f41508ee6e58eadca06e3b6a21"
+    },
+    {
+      "bytes": 74829,
+      "path": "figures/unit_star_comparison.png",
+      "sha256": "4e805ce058c8c516f7b0cef87075fb2e69248fe1443a57ec60bac765793d9da4"
+    },
+    {
+      "bytes": 10781,
+      "path": "tables/adjusted_logistic_regression.csv",
+      "sha256": "ef0a9a5ee4ed4e2429025ca5bcdb0da5fc98b3a793fd0cc437a26b1365bc7ba2"
+    },
+    {
+      "bytes": 84,
+      "path": "tables/augment_top4_analysis.csv",
+      "sha256": "200dace3a3a31fbfabaabe78bada00a6de1556c2d43f40f5407cca61bc8fd8c9"
+    },
+    {
+      "bytes": 6183,
+      "path": "tables/composition_structure_analysis.csv",
+      "sha256": "2b33a598bdb50472e0675f8ccdddb7c3fa1b2dbca578da9ec63646614910f35d"
+    },
+    {
+      "bytes": 1311,
+      "path": "tables/feature_family_interpretation.csv",
+      "sha256": "250c418003410b2e2743f5e915f47ddb94a7b7ddc9c77f40f3c50c02585f2e7e"
+    },
+    {
+      "bytes": 37044,
+      "path": "tables/feature_interactions.csv",
+      "sha256": "42ace4268aa0d243d18e4671583f96422408a3a884a2e51bf682586fdb5d29a4"
+    },
+    {
+      "bytes": 175,
+      "path": "tables/global_baseline.csv",
+      "sha256": "e1a120d898e2dcf2d51d7495d8d2e6ea5d27f2ecab9ae96e149c4da8ff25a699"
+    },
+    {
+      "bytes": 42999,
+      "path": "tables/item_top4_analysis.csv",
+      "sha256": "8711a64e127935e7aa71cee85736986290aaea9ed4e8c40dc737987a742f98da"
+    },
+    {
+      "bytes": 96471,
+      "path": "tables/rank_stratified_feature_analysis.csv",
+      "sha256": "af0ecb70dc5e31629d99a56b52ea815831c1ae6d3a797a5d42d90589edd1fb3c"
+    },
+    {
+      "bytes": 4611,
+      "path": "tables/shap_directional_features.csv",
+      "sha256": "8db0b5cdac6cb83631ce9cade319d8b80a598dfe038796aabcb8c977e4a8a6ac"
+    },
+    {
+      "bytes": 252,
+      "path": "tables/shap_feature_family_importance.csv",
+      "sha256": "7b10ac8db7f63cbcc785705ac55a1a875e94f809cbbe433956988d4273a65a52"
+    },
+    {
+      "bytes": 53092,
+      "path": "tables/shap_feature_importance.csv",
+      "sha256": "8cc76902ce6d65cbfae893d06675240291ae817899db2de56da0621bc93c1b36"
+    },
+    {
+      "bytes": 7983,
+      "path": "tables/trait_threshold_comparisons.csv",
+      "sha256": "0ef1236d2eb0bfdeecedcc4fc9869e20c56d485199662b6873773e288c9354f6"
+    },
+    {
+      "bytes": 46577,
+      "path": "tables/trait_top4_analysis.csv",
+      "sha256": "0ee1d1d7614eb2031c000719c593d499d35433939b02541ce21d406df4cc6318"
+    },
+    {
+      "bytes": 11441,
+      "path": "tables/unit_item_holder_analysis.csv",
+      "sha256": "1e938d047436d52d0071eed0dcd29e6faedeb1ecbc50caa667da937da9616e34"
+    },
+    {
+      "bytes": 51972,
+      "path": "tables/unit_star_top4_analysis.csv",
+      "sha256": "37a5f8856268baed3dcc02dee5efcd455a29b89699da872fd48ba8894faa6fd7"
+    },
+    {
+      "bytes": 16591,
+      "path": "tables/unit_top4_analysis.csv",
+      "sha256": "938556203ade12671d464d5d3b856b2985c45ce3a205fec30d49775dc0f99e35"
+    },
+    {
+      "bytes": 987,
+      "path": "thesis_composition_discussion_points.md",
+      "sha256": "023b3c5ac463f52ff3eb817823361a450224a3529a1563017d8115af057d3300"
+    },
+    {
+      "bytes": 2727,
+      "path": "thesis_composition_results_draft.md",
+      "sha256": "55304c67d9af08f0905366c73e0daa5cf08e0f7c85db345c629ecec61ea5dd27"
+    }
+  ],
+  "mode": "read_only_post_modelling",
+  "model_retraining": false,
+  "production_artifact_hashes_before_and_after_equal": true,
+  "regression": {
+    "partition": "train_only",
+    "standard_errors": "match_cluster_robust",
+    "status": "completed"
+  },
+  "seed": 4275,
+  "shap": {
+    "method": "native TreeSHAP pred_contribs",
+    "model": "frozen development XGBoost",
+    "partition": "validation",
+    "status": "completed"
+  },
+  "software": {
+    "numpy": "2.5.1",
+    "pandas": "2.3.3",
+    "python": "3.12.1",
+    "scikit_learn": "1.7.2",
+    "xgboost": "3.0.2"
+  },
+  "source_analysis_run_id": "analysis-20260825T190121Z-1b3eaaff",
+  "source_artifact_hashes": {
+    "data/feature_vocabulary.json": "22ce0b89127bd9a153fa9de838db8312115130112ebe945908cfa0151ea6bdbd",
+    "data/features/F1/test_X.csv.gz": "34ba9070aa7675f549b66215c39b507867f96bf9c3a5f64ff128897474bbc7c7",
+    "data/features/F1/train_X.csv.gz": "6b0818a3e7238f0fb01566e472d65e98d3cf3f2103df762f376e10f8e27eb50b",
+    "data/features/F1/validation_X.csv.gz": "5644aa3d8d59b491adec22fe7710572011f18f00432557b0e7edc6825c6f9a33",
+    "data/features/F2/test_X.csv.gz": "528669ff31a7eeeaaba300f972c6df1f0ad25c91d3f3786bd5b997d8611c266d",
+    "data/features/F2/train_X.csv.gz": "1d0e56a228d86706af0e20c37911f7e9af122f141393aa1603bce941ad2b801d",
+    "data/features/F2/validation_X.csv.gz": "7044cc3b1f7591266ff04982c1718d0900971f96e066cda4bf3fb4e2a3d7252a",
+    "data/features/F3/test_X.csv.gz": "760be2b74ba9ec02e052c3eca88fc9b3ef38ff8f9e9e0b0ff59121e41a504202",
+    "data/features/F3/train_X.csv.gz": "392fc1f3c2b25f749e055eafe569475b568a3aa386f906c2a1061bb9877a68e5",
+    "data/features/F3/validation_X.csv.gz": "58ae26de5cedad42d048ed08dc90de73daefcf9d118d984aca16a4fe29cb6ea0",
+    "data/features/F4/test_X.csv.gz": "e72e705ebc4ccedd28213103deda487888c8e98cca77fe9f7cb5dd61de9fc904",
+    "data/features/F4/train_X.csv.gz": "1165d754eb3199d17e3afb7c28d21bec19862d30bd2b10b347c8d55ba214a38e",
+    "data/features/F4/validation_X.csv.gz": "4bdbdf254597991954c505bf9d1a92e18c7f2ac8f0a2430badf916fea56352d6",
+    "data/features/F5/test_X.csv.gz": "41ae83f1fa89a1029c9ea6e7f5905b1e531c8a2176c7d70da102d1c19c35a7ee",
+    "data/features/F5/train_X.csv.gz": "1c1a8ede37d62d2b607cd20211ab08b112c3c4739d7d46c4730f19f8b85c658c",
+    "data/features/F5/validation_X.csv.gz": "0071b5decbf34fd5471bb984491494a7d7625e8dacca43fdda2a4387ae02873e",
+    "data/fitted_train_encoder.joblib": "9d181099de0f3e135bd9556f17760e486032723534245ab562242cbb03f94c31",
+    "data/frozen_split_assignments.csv": "67be8a344b29b4dfce32c49572465a495e6bd0069719396ab924cee3bc355c18",
+    "data/frozen_split_assignments.csv.provenance.json": "d421422f1dd829dd539b4dd37c9b06eaf143b41b7609e9f4ceba01872b6be8bb",
+    "data/test_participants.csv.gz": "716866004b8c123e52a1e986a9681d2f03a2ecf33b77a3d7b304cd5c6c33be77",
+    "data/train_participants.csv.gz": "22676814c117aaa66f391ca0efa4eecfaa6f6b56856f97515a856ad548748563",
+    "data/validation_participants.csv.gz": "69b4543215b92907389da2736d1ba3da6b63665ea53130433371e38def1af6f6",
+    "eda/figures/mean_level_by_placement.svg": "a11f0d72d0b9cbfdb98846bd08777e404fd6b03565ad96598600bb688c9d2967",
+    "eda/figures/placement_distribution.svg": "6990aa5d385bc879c39ff7343389fcd8e4d1ed0379e486b2171471028b46d933",
+    "eda/figures/top4_bottom4_level.svg": "5e92eeabc7d3cf0a6d98412d866c845fcd9c4d74d34c6047ae52c323fc9b5611",
+    "eda/tables/board_component_frequency_by_placement.csv": "11b02392c64c1dfdf7214aaaf6e7abbc714ba2f441929f1c12ce623b0fb09ba3",
+    "eda/tables/board_component_frequency_top4_bottom4.csv": "528914d4ac31e3ddf5c3a634ad06c0bffe56f28b6fd8b13d3755c83feacc251a",
+    "eda/tables/dataset_integrity.csv": "2ade984c10087db040f21430ec80f4124a51c3175276673fc60352ff4a772d9a",
+    "eda/tables/modelling_dataset_summary.csv": "bfc9a89b2f271e5cade6e666319bc57ef5ccc94e6f337666f236ef9c1b126810",
+    "eda/tables/placement_distribution_by_region.csv": "1eb38d4ae5f65ca184efe056e2fbff475189a0f727aadf2bb558f47ffd5e94b2",
+    "eda/tables/placement_summary.csv": "d107ea228a071c194fd828fcaf5d5aa675ce4f75a57b5918f42d36728cd27d62",
+    "eda/tables/rank_descriptive_summary.csv": "4b9b40bc44b621989b914a0014973038cf61d50fd98190e39b05726f80241050",
+    "eda/tables/rank_distribution_by_region.csv": "f0bc542c543a4159a63608064ad7a0e5aeed9b9babeedcc8a9c0dee0a86191a3",
+    "eda/tables/regional_distribution.csv": "bbeaf6dfc55ff3c85f951e4c80987f856cf01802306ea85105ae158e64c1af95",
+    "eda/tables/top4_bottom4_summary.csv": "f8a6e5bc7b9bbdfebc3f8aed0df4b0f8b824600587b0ef7ebe7baacd0a973b20",
+    "modelling/models/development/placement_f5_dummy.joblib": "15996d3acce38ca5352dcdc82f870eddf984d385dc3032b7f1acd224fbefcb85",
+    "modelling/models/development/placement_f5_random_forest.joblib": "8e74879dc20dcee99bbff1844b8fbdbea5d807f1941dbeaca1fe1ba7be8201d6",
+    "modelling/models/development/top4_f5_catboost.joblib": "f0f3aae565e2d735a5d4f4c6d8fc37e082c1557409680e506cb6d11dd811c8af",
+    "modelling/models/development/top4_f5_dummy.joblib": "8e466252a2c038e5892af0243b38c2603e3bfebd1f0b8ce32150988ae7d5d826",
+    "modelling/models/development/top4_f5_lightgbm.joblib": "c00a989afc662b31720bd943dfc00854e1a01edc2627529e39a17d89461d727d",
+    "modelling/models/development/top4_f5_logistic_regression.joblib": "df5664a3b7376f306d6a01d797220623504023ebb461dc2f4bd06c2148866be4",
+    "modelling/models/development/top4_f5_random_forest.joblib": "a93fbff6716be735542bb2718473533fb008825ba9591044578b426c40e3dfeb",
+    "modelling/models/development/top4_f5_xgboost.joblib": "46771609cb9e2943ef149788a97943157ebd30892334154e167272185cd5fc9f",
+    "modelling/models/selected_placement_f5.joblib": "4429e9e64dd9f93344ae669eeb9d013338821600f3a52421d3a7e93f2a4a164a",
+    "modelling/models/selected_top4_f5.joblib": "9a36bb769060d1ed4ca5ea1823b3e22556e2365c3ac80b1ae916a0d3cfd26ae3",
+    "modelling/placement_selection_manifest.json": "cdd8f43f6a6f1bddf9c9d7d2b9c46429c6631be2e84aa075a57db3e35a42134a",
+    "modelling/selection_manifest.json": "c1af93246c7b262adf60e3c7edfe3823f4c75a4432d6d7014d2aebc7b7357323",
+    "modelling/tables/cross_validation_metrics.csv": "6e2306f1d5b383552b069675a94b603b99e4312762af3c4ac081c7ca891150f5",
+    "modelling/tables/final_test_metrics.csv": "435e79662d60a71fc18a54e034be7093a6a427e1ec9c949e8afcef41a187ca26",
+    "modelling/tables/validation_metrics.csv": "3132df3becbd1ec1d2bdc303b23f0cde6a61344784b15106607da116783d13a3",
+    "provenance.json": "a6fa6718204da633be5585c2706aa0284b072ec46d147e731b7fe3addc579481",
+    "run_manifest.json": "2d51630feb56d2782a38d77b817cd476041fb9add44b11c7a41e91cf432d59f2",
+    "run_summary.json": "be64b6a3c4285f818726b186f38055d6ade1162e4b1c682f184b315590d78f0f"
+  },
+  "source_production_root": "C:\\Users\\bakan\\Documents\\Codex\\2026-08-06\\review-this-repository-without-changing-anything\\outputs\\tft-thesis-data-collection\\outputs\\analysis-20260825T190121Z-1b3eaaff",
+  "split_sha256": "da64ca53fb584738b9db85c5364fd95644d399fe8202f9ad5b6619f271a95242",
+  "status": "PASS",
+  "test_set_tuning": false,
+  "thresholds": {
+    "interactions": 150,
+    "items": 200,
+    "rank_cells": 100,
+    "traits": 200,
+    "unit_star": 100,
+    "units": 200
+  }
+}

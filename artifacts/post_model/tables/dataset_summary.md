@@ -1,0 +1,12 @@
+| measure | value |
+| --- | --- |
+| accepted_matches | 5000 |
+| participant_rows | 40000 |
+| patch | 17.8 |
+| train_matches | 3500 |
+| validation_matches | 750 |
+| test_matches | 750 |
+| source_predictors | 291 |
+| encoded_f5_columns | 404 |
+| top_four_rows | 20000 |
+| bottom_four_rows | 20000 |

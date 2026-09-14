@@ -1,0 +1,20 @@
+{
+  "dashboard_version": "1.2.0",
+  "mode": "read_only_post_modelling",
+  "modelling_operations": false,
+  "tests": {
+    "command": "python -m pytest -q -p no:cacheprovider",
+    "passed": 161,
+    "failed": 0,
+    "verified_at_utc": "2026-09-02T12:15:00Z"
+  },
+  "safety": {
+    "training_invoked": false,
+    "models_refit": false,
+    "model_selection_changed": false,
+    "hyperparameters_changed": false,
+    "split_changed": false,
+    "final_test_tuning": false,
+    "identifiers_displayed": false
+  }
+}

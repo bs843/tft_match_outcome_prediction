@@ -1,0 +1,21 @@
+{
+  "base_extension": "1.0.0",
+  "bootstrap_samples": 2000,
+  "created_at_utc": "2026-08-27T20:17:19+00:00",
+  "files": {
+    "figures/placement_final_test_confusion_matrix.png": "9e5491d2d60bb7b58e20c633cf4ffe740112ed1dc648a6087fe5a6f7c20a1dd3",
+    "tables/feature_family_validation_comparison.csv": "b018c764cfe21e17916ac157be3b054e5473b1bd5ecb1384d05e1cdbd9da569d",
+    "tables/placement_final_test_confusion_matrix.csv": "c190461e9edfe9cb29f745c2fe808d4fde78e070109282993c0dd10484ebdf0e",
+    "tables/placement_final_test_per_class.csv": "4ff53a501abf25cfaf6cea6daebd500222443acf6dfe1c199d38a4ab7c2893cf",
+    "tables/placement_final_test_per_class.md": "e7771959bfc5dbbc4aefccc613f0f733e469accf18cff3402f40e4a7a467e6d2",
+    "tables/placement_match_bootstrap_ci.csv": "da69170a96116dd7258255b03f97e3ae067aa0c63453549ac25beacb4f033b01",
+    "tables/top4_match_bootstrap_ci.csv": "c4d4c3b69b32f6d354bbaf2f6c2d34e7c3719a1870c0e50eb4f0d15156939c48",
+    "tables/top4_validation_test_comparison.csv": "f1774c65af29121b3291e968f5ee4def12fdaa37bab29139b2c39a19091461bb",
+    "tables/unit_ablation_paired_deterioration.csv": "2c4095a4960ffba6ac28414a03df70a4f6f9d61024c4d16cc38b3772f59da1ee",
+    "uncertainty_and_final_evaluation_addendum.md": "4bdc8e8949d126c155c52a7a7950d70af030b7aa36a50723d0d7e3f457f29ded"
+  },
+  "production_artifact_hashes_before_and_after_equal": true,
+  "resampling_unit": "match",
+  "seed": 4275,
+  "status": "PASS"
+}

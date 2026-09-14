@@ -1,0 +1,15 @@
+feature_type,threshold_pair,common_features,spearman_rho,top10_overlap,top20_overlap
+unit,100→200,64,0.9999999999999998,9,19
+unit,200→300,64,0.9999999999999998,10,20
+unit,300→500,63,1.0,10,20
+item,100→200,118,0.9999999999999998,8,16
+item,200→300,90,1.0,6,16
+item,300→500,70,1.0,8,15
+trait_signature,100→200,97,0.9999999999999999,7,16
+trait_signature,200→300,85,1.0,5,13
+trait_signature,300→500,72,1.0,6,15
+unit_star,100→200,163,1.0,7,16
+unit_star,200→300,155,1.0,9,18
+unit_star,300→500,135,1.0,8,18
+interaction,150→250,150,1.0,10,20
+interaction,250→500,150,1.0,10,20

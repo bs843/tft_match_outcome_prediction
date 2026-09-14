@@ -1,0 +1,73 @@
+{
+  "adjusted_regression_partition": "frozen_train_only_from_authoritative_source",
+  "analysis_contract": "1.0.4",
+  "augment_analysis": "not_generated_schema_absent",
+  "average_placement": 4.5,
+  "baseline_top4_rate": 0.5,
+  "created_at_utc": "2026-09-02T12:09:28.562112+00:00",
+  "dataset_version": "tft_set17_patch17_8_v11",
+  "evidence_synthesis_version": "1.0.0",
+  "generated_files": [
+    "evidence_classification_rules.md",
+    "feature_evidence_table.csv",
+    "feature_family_incremental_value.csv",
+    "figures\\conceptual_evidence_framework.png",
+    "figures\\descriptive_vs_shap_rank.png",
+    "figures\\shap_vs_descriptive.png",
+    "figures\\support_threshold_rank_stability.png",
+    "interaction_strength_comparison.csv",
+    "multiple_testing_summary.csv",
+    "raw_vs_adjusted_associations.csv",
+    "raw_vs_adjusted_summary.md",
+    "robustness_summary.md",
+    "shap_vs_descriptive.csv",
+    "support_threshold_sensitivity.csv",
+    "threshold_rank_stability.csv",
+    "train_validation_descriptive_stability.csv"
+  ],
+  "hyperparameters_changed": false,
+  "matches": 5000,
+  "model_selection_changed": false,
+  "participants": 40000,
+  "production_artifact_hashes_unchanged": true,
+  "production_model_retrained": false,
+  "rank_in_primary_matrix": false,
+  "shap_source": "existing frozen development XGBoost validation TreeSHAP",
+  "source_composition_hashes_unchanged": true,
+  "split_changed": false,
+  "status": "PASS",
+  "test_based_tuning": false,
+  "test_used_for_new_discovery": false,
+  "thresholds": {
+    "interaction": [
+      100,
+      150,
+      250,
+      500
+    ],
+    "item": [
+      100,
+      200,
+      300,
+      500
+    ],
+    "trait_signature": [
+      100,
+      200,
+      300,
+      500
+    ],
+    "unit": [
+      100,
+      200,
+      300,
+      500
+    ],
+    "unit_star": [
+      100,
+      200,
+      300,
+      500
+    ]
+  }
+}

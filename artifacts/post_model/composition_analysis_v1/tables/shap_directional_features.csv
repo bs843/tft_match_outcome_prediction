@@ -1,0 +1,31 @@
+feature,feature_family,mean_absolute_shap,mean_signed_shap,mean_shap_when_nonzero,feature_value_shap_spearman,nonzero_validation_observations,higher_value_direction,direction
+Structure · Total Items,structure,0.9818991,-0.030583542,-0.024871783331036568,0.9882588677515607,5971,higher_values_top_four_positive,positive
+Structure · Mean Star,structure,0.7674773,-0.0055824383,-0.005582438316196203,0.967603740846639,6000,higher_values_top_four_positive,positive
+Level,basic,0.7672972,0.02643536,0.026435360312461853,0.9531355131279303,6000,higher_values_top_four_positive,positive
+Structure · Unique Items,structure,0.054532308,-0.0012816656,-0.0009702726383693516,0.9485074460492507,5971,higher_values_top_four_positive,positive
+Composition Size,basic,0.08092015,0.004732177,0.004732177127152681,0.9199343165979522,6000,higher_values_top_four_positive,positive
+Structure · Max Star,structure,0.10649941,-0.0034050148,-0.0034050147514790297,0.8557215069882206,6000,higher_values_top_four_positive,positive
+Trait strength · Resist Tank,traits,0.03280781,0.00041809038,0.039569783955812454,0.8531760900644425,2518,higher_values_top_four_positive,positive
+Structure · Trait Strength Total,structure,0.0771562,0.0042868564,0.003547654952853918,0.8445904917252708,5981,higher_values_top_four_positive,positive
+Item count · Madreds Bloodrazor,items,0.05460728,-0.0013266638,0.0728149265050888,0.8323885491715277,2195,higher_values_top_four_positive,positive
+Item count · Infinity Edge,items,0.023678193,-0.00024411605,0.03409196063876152,0.8246045803238539,2058,higher_values_top_four_positive,positive
+Item count · Deathblade,items,0.016022375,-0.00064302096,0.023345431312918663,0.8152234927556592,1969,higher_values_top_four_positive,positive
+Item count · Redemption,items,0.015107718,6.917787e-05,0.019370602443814278,0.8099771383504175,2264,higher_values_top_four_positive,positive
+Item count · Spear Of Shojin,items,0.015893502,-0.0015404082,0.02526547573506832,0.7736152061149364,1690,higher_values_top_four_positive,positive
+Structure · Three Star Units,structure,0.18035002,-0.00899166,0.10815562307834625,0.7682822770439549,3264,higher_values_top_four_positive,positive
+Trait present · Morgana Unique,traits,0.007772967,0.0003883808,0.01559978537261486,0.7611536603259647,1569,higher_values_top_four_positive,positive
+Trait present · Hptank,traits,0.058842175,0.0035461127,-0.045744165778160095,-0.8469614434156566,3626,higher_values_bottom_four_negative,negative
+Trait present · Space Groove,traits,0.01581515,-1.3739854e-05,-0.01876187138259411,-0.8414771261145656,2494,higher_values_bottom_four_negative,negative
+Trait present · Assassin,traits,0.0086969435,0.0007412842,-0.009477454237639904,-0.8405774477415497,2481,higher_values_bottom_four_negative,negative
+Trait present · Drx,traits,0.0073139737,0.00051009236,-0.007927949540317059,-0.8402580302826741,2530,higher_values_bottom_four_negative,negative
+Trait present · Flex,traits,0.015186561,-0.0013259475,-0.023697778582572937,-0.8248064147855991,2087,higher_values_bottom_four_negative,negative
+Trait present · Summon,traits,0.004334479,0.00042349598,-0.004174746107310057,-0.8241535761851103,2693,higher_values_bottom_four_negative,negative
+Trait present · Shield Tank,traits,0.0070370305,-0.0026404157,-0.008095096796751022,-0.8097469357354289,3450,higher_values_bottom_four_negative,negative
+Trait present · Melee,traits,0.008026902,3.9978746e-05,-0.011043254286050797,-0.8043395756015099,2120,higher_values_bottom_four_negative,negative
+Trait present · Ranged,traits,0.005035118,-0.00093979057,-0.008375642821192741,-0.7612330540324272,1992,higher_values_bottom_four_negative,negative
+Trait present · As,traits,0.009722852,-5.5950286e-06,-0.01831110566854477,-0.7488352241142586,1576,higher_values_bottom_four_negative,negative
+Trait present · Ap,traits,0.0041424264,9.7408454e-05,-0.004753512796014547,-0.7476136919570439,2265,higher_values_bottom_four_negative,negative
+Trait strength · Tahm Kench Unique,traits,0.0027878296,-0.0002695648,-0.006308295764029026,-0.7382284429116222,1446,higher_values_bottom_four_negative,negative
+Item count · Thiefs Gloves,items,0.25478038,0.0054937257,-0.5411136746406555,-0.7307386501948437,1382,higher_values_bottom_four_negative,negative
+Trait present · Dark Star,traits,0.002941539,-0.0001229543,-0.002668212167918682,-0.7288633963926915,2846,higher_values_bottom_four_negative,negative
+Trait present · Tahm Kench Unique,traits,0.012010473,0.0023022718,-0.019789481535553932,-0.7246666127082363,1446,higher_values_bottom_four_negative,negative

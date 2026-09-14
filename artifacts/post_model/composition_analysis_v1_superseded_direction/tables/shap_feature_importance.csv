@@ -1,0 +1,405 @@
+feature,feature_family,mean_absolute_shap,mean_signed_shap,mean_shap_when_nonzero,nonzero_validation_observations,direction_when_nonzero
+Structure · Total Items,structure,0.9818991,-0.030583542,-0.024871783331036568,5971,bottom_four_negative
+Structure · Mean Star,structure,0.7674773,-0.0055824383,-0.005582438316196203,6000,bottom_four_negative
+Level,basic,0.7672972,0.02643536,0.026435360312461853,6000,top_four_positive
+Item count · Thiefsgloves,items,0.25478038,0.0054937257,-0.5411136746406555,1382,bottom_four_negative
+Structure · Three Star Units,structure,0.18035002,-0.00899166,0.10815562307834625,3264,top_four_positive
+Structure · Max Star,structure,0.10649941,-0.0034050148,-0.0034050147514790297,6000,bottom_four_negative
+Item count · Ekkooffering Anomalyitem,items,0.09250771,0.00066253985,-0.3376660943031311,816,bottom_four_negative
+Unit present · Shen,units,0.0855483,0.00921527,0.22852951288223267,1244,top_four_positive
+Composition Size,basic,0.08092015,0.004732177,0.004732177127152681,6000,top_four_positive
+Structure · Trait Strength Total,structure,0.0771562,0.0042868564,0.003547654952853918,5981,top_four_positive
+Trait present · Hptank,traits,0.058842175,0.0035461127,-0.045744165778160095,3626,bottom_four_negative
+Trait strength · Animasquad,traits,0.055883974,-0.0016652247,-0.5642078518867493,306,bottom_four_negative
+Item count · Madredsbloodrazor,items,0.05460728,-0.0013266638,0.0728149265050888,2195,top_four_positive
+Structure · Unique Items,structure,0.054532308,-0.0012816656,-0.0009702726383693516,5971,bottom_four_negative
+Unit star · Morgana,units,0.05180749,0.004114751,0.10095424950122833,1571,top_four_positive
+Unit star · Nunu,units,0.051379424,0.0057327533,0.08841957151889801,1674,top_four_positive
+Unit star · Maokai,units,0.0433926,-0.002865332,0.057812608778476715,1881,top_four_positive
+Item count · Bramblevest,items,0.04320246,0.0005387994,0.12400255352258682,1058,top_four_positive
+Structure · Active Traits,structure,0.04009703,-0.0026590154,-0.0032590702176094055,5981,bottom_four_negative
+Unit star · Akali,units,0.039929874,0.0004507467,0.07337301224470139,1265,top_four_positive
+Unit star · Blitzcrank,units,0.03991242,0.004440986,0.09421885013580322,1382,top_four_positive
+Unit star · Kindred,units,0.03862745,-0.0013105397,0.10186251997947693,996,top_four_positive
+Structure · Unique Units,structure,0.038577236,0.008930556,0.008930555544793606,6000,top_four_positive
+Unit present · Jhin,units,0.03618972,0.0020097678,0.12890595197677612,889,top_four_positive
+Unit present · Bard,units,0.036116187,0.002293547,0.15806438028812408,729,top_four_positive
+Structure · Two Star Units,structure,0.034540266,0.0024717231,0.0022191889584064484,5930,top_four_positive
+Unit star · Briar,units,0.03419219,0.0009340811,-0.17084644734859467,584,bottom_four_negative
+Unit present · Briar,units,0.03311768,-0.0010677124,-0.17560990154743195,584,bottom_four_negative
+Trait strength · Resisttank,traits,0.03280781,0.00041809038,0.039569783955812454,2518,top_four_positive
+Item count · Emptybag,items,0.031870414,0.013217243,1.4702496528625488,92,top_four_positive
+Trait strength · Spacegroove,traits,0.02894256,0.0012113388,0.022238407284021378,2494,top_four_positive
+Item count · Giantsbelt,items,0.028847484,0.0008438527,-0.1944696605205536,432,bottom_four_negative
+Unit star · Riven,units,0.02830958,0.0013098215,0.09578348696231842,855,top_four_positive
+Item count · Item Stargazeremblemitem,items,0.026644764,-0.0015560155,-0.3154880404472351,268,bottom_four_negative
+Item count · Nightharvester,items,0.026323741,-0.00090394006,0.08594544231891632,886,top_four_positive
+Unit star · Nami,units,0.02618479,0.00044609464,0.11760274320840836,663,top_four_positive
+Unit star · Shen,units,0.025807098,0.004821865,0.0726361945271492,1244,top_four_positive
+Trait present · Primordian,traits,0.02512847,-0.0004637079,-0.06511401385068893,1179,bottom_four_negative
+Unit star · Ezreal,units,0.024952626,-0.001119752,-0.17964214086532593,435,bottom_four_negative
+Item count · Bloodthirster,items,0.02483219,0.0001371281,0.05616146698594093,1333,top_four_positive
+Unit star · Ornn,units,0.024079794,0.00050254364,0.06465917825698853,1091,top_four_positive
+Unit star · Jax,units,0.023753703,-0.0013738296,0.048258766531944275,1076,top_four_positive
+Item count · Infinityedge,items,0.023678193,-0.00024411605,0.03409196063876152,2058,top_four_positive
+Unit present · Blitzcrank,units,0.023617502,0.00040613246,0.05213947966694832,1382,top_four_positive
+Item count · Tearofthegoddess,items,0.022660451,-0.0003844861,-0.22086317837238312,313,bottom_four_negative
+Unit present · Karma,units,0.022393651,-0.0011322869,0.05983494222164154,1066,top_four_positive
+Unit present · Morgana,units,0.022283569,0.000107814216,0.04271646961569786,1571,top_four_positive
+Item count · Statikkshiv,items,0.020154737,0.00046309154,0.040994793176651,1489,top_four_positive
+Trait strength · Timebreaker,traits,0.020088196,-0.0030734912,-0.05527621507644653,1158,bottom_four_negative
+Unit star · Karma,units,0.019783216,0.0013878912,0.057881809771060944,1066,top_four_positive
+Unit star · Aurelionsol,units,0.019746648,-9.7325894e-05,0.08225711435079575,682,top_four_positive
+Item count · Item Pulsefireemblemitem,items,0.019712899,0.00042859686,-0.4382795989513397,132,bottom_four_negative
+Item count · Redbuff,items,0.019191531,-0.0010203109,0.03507358580827713,1528,top_four_positive
+Item count · Crownguard,items,0.019097729,0.00079296174,0.05868879705667496,1007,top_four_positive
+Item count · Chainvest,items,0.018287089,0.0005406003,-0.16629409790039062,320,bottom_four_negative
+Item count · Warmogsarmor,items,0.017986765,-0.0014672979,0.00500893360003829,3073,top_four_positive
+Item count · Adaptivehelm,items,0.017878622,0.0009215401,0.04434823617339134,1211,top_four_positive
+Trait strength · Primordian,traits,0.01766054,0.0015423092,-0.09389260411262512,515,bottom_four_negative
+Unit star · Gragas,units,0.01701067,-0.00052208715,-0.08337771892547607,622,bottom_four_negative
+Item count · Needlesslylargerod,items,0.016084576,-0.00047357052,-0.14695416390895844,338,bottom_four_negative
+Item count · Deathblade,items,0.016022375,-0.00064302096,0.023345431312918663,1969,top_four_positive
+Item count · Dragonsclaw,items,0.01601368,-0.00019869363,0.04164852946996689,1110,top_four_positive
+Item count · Spearofshojin,items,0.015893502,-0.0015404082,0.02526547573506832,1690,top_four_positive
+Item count · Bfsword,items,0.015862575,-0.00075796206,-0.15149535238742828,329,bottom_four_negative
+Trait present · Spacegroove,traits,0.01581515,-1.3739854e-05,-0.01876187138259411,2494,bottom_four_negative
+Unit star · Jhin,units,0.015629197,0.0025198183,0.05929636210203171,889,top_four_positive
+Unit present · Jinx,units,0.015464288,-0.001685618,-0.09317980706691742,552,bottom_four_negative
+Item count · Jeweledgauntlet,items,0.0153593775,0.00016557248,0.009449770674109459,2593,top_four_positive
+Unit star · Galio,units,0.015282155,-0.00015219515,0.0504455491900444,849,top_four_positive
+Trait present · Flextrait,traits,0.015186561,-0.0013259475,-0.023697778582572937,2087,bottom_four_negative
+Item count · Item Psyopsemblemitem,items,0.015110945,0.0035341175,-0.4569801092147827,76,bottom_four_negative
+Item count · Redemption,items,0.015107718,6.917787e-05,0.019370602443814278,2264,top_four_positive
+Item count · Ionicspark,items,0.0144216,-0.00034626015,0.07278405129909515,578,top_four_positive
+Unit star · Caitlyn,units,0.014417393,-7.770939e-05,-0.06285005807876587,683,bottom_four_negative
+Unit star · Lissandra,units,0.013824487,0.0011365149,-0.049356382340192795,759,bottom_four_negative
+Item count · Rabadonsdeathcap,items,0.013697467,-0.0003281876,0.021671386435627937,1766,top_four_positive
+Unit star · Kaisa,units,0.013303656,0.00079708226,0.0739259198307991,566,top_four_positive
+Unit present · Pantheon,units,0.013063062,-0.001066585,-0.03907681256532669,1083,bottom_four_negative
+Unit present · Kindred,units,0.012697758,-0.0056406134,0.02075713872909546,996,top_four_positive
+Trait strength · Manatrait,traits,0.01251884,0.0010889614,0.024754730984568596,1602,top_four_positive
+Item count · Item Animasquademblemitem,items,0.012178518,0.0010551253,-0.3405120372772217,98,bottom_four_negative
+Unit star · Talon,units,0.012074804,-4.5078e-05,-0.1064978614449501,337,bottom_four_negative
+Trait present · Tahmkenchuniquetrait,traits,0.012010473,0.0023022718,-0.019789481535553932,1446,bottom_four_negative
+Item count · Gargoylestoneplate,items,0.011843051,-0.0010240893,0.00442207045853138,3987,top_four_positive
+Item count · Item Favoredemblemitem,items,0.011723702,0.0013552122,-0.2962425649166107,105,bottom_four_negative
+Unit star · Missfortune,units,0.011644676,0.0005207729,0.05736648291349411,623,top_four_positive
+Item count · Negatroncloak,items,0.0115698725,0.0004399607,-0.11680126190185547,285,bottom_four_negative
+Unit star · Leona,units,0.011526341,0.00019059503,-0.04199797660112381,784,bottom_four_negative
+Unit star · Vex,units,0.011197544,0.0006336453,0.05545280873775482,596,top_four_positive
+Trait strength · Psyops,traits,0.011054596,-0.00030054068,-0.04850798845291138,702,bottom_four_negative
+Trait strength · Stargazer Mountain,traits,0.010993584,-0.0011875441,-0.2162330150604248,169,bottom_four_negative
+Item count · Sparringgloves,items,0.010909198,0.00015875185,-0.11365185678005219,283,bottom_four_negative
+Unit star · Rhaast,units,0.010844251,0.0002688462,0.02883916348218918,1105,top_four_positive
+Trait present · Fateweaver,traits,0.010683778,-0.00012096043,-0.020682496950030327,1503,bottom_four_negative
+Item count · Frozenheart,items,0.010486849,0.00037514672,0.014987551607191563,1900,top_four_positive
+Trait present · Astrait,traits,0.009722852,-5.5950286e-06,-0.01831110566854477,1576,bottom_four_negative
+Item count · Guinsoosrageblade,items,0.009604734,-0.00069246104,-0.0070081958547234535,2731,bottom_four_negative
+Item count · Item Rangedtraitemblemitem,items,0.00958928,0.00062571536,-0.2801114022731781,96,bottom_four_negative
+Item count · Steraksgage,items,0.009488822,0.00029435594,0.03130703046917915,922,top_four_positive
+Unit star · Pantheon,units,0.009380244,-7.710358e-06,-0.02532143145799637,1083,bottom_four_negative
+Item count · Hextechgunblade,items,0.009364538,-0.0005569863,0.021409183740615845,1138,top_four_positive
+Item count · Morellonomicon,items,0.009347932,-4.441589e-05,0.02605881728231907,1039,top_four_positive
+Item count · Powergauntlet,items,0.009292112,0.000539109,0.012719348073005676,1418,top_four_positive
+Item count · Recurvebow,items,0.009103723,0.0008522314,-0.07983781397342682,310,bottom_four_negative
+Unit star · Teemo,units,0.008981209,0.0013466846,-0.052731506526470184,422,bottom_four_negative
+Item count · Item Primordianemblemitem,items,0.008959983,0.0006649798,-0.27346163988113403,91,bottom_four_negative
+Trait present · Assassintrait,traits,0.0086969435,0.0007412842,-0.009477454237639904,2481,bottom_four_negative
+Unit star · Tahmkench,units,0.008647673,-0.0020217802,0.007836553268134594,1449,top_four_positive
+Unit star · Ivernminion,units,0.0085995365,-0.00045423445,0.016610007733106613,1099,top_four_positive
+Item count · Tft5 Item Thiefsglovesradiant,items,0.008535156,0.00037499378,-0.269016295671463,91,bottom_four_negative
+Unit star · Bard,units,0.008383149,-9.773206e-05,0.032858241349458694,729,top_four_positive
+Unit present · Nasus,units,0.008302424,-0.001502369,-0.04736734926700592,617,bottom_four_negative
+Unit present · Leona,units,0.008219295,0.00064229267,-0.02886771596968174,784,bottom_four_negative
+Trait strength · Drx,traits,0.008183071,0.00026090772,0.0070511153899133205,2051,top_four_positive
+Unit star · Twistedfate,units,0.008038507,-0.00065698504,-0.0775112435221672,335,bottom_four_negative
+Trait present · Meleetrait,traits,0.008026902,3.9978746e-05,-0.011043254286050797,2120,bottom_four_negative
+Trait present · Morganauniquetrait,traits,0.007772967,0.0003883808,0.01559978537261486,1569,top_four_positive
+Item count · Tft7 Item Shimmerscalegamblersblade,items,0.007722399,0.001231532,-0.3894520103931427,50,bottom_four_negative
+Trait present · Mecha,traits,0.007585043,0.00018377075,0.011976371519267559,1744,top_four_positive
+Trait present · Stargazer Mountain,traits,0.007452039,-0.00042871307,-0.055460408329963684,425,bottom_four_negative
+Trait present · Drx,traits,0.0073139737,0.00051009236,-0.007927949540317059,2530,bottom_four_negative
+Item count · Item Summontraitemblemitem,items,0.007130773,0.00045602352,-0.17412391304969788,115,bottom_four_negative
+Trait present · Shieldtank,traits,0.0070370305,-0.0026404157,-0.008095096796751022,3450,bottom_four_negative
+Trait present · Jhinuniquetrait,traits,0.0069905315,0.00087897014,0.0260172002017498,889,top_four_positive
+Unit present · Talon,units,0.006947468,0.00033957823,-0.057828884571790695,337,bottom_four_negative
+Unit star · Rammus,units,0.0069008693,-0.00087898097,0.021051596850156784,751,top_four_positive
+Unit star · Aatrox,units,0.0068150703,-0.0010675589,-0.013033008202910423,1651,bottom_four_negative
+Unit star · Jinx,units,0.006791668,-0.0012142484,-0.042046304792165756,552,bottom_four_negative
+Unit present · Pve Elderdragon,units,0.0067727477,0.0016008575,0.7850254774093628,32,top_four_positive
+Unit present · Ezreal,units,0.0067517865,-0.00010957561,-0.04729754105210304,435,bottom_four_negative
+Unit present · Nami,units,0.0065213763,-0.0006160825,0.0266224704682827,663,top_four_positive
+Unit present · Veigar,units,0.006500416,0.000747814,-0.06736739724874496,253,bottom_four_negative
+Trait strength · Darkstar,traits,0.0062424056,-0.00024084593,0.011196909472346306,1520,top_four_positive
+Item count · Spectralgauntlet,items,0.0061517367,-0.00012599143,0.026179956272244453,663,top_four_positive
+Trait strength · Shieldtank,traits,0.006112313,0.00011125114,0.006973410956561565,2460,top_four_positive
+Item count · Unstableconcoction,items,0.0060830135,0.00030239913,0.015222233720123768,1034,top_four_positive
+Trait strength · Hptank,traits,0.006034512,-0.00045416062,-0.0041081104427576065,2732,bottom_four_negative
+Unit present · Tahmkench,units,0.005916724,-0.00010956909,-0.012118964456021786,1449,bottom_four_negative
+Item count · Archangelsstaff,items,0.0058637774,-6.745462e-05,0.020467787981033325,813,top_four_positive
+Unit star · Reksai,units,0.0058184606,0.0011171076,-0.028446989133954048,491,bottom_four_negative
+Item count · Leviathan,items,0.00575448,0.0001503667,0.01402788795530796,1104,top_four_positive
+Unit star · Mordekaiser,units,0.0057075443,7.1510454e-05,0.00529570784419775,1674,top_four_positive
+Unit star · Zoe,units,0.0056604138,-0.0014131495,0.012549621984362602,585,top_four_positive
+Unit star · Belveth,units,0.005650541,0.00042720887,-0.01604573056101799,926,bottom_four_negative
+Trait strength · Admin,traits,0.005603938,0.00075482,-0.01923861727118492,736,bottom_four_negative
+Unit star · Viktor,units,0.005603495,-0.0013472787,0.00943785160779953,807,top_four_positive
+Item count · Item Artifact Varusartifact,items,0.0055243215,7.3850446e-05,-0.18794658780097961,87,bottom_four_negative
+Unit star · Samira,units,0.0055181426,0.00028564423,0.03362945839762688,510,top_four_positive
+Unit star · Pyke,units,0.00531928,0.00027431676,-0.045429665595293045,332,bottom_four_negative
+Item count · Item Meleetraitemblemitem,items,0.0052651013,0.000602579,-0.14128854870796204,99,bottom_four_negative
+Trait present · Rangedtrait,traits,0.005035118,-0.00093979057,-0.008375642821192741,1992,bottom_four_negative
+Item count · Runaanshurricane,items,0.004688034,-0.0007660613,0.009548773989081383,1018,top_four_positive
+Item count · Item Shieldtankemblemitem,items,0.0046024024,0.00010238316,-0.11162228882312775,120,bottom_four_negative
+Unit present · Lissandra,units,0.0044629765,-0.0011043026,-0.021598216146230698,759,bottom_four_negative
+Item count · Rapidfirecannon,items,0.004377927,9.918763e-05,0.008821641094982624,1303,top_four_positive
+Unit present · Teemo,units,0.004340977,-0.00069424714,-0.03428220376372337,422,bottom_four_negative
+Trait present · Summontrait,traits,0.004334479,0.00042349598,-0.004174746107310057,2693,bottom_four_negative
+Item count · Item Flextraitemblemitem,items,0.0043335673,0.000975321,-0.09877195209264755,102,bottom_four_negative
+Trait strength · Aptrait,traits,0.0042306953,-0.0003798252,-0.010040977038443089,776,bottom_four_negative
+Trait present · Aptrait,traits,0.0041424264,9.7408454e-05,-0.004753512796014547,2265,bottom_four_negative
+Trait present · Stargazer Huntress,traits,0.0040893815,-0.00037794487,0.03348797187209129,329,top_four_positive
+Unit present · Reksai,units,0.004085391,-0.0001779991,-0.026001814752817154,491,bottom_four_negative
+Trait present · Admin,traits,0.0040719104,-1.1523018e-06,-0.010120737366378307,1194,bottom_four_negative
+Item count · Item Astronautemblemitem,items,0.0040447935,0.00083707133,-0.07752919942140579,124,bottom_four_negative
+Item count · Guardianangel,items,0.0040441765,-2.1464835e-05,0.00941538717597723,865,top_four_positive
+Item count · Item Artifact Yasuoartifact,items,0.0040181517,7.829099e-05,-0.12988552451133728,91,bottom_four_negative
+Item count · Tft7 Item Shimmerscalemogulsmail,items,0.004009263,0.0003702786,-0.16054342687129974,68,bottom_four_negative
+Item count · Bluebuff,items,0.0039700586,-0.00034896735,0.006725042127072811,951,top_four_positive
+Unit present · Illaoi,units,0.0038138595,0.00022711468,-0.008018297143280506,1319,bottom_four_negative
+Trait present · Manatrait,traits,0.0038112157,0.00082502223,0.0033540220465511084,3113,top_four_positive
+Unit star · Aurora,units,0.0037947975,-0.0011543487,-0.03685004636645317,346,bottom_four_negative
+Unit present · Mordekaiser,units,0.0037803992,-0.00035187736,0.004539696034044027,1674,top_four_positive
+Unit present · Zoe,units,0.0037349733,0.00015112753,-0.017500493675470352,585,bottom_four_negative
+Unit present · Urgot,units,0.0037090534,-0.00081056263,0.01182487141340971,675,top_four_positive
+Trait strength · Rangedtrait,traits,0.0037023716,-0.00087465777,0.0026433030143380165,826,top_four_positive
+Item count · Item Assassintraitemblemitem,items,0.0036976615,0.0003918707,-0.08104446530342102,121,bottom_four_negative
+Unit present · Pyke,units,0.003686789,0.00043078835,-0.029353439807891846,332,bottom_four_negative
+Item count · Lastwhisper,items,0.00367447,-0.0003630728,0.0049204290844500065,1289,top_four_positive
+Unit present · Twistedfate,units,0.0036722014,-0.0002577469,-0.03466831147670746,335,bottom_four_negative
+Unit star · Illaoi,units,0.0036453458,-7.9879166e-05,0.0033507973421365023,1319,top_four_positive
+Item count · Item Psyops Dronemod,items,0.003639864,-0.00014637697,-0.06681162118911743,170,bottom_four_negative
+Unit present · Sona,units,0.003541164,0.0010949951,0.01877131499350071,574,top_four_positive
+Item count · Artifact Navoriflickerblades,items,0.0035386982,0.00023008994,-0.16543041169643402,60,bottom_four_negative
+Item count · Item Artifact Ahriartifact,items,0.00349709,9.709001e-05,0.11594057828187943,93,top_four_positive
+Unit star · Chogath,units,0.003442707,3.0359737e-05,-0.011013796553015709,784,bottom_four_negative
+Unit present · Nunu,units,0.0033745824,-0.0007785916,0.002333038253709674,1674,top_four_positive
+Trait present · Animasquad,traits,0.0033553394,-0.0011580744,-0.0021656882017850876,2446,bottom_four_negative
+Item count · Titansresolve,items,0.0033380871,8.552573e-05,0.012082098983228207,755,top_four_positive
+Item count · Artifact Lightshieldcrest,items,0.0032312043,0.00078225095,-0.17492523789405823,42,bottom_four_negative
+Trait present · Psyops,traits,0.0031334031,-0.000849498,-0.006038838531821966,1732,bottom_four_negative
+Unit present · Summon,units,0.003064084,0.00015390273,0.015092468820512295,623,top_four_positive
+Item count · Item Astraitemblemitem,items,0.0029892602,0.00024464243,-0.048670995980501175,156,bottom_four_negative
+Trait present · Darkstar,traits,0.002941539,-0.0001229543,-0.002668212167918682,2846,bottom_four_negative
+Unit present · Aurora,units,0.0029319231,-9.492572e-05,-0.025950277224183083,346,bottom_four_negative
+Unit star · Diana,units,0.0028737176,5.4228138e-05,0.03158577159047127,276,top_four_positive
+Trait strength · Fateweaver,traits,0.0028394966,-0.0005128378,-0.01624954678118229,431,bottom_four_negative
+Trait strength · Tahmkenchuniquetrait,traits,0.0027878296,-0.0002695648,-0.006308295764029026,1446,bottom_four_negative
+Trait present · Timebreaker,traits,0.00278516,0.00038701558,0.0024978346191346645,2327,top_four_positive
+Item count · Animasquaditem Tier0 Leakyprototype,items,0.002651486,-0.00011741652,-0.16613414883613586,50,bottom_four_negative
+Trait strength · Meleetrait,traits,0.0026012508,-7.722594e-05,0.0037213298492133617,1472,top_four_positive
+Trait strength · Morganauniquetrait,traits,0.0025265536,0.00016423063,0.005003179889172316,1569,top_four_positive
+Trait present · Astronaut,traits,0.0024857693,0.00022276294,0.0002697132294997573,2146,top_four_positive
+Unit present · Rhaast,units,0.0024549682,7.156613e-06,0.0059781367890536785,1105,top_four_positive
+Trait strength · Flextrait,traits,0.002432457,5.2845568e-05,0.0003338236710987985,1230,top_four_positive
+Unit star · Veigar,units,0.002424812,0.0005236532,-0.020000241696834564,253,bottom_four_negative
+Unit star · Urgot,units,0.002342812,-0.000134428,0.006533071864396334,675,top_four_positive
+Item count · Item Darkstaremblemitem,items,0.0023193778,-0.0007390259,-0.04114293307065964,212,bottom_four_negative
+Trait strength · Mecha,traits,0.0023169562,-0.00025584,0.02082410454750061,291,top_four_positive
+Unit star · Graves,units,0.002305052,0.00039336813,0.013927235268056393,532,top_four_positive
+Trait present · Stargazer Medallion,traits,0.0023011998,-0.00015706698,-0.011872850358486176,391,bottom_four_negative
+Unit present · Zed,units,0.002273744,3.7575195e-05,0.1216483786702156,57,top_four_positive
+Unit star · Masteryi,units,0.0022327707,0.00015153649,0.018127616494894028,340,top_four_positive
+Unit star · Gnar,units,0.0021242844,-0.0002587383,-0.009893668815493584,546,bottom_four_negative
+Item count · Item Hptankemblemitem,items,0.002115422,0.00040857203,-0.042318593710660934,121,bottom_four_negative
+Unit star · Zed,units,0.002020805,0.00044634144,0.12846316397190094,57,top_four_positive
+Unit present · Fiora,units,0.0020144838,0.00019201172,0.004577466752380133,772,top_four_positive
+Unit present · Vex,units,0.001983715,-0.0001361951,0.006658906117081642,596,top_four_positive
+Trait strength · Astronaut,traits,0.0019804952,0.0006062067,-0.002907067071646452,570,bottom_four_negative
+Unit star · Summon,units,0.0019535918,4.4474946e-05,-0.005316563416272402,623,bottom_four_negative
+Trait strength · Astrait,traits,0.0019125387,-0.00023401262,-6.172681423777249e-06,985,bottom_four_negative
+Item count · Item Psyops Dronemod Radiant,items,0.0019030542,0.00017928371,-0.08036863803863525,64,bottom_four_negative
+Unit star · Corki,units,0.0018973545,-0.00026615112,0.009159323759377003,478,top_four_positive
+Trait strength · Assassintrait,traits,0.0018419101,0.0003464731,0.002924461616203189,847,top_four_positive
+Unit present · Akali,units,0.0018185911,0.00014171952,-0.0033993746619671583,1265,bottom_four_negative
+Item count · Tft4 Item Ornnzhonyasparadox,items,0.0018128582,0.00027562064,-0.15372374653816223,30,bottom_four_negative
+Trait present · Stargazer Shield,traits,0.0018105608,-5.2787433e-05,-0.0036120822187513113,378,bottom_four_negative
+Unit present · Riven,units,0.0017919814,-0.0008288404,0.0006884396425448358,855,top_four_positive
+Item count · Forceofnature,items,0.0017905643,0.00023774369,-0.1194477453827858,39,bottom_four_negative
+Unit present · Samira,units,0.0017849624,-0.00024605112,0.007322261109948158,510,top_four_positive
+Item count · Item Spacegrooveemblemitem,items,0.00172067,0.00010948017,-0.012986927293241024,192,bottom_four_negative
+Trait present · Stargazer Serpent,traits,0.0017101443,-7.557437e-05,0.00997442938387394,377,top_four_positive
+Trait strength · Summontrait,traits,0.0016808971,-6.281598e-05,0.007177997846156359,624,top_four_positive
+Unit star · Pve Elderdragon,units,0.0016784642,0.00032385794,0.18771770596504211,32,top_four_positive
+Trait strength · Stargazer Medallion,traits,0.0016602688,-0.00024108334,-0.048078831285238266,112,bottom_four_negative
+Unit star · Nasus,units,0.0016202644,-0.00033842542,-0.007707181386649609,617,bottom_four_negative
+Trait present · Resisttank,traits,0.0015778033,-0.00030261482,0.0002903277927543968,3407,top_four_positive
+Unit present · Corki,units,0.0015402645,1.958279e-05,-0.006091336254030466,478,bottom_four_negative
+Unit star · Lulu,units,0.0015295439,-0.00035924904,0.0056996895000338554,340,top_four_positive
+Unit star · Gwen,units,0.001497344,5.5483004e-05,0.00012581454939208925,611,top_four_positive
+Item count · Animasquaditem Tier1 Rocketswarm,items,0.0014893579,-0.0001640555,-0.10275433957576752,47,bottom_four_negative
+Item count · Quicksilver,items,0.0014869063,3.3869852e-05,-0.005952538922429085,662,bottom_four_negative
+Unit star · Leblanc,units,0.0014805568,-0.0003398602,0.004460166674107313,425,top_four_positive
+Trait strength · Blitzcrankuniquetrait,traits,0.0014794738,0.00014289962,0.00352434441447258,1381,top_four_positive
+Item count · Animasquaditem Tier1 Guidinghex,items,0.0014606819,-3.909866e-05,-0.08179088681936264,55,bottom_four_negative
+Item count · Item Psyops Grenademod,items,0.001446992,7.876613e-05,-0.038589026778936386,104,bottom_four_negative
+Item count · Item Resisttankemblemitem,items,0.0014136848,0.00012084362,-0.028918437659740448,122,bottom_four_negative
+Item count · Artifact Rapidfirecannon,items,0.0013864301,-6.78857e-05,-0.10146389156579971,43,bottom_four_negative
+Item count · Artifact Seekersarmguard,items,0.0012961352,8.309821e-05,-0.11372222751379013,32,bottom_four_negative
+Unit present · Aurelionsol,units,0.0012937641,0.00014066379,0.005894397385418415,682,top_four_positive
+Unit star · Milio,units,0.0012871759,0.00014664022,-0.0026646738406270742,582,bottom_four_negative
+Unit star · Fiora,units,0.0012566574,0.00033283865,0.005072408821433783,772,top_four_positive
+Unit present · Gragas,units,0.0012544323,0.00090992067,0.005626598838716745,622,top_four_positive
+Unit present · Gnar,units,0.0012416331,-4.965053e-05,-0.004893280100077391,546,bottom_four_negative
+Unit present · Rammus,units,0.0012116302,-0.00021367136,0.0013585163978859782,751,top_four_positive
+Unit present · Maokai,units,0.0012102261,0.00033079117,0.00015310912567656487,1881,top_four_positive
+Trait present · Stargazer Fountain,traits,0.0012056811,-6.425389e-05,-0.0019055362790822983,398,bottom_four_negative
+Unit present · Jax,units,0.0011763956,-0.0002906766,-0.00047619891120120883,1076,bottom_four_negative
+Unit present · Leblanc,units,0.0011445215,-9.1634254e-05,-0.0010409943060949445,425,bottom_four_negative
+Unit star · Poppy,units,0.0011391401,0.00028393863,0.0044383397325873375,504,top_four_positive
+Trait strength · Stargazer Serpent,traits,0.0010896149,-1.2355263e-05,0.03348304331302643,95,top_four_positive
+Unit present · Galio,units,0.001088662,-3.9562437e-05,-0.002388563472777605,849,bottom_four_negative
+Item count · Tft4 Item Ornninfinityforce,items,0.0010722121,8.9432547e-07,-0.0369219146668911,87,bottom_four_negative
+Item count · Animasquaditem Tier1 Tentacleslam,items,0.0010701885,0.0002616017,-0.044104740023612976,55,bottom_four_negative
+Item count · Animasquaditem Tier0 Clunkyprototype,items,0.0010635727,1.5589196e-05,-0.05010049045085907,61,bottom_four_negative
+Unit present · Milio,units,0.0010426755,4.268915e-05,-0.0022003999911248684,582,bottom_four_negative
+Unit present · Chogath,units,0.001032316,-0.00024380129,-0.0015025017783045769,784,bottom_four_negative
+Unit present · Missfortune,units,0.0010217278,0.00015575538,0.0010720313293859363,623,top_four_positive
+Item count · Artifact Witsend,items,0.0009827161,4.2268915e-05,-0.08816394209861755,32,bottom_four_negative
+Item count · Artifact Talismanofascension,items,0.00096249033,0.00014509873,-0.056965745985507965,40,bottom_four_negative
+Unit present · Kaisa,units,0.0009560215,-0.000113543785,0.0011014590272679925,566,top_four_positive
+Trait strength · Stargazer Huntress,traits,0.0009501802,-0.00017248678,0.023606954142451286,85,top_four_positive
+Item count · Animasquaditem Tier2 Battlebunnycrossbow,items,0.00092179305,-2.3648336e-05,-0.05454469472169876,52,bottom_four_negative
+Item count · Artifact Mittens,items,0.0009009218,0.00011653192,-0.08715443313121796,27,bottom_four_negative
+Unit present · Viktor,units,0.00084206695,0.0001905544,-0.001804168801754713,807,bottom_four_negative
+Unit present · Ivernminion,units,0.0008415854,4.752403e-05,0.00030161638278514147,1099,top_four_positive
+Unit present · Poppy,units,0.00081864244,4.4572447e-05,0.003183749970048666,504,top_four_positive
+Item count · Tft4 Item Ornnthecollector,items,0.0007963438,0.00010957564,-0.055667445063591,37,bottom_four_negative
+Item count · Artifact Prowlersclaw,items,0.0007618461,5.4150372e-05,-0.060659632086753845,35,bottom_four_negative
+Trait present · Blitzcrankuniquetrait,traits,0.0007532724,-0.00017332389,0.00108853739220649,1381,top_four_positive
+Unit present · Aatrox,units,0.00075176096,1.1727502e-05,0.00031528572435490787,1651,top_four_positive
+Unit star · Fizz,units,0.00073537737,0.00015899124,0.0044231475330889225,460,top_four_positive
+Item count · Tft5 Item Rabadonsdeathcapradiant,items,0.00071917917,-3.978528e-05,0.08152727037668228,25,top_four_positive
+Unit present · Diana,units,0.00071249675,-0.00011755154,0.006358299404382706,276,top_four_positive
+Unit star · Xayah,units,0.00071066315,-9.8484634e-05,0.0017060920363292098,529,top_four_positive
+Trait present · Stargazer Wolf,traits,0.0006909102,3.5454294e-05,0.0012388672912493348,328,top_four_positive
+Trait present · Rhaastuniquetrait,traits,0.0006710258,0.00014556752,0.001409818883985281,1106,top_four_positive
+Item count · Item Psyops Sympatheticimplantmod,items,0.0006595532,1.9562276e-05,-0.013609971851110458,137,bottom_four_negative
+Unit present · Masteryi,units,0.0006588118,0.00019715531,0.005813976749777794,340,top_four_positive
+Unit present · Caitlyn,units,0.0006566093,0.00016238455,-0.00023735538707114756,683,bottom_four_negative
+Unit star · Sona,units,0.00062908063,8.596069e-05,-6.930390100023942e-06,574,bottom_four_negative
+Item count · Item Artifact Sorakaartifact,items,0.00062213355,-1.4899631e-05,0.013411218300461769,127,top_four_positive
+Unit present · Ornn,units,0.0006213154,-8.483969e-05,0.0006520472816191614,1091,top_four_positive
+Trait strength · Sonauniquetrait,traits,0.0005989742,0.00022764911,2.1683712475351058e-05,573,top_four_positive
+Trait strength · Stargazer Shield,traits,0.0005840616,5.7956577e-06,0.015218460001051426,102,top_four_positive
+Item count · Animasquaditem Tier0 Sparkingprototype,items,0.0005751472,-5.8531117e-05,-0.029703672975301743,64,bottom_four_negative
+Unit present · Graves,units,0.00051076524,5.425464e-05,0.0023122369311749935,532,top_four_positive
+Item count · Artifact Ludenstempest,items,0.0004893589,6.784829e-06,-0.03080260008573532,47,bottom_four_negative
+Unit present · Xayah,units,0.0004440016,3.2631804e-06,0.0023481512907892466,529,top_four_positive
+Item count · Item Artifact Evelynnartifact,items,0.00042871578,-0.00017256924,-0.00688798725605011,107,bottom_four_negative
+Unit present · Lulu,units,0.00042235837,-0.00010960999,-0.00308862398378551,340,bottom_four_negative
+Item count · Artifact Hellfirehatchet,items,0.0004207303,-8.490346e-05,0.04045223072171211,23,top_four_positive
+Trait strength · Stargazer Fountain,traits,0.0004185389,4.829088e-05,0.008938269689679146,98,top_four_positive
+Item count · Tft4 Item Ornndeathsdefiance,items,0.00041673664,2.05342e-05,-0.025778811424970627,46,bottom_four_negative
+Item count · Item Psyops Grenademod Radiant,items,0.00041379264,6.4637396e-05,-0.03740949183702469,28,bottom_four_negative
+Trait present · Missfortuneundeterminedtrait,traits,0.0004108051,-1.3212952e-05,0.0018993255216628313,628,top_four_positive
+Unit present · Gwen,units,0.000399267,3.0011188e-05,-0.001813039998523891,611,bottom_four_negative
+Item count · Item Drxemblemitem,items,0.00038595824,-5.7816218e-05,0.0029384144581854343,170,top_four_positive
+Unit present · Belveth,units,0.00037537632,8.921503e-05,-0.0003016660048160702,926,bottom_four_negative
+Item count · Artifact Dawncore,items,0.00036699697,7.130658e-05,-0.012435590848326683,61,bottom_four_negative
+Item count · Tft9 Item Ornnhorizonfocus,items,0.00031930069,3.9384173e-05,-0.01749478094279766,48,bottom_four_negative
+Item count · Tft5 Item Gargoylestoneplateradiant,items,0.00027786245,-7.32978e-05,0.026118051260709763,23,top_four_positive
+Item count · Artifact Fishbones,items,0.00025801378,-2.4358884e-05,-0.015983302146196365,53,bottom_four_negative
+Item count · Artifact Theindomitable,items,0.00024151882,-3.637928e-05,0.00786167848855257,76,top_four_positive
+Trait present · Shenuniquetrait,traits,0.00023818381,-1.6251484e-05,0.0005354896420612931,1240,top_four_positive
+Item count · Artifact Statikkshiv,items,0.00022303291,2.6638756e-05,0.014980299398303032,50,top_four_positive
+Item count · Item Artifact Threshlantern,items,0.00019507569,2.4336487e-06,-0.004937964025884867,117,bottom_four_negative
+Item count · Artifact Aegisofdawn,items,0.00014140907,2.7755782e-06,-0.006197791080921888,56,bottom_four_negative
+Item count · Artifact Silvermeredawn,items,0.00013548958,4.918779e-05,-0.011768427677452564,22,bottom_four_negative
+Item count · Animasquaditem Tier2 Echoingbatblades,items,0.00013478214,-3.3249373e-05,-0.021917153149843216,23,bottom_four_negative
+Item count · Item Psyops Targetlockmod,items,0.00013188152,7.8692625e-05,0.0027793091721832752,87,top_four_positive
+Item count · Item Psyops Sympatheticimplantmod Radiant,items,0.00013112235,-4.8617378e-05,0.004125248175114393,60,top_four_positive
+Item count · Item Psyops Targetlockmod Radiant,items,0.00012489657,3.634019e-05,-0.005313383415341377,50,bottom_four_negative
+Item count · Item Psyops Chemicalcapacitormod,items,0.00012138643,3.577709e-05,-0.001293264445848763,85,bottom_four_negative
+Item count · Artifact Lichbane,items,0.00011820093,-1.3671145e-05,0.0037751926574856043,36,top_four_positive
+Item count · Tft5 Item Giantslayerradiant,items,0.0001178815,1.5636204e-05,0.019073959439992905,21,top_four_positive
+Trait present · Vexuniquetrait,traits,0.00011280921,-3.6913716e-05,0.00038331057294271886,594,top_four_positive
+Trait present · Fiorauniquetrait,traits,0.00010670972,2.35143e-05,-0.00032225556788034737,770,bottom_four_negative
+Unit present · Fizz,units,0.00010059432,2.464491e-05,0.00039159454172477126,460,top_four_positive
+Trait strength · Vexuniquetrait,traits,9.695068e-05,-3.1147712e-05,0.00033233818248845637,594,top_four_positive
+Item count · Tft9 Item Crownofdemacia,items,9.275997e-05,3.0731494e-06,0.0063888756558299065,45,top_four_positive
+Item count · Item Psyops Chemicalcapacitormod Radiant,items,8.6641194e-05,-8.2077395e-07,-0.006247283425182104,42,bottom_four_negative
+Item count · Tft5 Item Sunfirecaperadiant,items,8.49963e-05,2.1058375e-05,-0.023976720869541168,8,bottom_four_negative
+Item count · Tacticiansring,items,5.7441106e-05,-4.5593133e-05,0.0009606464300304651,37,top_four_positive
+Item count · Tft5 Item Adaptivehelmradiant,items,4.5964967e-05,3.4150984e-05,-0.005906988400965929,6,bottom_four_negative
+Item count · Artifact Eternalpact,items,4.4076616e-05,1.2931964e-05,-0.0026695416308939457,35,bottom_four_negative
+Item count · Artifact Blightingjewel,items,4.0238727e-05,-2.3381821e-05,0.0010993636678904295,46,top_four_positive
+Item count · Animasquaditem Tier2 Cyclonicslicers,items,3.9515133e-05,-1.0324943e-05,0.003368098521605134,26,top_four_positive
+Item count · Tft5 Item Spectralgauntletradiant,items,3.283165e-05,2.9610062e-05,-0.001610792358405888,6,bottom_four_negative
+Trait strength · Stargazer Wolf,traits,3.106484e-05,1.926133e-05,-0.00034716204390861094,102,bottom_four_negative
+Item count · Tacticiansscepter,items,0.0,0.0,0.0,3,bottom_four_negative
+Item count · Artifact Aegisofdusk,items,0.0,0.0,0.0,55,bottom_four_negative
+Item count · Tft9 Item Ornnhullbreaker,items,0.0,0.0,0.0,36,bottom_four_negative
+Item count · Tft5 Item Warmogsarmorradiant,items,0.0,0.0,0.0,27,bottom_four_negative
+Item count · Tft5 Item Trapclawradiant,items,0.0,0.0,0.0,22,bottom_four_negative
+Item count · Tft5 Item Steraksgageradiant,items,0.0,0.0,0.0,11,bottom_four_negative
+Item count · Tft5 Item Titansresolveradiant,items,0.0,0.0,0.0,10,bottom_four_negative
+Unit star · Enemy Aatrox,units,0.0,0.0,0.0,3,bottom_four_negative
+Item count · Spatula,items,0.0,0.0,0.0,20,bottom_four_negative
+Item count · Tft5 Item Leviathanradiant,items,0.0,0.0,0.0,8,bottom_four_negative
+Item count · Tft5 Item Morellonomiconradiant,items,0.0,0.0,0.0,8,bottom_four_negative
+Item count · Tft5 Item Quicksilverradiant,items,0.0,0.0,0.0,8,bottom_four_negative
+Item count · Tft5 Item Nightharvesterradiant,items,0.0,0.0,0.0,7,bottom_four_negative
+Item count · Tft5 Item Rapidfirecannonradiant,items,0.0,0.0,0.0,8,bottom_four_negative
+Item count · Tft5 Item Ionicsparkradiant,items,0.0,0.0,0.0,6,bottom_four_negative
+Item count · Tft5 Item Hextechgunbladeradiant,items,0.0,0.0,0.0,10,bottom_four_negative
+Item count · Artifact Cappajuice,items,0.0,0.0,0.0,31,bottom_four_negative
+Item count · Tft5 Item Spearofshojinradiant,items,0.0,0.0,0.0,15,bottom_four_negative
+Item count · Tft5 Item Runaanshurricaneradiant,items,0.0,0.0,0.0,13,bottom_four_negative
+Item count · Tft5 Item Redemptionradiant,items,0.0,0.0,0.0,18,bottom_four_negative
+Item count · Tft5 Item Statikkshivradiant,items,0.0,0.0,0.0,11,bottom_four_negative
+Item count · Tft5 Item Bluebuffradiant,items,0.0,0.0,0.0,16,bottom_four_negative
+Item count · Tft5 Item Bramblevestradiant,items,0.0,0.0,0.0,11,bottom_four_negative
+Item count · Tft5 Item Archangelsstaffradiant,items,0.0,0.0,0.0,15,bottom_four_negative
+Item count · Tft5 Item Bloodthirsterradiant,items,0.0,0.0,0.0,12,bottom_four_negative
+Item count · Tft5 Item Deathbladeradiant,items,0.0,0.0,0.0,27,bottom_four_negative
+Item count · Tft5 Item Crownguardradiant,items,0.0,0.0,0.0,9,bottom_four_negative
+Item count · Tft5 Item Dragonsclawradiant,items,0.0,0.0,0.0,11,bottom_four_negative
+Item count · Tft5 Item Frozenheartradiant,items,0.0,0.0,0.0,13,bottom_four_negative
+Item count · Tft5 Item Guinsoosragebladeradiant,items,0.0,0.0,0.0,27,bottom_four_negative
+Item count · Tft5 Item Jeweledgauntletradiant,items,0.0,0.0,0.0,25,bottom_four_negative
+Item count · Tft5 Item Lastwhisperradiant,items,0.0,0.0,0.0,13,bottom_four_negative
+Item count · Tft5 Item Infinityedgeradiant,items,0.0,0.0,0.0,20,bottom_four_negative
+Item count · Animasquaditem Tier2 Lionesslament,items,0.0,0.0,0.0,39,bottom_four_negative
+Item count · Tft5 Item Handofjusticeradiant,items,0.0,0.0,0.0,8,bottom_four_negative
+Item count · Tft5 Item Guardianangelradiant,items,0.0,0.0,0.0,11,bottom_four_negative
+Item count · Animasquaditem Tier2 Radiantfield,items,0.0,0.0,0.0,33,bottom_four_negative
+Item count · Animasquaditem Tier3 Iceblastarmor,items,0.0,0.0,0.0,1,bottom_four_negative
+Item count · Animasquaditem Tier3 Lionesslament,items,0.0,0.0,0.0,1,bottom_four_negative
+Item count · Animasquaditem Tier2 Uwublaster,items,0.0,0.0,0.0,30,bottom_four_negative
+Item count · Animasquaditem Tier2 Searingshortbow,items,0.0,0.0,0.0,28,bottom_four_negative
+Item count · Animasquaditem Tier3 Uwublaster,items,0.0,0.0,0.0,1,bottom_four_negative
+Item count · Animasquaditem Tier3 Searingshortbow,items,0.0,0.0,0.0,3,bottom_four_negative
+Item count · Artifact Voidgauntlet,items,0.0,0.0,0.0,36,bottom_four_negative
+Item count · Artifact Titanichydra,items,0.0,0.0,0.0,40,bottom_four_negative
+Trait present · Zeduniquetrait,traits,0.0,0.0,0.0,57,bottom_four_negative
+Trait strength · Zeduniquetrait,traits,0.0,0.0,0.0,57,bottom_four_negative
+Item count · Animasquaditem Tier1 Savageslicer,items,0.0,0.0,0.0,43,bottom_four_negative
+Item count · Animasquaditem Tier3 Cyclonicslicers,items,0.0,0.0,,0,bottom_four_negative
+Item count · Animasquaditem Tier2 Annihilator,items,0.0,0.0,0.0,31,bottom_four_negative
+Item count · Animasquaditem Tier2 Iceblastarmor,items,0.0,0.0,0.0,33,bottom_four_negative
+Trait strength · Rhaastuniquetrait,traits,0.0,0.0,0.0,1106,bottom_four_negative
+Trait strength · Shenuniquetrait,traits,0.0,0.0,0.0,1240,bottom_four_negative
+Trait present · Sonauniquetrait,traits,0.0,0.0,0.0,573,bottom_four_negative
+Trait strength · Missfortuneundeterminedtrait,traits,0.0,0.0,,0,bottom_four_negative
+Trait present · Missfortuneuniquetrait,traits,0.0,0.0,0.0,623,bottom_four_negative
+Trait strength · Missfortuneuniquetrait,traits,0.0,0.0,0.0,623,bottom_four_negative
+Trait strength · Fiorauniquetrait,traits,0.0,0.0,0.0,770,bottom_four_negative
+Trait present · Gravestrait,traits,0.0,0.0,0.0,531,bottom_four_negative
+Trait strength · Gravestrait,traits,0.0,0.0,0.0,531,bottom_four_negative
+Trait strength · Jhinuniquetrait,traits,0.0,0.0,0.0,889,bottom_four_negative
+Unit present · Bardfollower,units,0.0,0.0,0.0,3,bottom_four_negative
+Unit star · Bardfollower,units,0.0,0.0,0.0,3,bottom_four_negative
+Item count · Fryingpan,items,0.0,0.0,0.0,3,bottom_four_negative
+Unit present · Enemy Aatrox,units,0.0,0.0,0.0,3,bottom_four_negative

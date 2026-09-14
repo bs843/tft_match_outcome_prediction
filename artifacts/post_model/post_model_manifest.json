@@ -1,0 +1,383 @@
+{
+  "created_at_utc": "2026-08-26T13:25:46+00:00",
+  "generated_files": [
+    {
+      "bytes": 94,
+      "path": "eda/class_distribution.csv",
+      "sha256": "4d37dc993d80afb2a36aab8bf24eef14388d6d0282fe4934ab60e4e6655fcac1"
+    },
+    {
+      "bytes": 42698,
+      "path": "eda/class_distribution.png",
+      "sha256": "878afadc574bc9578659c6f671d97b94d29da3ca76483b6289eebbb44117488a"
+    },
+    {
+      "bytes": 1809,
+      "path": "eda/composition_structure_by_outcome.csv",
+      "sha256": "206692c4b512f675b672a04fd2a1c8b1a3dee4db06f8f4d1d2fb19518b06a6ed"
+    },
+    {
+      "bytes": 11431,
+      "path": "eda/item_frequency_by_outcome.csv",
+      "sha256": "dd99724741b686a9776f82c3f19ed8a8555762948b5533089450cb50305172c3"
+    },
+    {
+      "bytes": 195,
+      "path": "eda/placement_distribution.csv",
+      "sha256": "9312755c6be68ae907a79e2088320ed4c65a57b7b186fbb1668bb1d0e0d25758"
+    },
+    {
+      "bytes": 35879,
+      "path": "eda/placement_distribution.png",
+      "sha256": "4563128f428807b76dea7cadc6004762865384bff381b270e3bd52b7afc81850"
+    },
+    {
+      "bytes": 637,
+      "path": "eda/rank_distribution.csv",
+      "sha256": "14deb56598d48d53007ace80573d5548ac8a8a97bff05baa8ee616f1a9cd7071"
+    },
+    {
+      "bytes": 181,
+      "path": "eda/region_distribution.csv",
+      "sha256": "b6b278352479541fcf61f6ddb21e8e2d962941b6d5ba1e7b9b5af395d5db860b"
+    },
+    {
+      "bytes": 2850,
+      "path": "eda/top4_bottom4_numeric_summary.csv",
+      "sha256": "e4cd6c6a4fd83b889c387b147d37c335da021c0e811b9de62c6f71e2469e557a"
+    },
+    {
+      "bytes": 2392,
+      "path": "eda/trait_frequency_by_outcome.csv",
+      "sha256": "067a279875955d12fe864d537f4dc86ed9cf0918af7bf2eadd1f4ffe4549deb0"
+    },
+    {
+      "bytes": 3262,
+      "path": "eda/unit_frequency_by_outcome.csv",
+      "sha256": "6efd33eef837eb34b0ab0ef5e82e142253438f3dd2615d314927a6f74d393346"
+    },
+    {
+      "bytes": 69296,
+      "path": "figures/cv_model_variability.png",
+      "sha256": "d65d27fd2614b943df161506f9908e817cba66279e991b0c51cb9af4c1c7dd74"
+    },
+    {
+      "bytes": 46465,
+      "path": "figures/error_rate_by_placement.png",
+      "sha256": "f655a6e520f9ed58b6acc5329d51b3aaf1771b31691b3dcd26401c0b55360bf0"
+    },
+    {
+      "bytes": 59740,
+      "path": "figures/feature_group_importance.png",
+      "sha256": "2feb7f788cf4555a3b42fd005e1f0a38fb0f9d6690fea0e940223b810fcaf8f1"
+    },
+    {
+      "bytes": 96016,
+      "path": "figures/final_test_calibration_curve.png",
+      "sha256": "29da9ca1dd0779ae0da3028d892eb3723e0b5e97789380750586fa017b7aec80"
+    },
+    {
+      "bytes": 55333,
+      "path": "figures/final_test_confusion_matrix.png",
+      "sha256": "7d5f4825431736c15f026c1f74c14b670f8a73499282a018153caf2b87d5ca26"
+    },
+    {
+      "bytes": 56152,
+      "path": "figures/final_test_precision_recall_curve.png",
+      "sha256": "b4b9e52ec1334b5415923a94e030550b59ab48d047e2971885a65542627e29ad"
+    },
+    {
+      "bytes": 75171,
+      "path": "figures/final_test_roc_curve.png",
+      "sha256": "401b091d8047eb34768f58a42dabec88a52faa2b92e9164ce2adad2c8bad65d6"
+    },
+    {
+      "bytes": 91395,
+      "path": "figures/model_comparison_test_metrics.png",
+      "sha256": "ea2788e8cb22303e1a2d318c13a348efdc5e94c89def19ed1748b144643c5247"
+    },
+    {
+      "bytes": 76001,
+      "path": "figures/model_generalisation_comparison.png",
+      "sha256": "876f9ec3d71d42e4288679998879cf8b356fcc4536be185aa44560736395b810"
+    },
+    {
+      "bytes": 155819,
+      "path": "figures/permutation_importance_top20.png",
+      "sha256": "09bcc39f32c1a00874d882e3429ad4e5553469f40578111dcce199c8f8ec5136"
+    },
+    {
+      "bytes": 56653,
+      "path": "figures/predicted_probability_distribution.png",
+      "sha256": "7a40ccd2f2b362b566af8276383945541fa03a13e723dae4045aa5a0f560fd5f"
+    },
+    {
+      "bytes": 93763,
+      "path": "figures/test_performance_by_rank.png",
+      "sha256": "bcc5156e323c952f4b0e23484bb530739d6fb313bcf7431ab9081a7b5f55c845"
+    },
+    {
+      "bytes": 73169,
+      "path": "figures/test_performance_by_region.png",
+      "sha256": "c99a850e0a9aec1f0a857b33ec0e1269db4196bb3ff8b718a43bbc10704f4905"
+    },
+    {
+      "bytes": 1179,
+      "path": "logs/post_model_analysis.log",
+      "sha256": "0d6c78f4c7bd8276212094f0a437ae06ab5fd28d53fa7c5ab0384577a2f259d7"
+    },
+    {
+      "bytes": 1829,
+      "path": "model_selection_audit.json",
+      "sha256": "1d776dd45361977ce9f54e2e96a0ff10fcdb4409144682f8a815f6aace4d2091"
+    },
+    {
+      "bytes": 810,
+      "path": "model_selection_audit.md",
+      "sha256": "e6493aae3d21239f457d870b043c4b3c83df2f31d0d694c667e6219d60383250"
+    },
+    {
+      "bytes": 1191,
+      "path": "tables/cv_fold_metrics.csv",
+      "sha256": "6e2306f1d5b383552b069675a94b603b99e4312762af3c4ac081c7ca891150f5"
+    },
+    {
+      "bytes": 330,
+      "path": "tables/cv_model_summary.csv",
+      "sha256": "99eab7dbcb768d3fe2b73a01a1640a1c123fbe8a2e9224723067144cb1119f02"
+    },
+    {
+      "bytes": 282,
+      "path": "tables/cv_model_summary.md",
+      "sha256": "4c380876291b7a7e86be9e0cf90f0064523289530369bf3044f056d4232e6888"
+    },
+    {
+      "bytes": 228,
+      "path": "tables/dataset_summary.csv",
+      "sha256": "73e0d4c1f95bb5730659df944824ff006570a95bcd8b4f0ed7d7938927881e63"
+    },
+    {
+      "bytes": 297,
+      "path": "tables/dataset_summary.md",
+      "sha256": "17d79c7e3be9b1066d6a186123cfc66176f7f3e44e6afb171fb3a5c98667f94d"
+    },
+    {
+      "bytes": 425,
+      "path": "tables/errors_by_final_placement.csv",
+      "sha256": "bf898dbe001fd1fbd749d1c1034c6a1b91cbaeb0d1caf43759c728e1db5609ec"
+    },
+    {
+      "bytes": 991,
+      "path": "tables/feature_group_importance.csv",
+      "sha256": "22bada2488d98c5aa47eba77a6258336ab8202f55e851bb0a27de0fc0dedc826"
+    },
+    {
+      "bytes": 884,
+      "path": "tables/feature_group_importance.md",
+      "sha256": "31ca287a0034f62915bc7a627625b937b537624b6634b2299c7314461d9769dd"
+    },
+    {
+      "bytes": 744,
+      "path": "tables/final_test_calibration.csv",
+      "sha256": "20d1eeefe18f8aa34fea8537e0ef9981829c2cd9b92e5d54a1cb36eec5477f5f"
+    },
+    {
+      "bytes": 207,
+      "path": "tables/final_test_classification_diagnostics.csv",
+      "sha256": "e6957316063c88d02185cb42375f509608dc74d14b2ca36ed00d0c9791224292"
+    },
+    {
+      "bytes": 253,
+      "path": "tables/final_test_classification_diagnostics.md",
+      "sha256": "2df608a7a1a955a2aec5f3f2095e302b7435c01d80317812d459b350290324bc"
+    },
+    {
+      "bytes": 94,
+      "path": "tables/final_test_confusion_matrix.csv",
+      "sha256": "e0c4d8642f40c9a115e855ca609b02c420dec3baa5bbc41f1f5e9410347ee623"
+    },
+    {
+      "bytes": 566,
+      "path": "tables/final_test_metric_ci.csv",
+      "sha256": "7472301d1300928ed8026b2dfd3a76b52437d9a4ecb1f0e241b8b144f65b15a8"
+    },
+    {
+      "bytes": 483,
+      "path": "tables/final_test_metric_ci.md",
+      "sha256": "55c2bd1ebb3b2b035135068855e83174264146661cb41fb7e7f8a796249e4256"
+    },
+    {
+      "bytes": 67936,
+      "path": "tables/final_test_misclassifications.csv",
+      "sha256": "c4659351560eb0a2919c8b349ac8004fc26f87b467ecfd1b858bec5ff854b51a"
+    },
+    {
+      "bytes": 403,
+      "path": "tables/final_test_model_summary.csv",
+      "sha256": "5ec507e1e36c5cc01183d4120b674d251e9f0a8293cb37870e0081d1b4e95d0e"
+    },
+    {
+      "bytes": 473,
+      "path": "tables/final_test_model_summary.md",
+      "sha256": "26f2ed38d6dcfdda7a891dfbe9701c9777837410f303934b98d7c636c2cb3c41"
+    },
+    {
+      "bytes": 262325,
+      "path": "tables/final_test_pr_points.csv",
+      "sha256": "19aac40153923b80ceac09dacf6f55602b3317a16bd40dba8dbb22f15c1adb4d"
+    },
+    {
+      "bytes": 52184,
+      "path": "tables/final_test_roc_points.csv",
+      "sha256": "5c1245ab215813e9cf83ce02fde53d30c7d88a6f97703ea582329479f1758c28"
+    },
+    {
+      "bytes": 1022,
+      "path": "tables/generalisation_gaps.csv",
+      "sha256": "575232efdaaa22c5020288805631cf5d08cd886215cc581b03d7d0b9327fd00f"
+    },
+    {
+      "bytes": 942,
+      "path": "tables/generalisation_gaps.md",
+      "sha256": "ebcd9aba51b447f2d6019e501c720b594d0d3f5287da63fefa252389f8d1b071"
+    },
+    {
+      "bytes": 67936,
+      "path": "tables/high_confidence_errors.csv",
+      "sha256": "390f284bfd5025d24267397a4fd70c19fce25b77d300ca420a95399c23980f45"
+    },
+    {
+      "bytes": 1793,
+      "path": "tables/model_performance_summary.csv",
+      "sha256": "d668c81ab696f52b47ad33a7b3d632ac83469d2e358e5df5702b698c2c4f57c6"
+    },
+    {
+      "bytes": 1655,
+      "path": "tables/model_performance_summary.md",
+      "sha256": "8e17e26bcbd465f7f62aea412b0526f3002e298a61a92fa03843d0f948a3d4a4"
+    },
+    {
+      "bytes": 47177,
+      "path": "tables/native_xgboost_feature_importance.csv",
+      "sha256": "c4dc1d5a553c0d5290b90261d1221eeadedffc7836778f1992a5cd201fa3b283"
+    },
+    {
+      "bytes": 53382,
+      "path": "tables/permutation_importance.csv",
+      "sha256": "4e7887e0e70b72d352d3db93c92c9456ab21cc660e8f4ad1ad4e527157d82209"
+    },
+    {
+      "bytes": 359,
+      "path": "tables/predicted_probability_summary.csv",
+      "sha256": "f2292f6f14c3dfdc1c9e020006bd645ec09cdb956ac9bec349e8bc766094639d"
+    },
+    {
+      "bytes": 1044,
+      "path": "tables/prespecified_group_tests.csv",
+      "sha256": "57f317f84e0b7e848e0355cccf3d6772fadcaa8994232a30e69a8a897135b621"
+    },
+    {
+      "bytes": 1253,
+      "path": "tables/prespecified_group_tests.md",
+      "sha256": "4021772ae502cb8c959e6c6dcd1ab493b7eec06ce0539cd360d723748890ca1e"
+    },
+    {
+      "bytes": 1426,
+      "path": "tables/test_metrics_by_rank.csv",
+      "sha256": "c461936305e75d1d036557bfeb982df1752b4403cc2ad5e27fd0867bf9746e18"
+    },
+    {
+      "bytes": 1050,
+      "path": "tables/test_metrics_by_rank.md",
+      "sha256": "caa71ffb66c4702d77c57bc55b7763d48c5496562cb4e82017f3e65a63285c91"
+    },
+    {
+      "bytes": 810,
+      "path": "tables/test_metrics_by_region.csv",
+      "sha256": "45c91c7debb509f324a9ad05225b3efdcf9b8b56f3c6bca9f28d4d218716a097"
+    },
+    {
+      "bytes": 665,
+      "path": "tables/test_metrics_by_region.md",
+      "sha256": "17e367f3fb34f0dbf80aad3fb7ed0ecf7a9b5625ec35c042984198d125f196cf"
+    },
+    {
+      "bytes": 735,
+      "path": "tables/validation_model_summary.csv",
+      "sha256": "4ab0bf5760cd0af71869db305e11cce0536c2d6ba3a5cde27bde4addbdbef3ac"
+    },
+    {
+      "bytes": 552,
+      "path": "tables/validation_model_summary.md",
+      "sha256": "6f4ae15ebfa618b6bd602619f2e6f4aa9d1a5185ea8e8c0cbba4348416e037df"
+    },
+    {
+      "bytes": 1965,
+      "path": "thesis_discussion_points.md",
+      "sha256": "58bd789fa8e5f383cddad5883791bf35f404f8155fbc6fb94647041ab3879979"
+    },
+    {
+      "bytes": 3679,
+      "path": "thesis_results_summary.md",
+      "sha256": "76ae3484b82e53ef1b1617c1f762dfa2ad20acb4afde0ca240bf026973b40fd1"
+    },
+    {
+      "bytes": 2568,
+      "path": "verification_report.json",
+      "sha256": "892a0e1834a469369a82ec474ff2452243be1dec850c72f9088a6f350e877638"
+    },
+    {
+      "bytes": 578,
+      "path": "verification_report.md",
+      "sha256": "a634f8ca59ae6c37dc83eca5a164f1a118b55d4ed2580af390bd9db9dca3682a"
+    }
+  ],
+  "packages": {
+    "catboost": "1.2.8",
+    "joblib": "1.5.2",
+    "lightgbm": "4.6.0",
+    "matplotlib": "3.11.1",
+    "numpy": "2.5.1",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "scipy": "1.18.0",
+    "xgboost": "3.0.2"
+  },
+  "platform": "Windows-11-10.0.26200-SP0",
+  "post_model_code_commit": "dd1e0ed9bb8981536b5059d71324d5b7ad58a5cf",
+  "post_model_git_dirty": true,
+  "post_model_source_hashes": {
+    "analysis/post_model/__init__.py": "0cae4d3e45db9dfc2ef2ea8aaef6ae9451bf83bdbb60edfc17dff6e2dbc9f5c6",
+    "analysis/post_model/common.py": "209984612a1b5da7e464cadd06683cc0ddadcf0da2ab79b6a99b6f6b5df1d5fa",
+    "analysis/post_model/descriptive.py": "6b629cc93ba68896a07d6e4a49af696804a9e5ab862a04ea577cdbc328a9b40e",
+    "analysis/post_model/diagnostics.py": "3bb45cb33a18bc36fa0ef0f4d44145e77eb48c016b6f5fc9a83ff0dcfabc5b25",
+    "analysis/post_model/interpretation.py": "bfe6a8c9f0085505c11434c693846d0675fadd2848bc5a0acad731c05cdb3660",
+    "analysis/post_model/manifest.py": "9c0cce94471f6594696d355d7938cc862bb674ae84e91224bd313537423f487c",
+    "analysis/post_model/performance.py": "c17247710e18b6e3871f2b0341a0a02a3bad56d0ba9190de5ff53f758f968e67",
+    "analysis/post_model/reporting.py": "3c1ff1e8831b3e0741bbd12dab912b3ed6bb2fefc3417fa7c3d772368e941c43",
+    "analysis/post_model/robustness.py": "4da3d652931287c3f3ae0a548db294b230379174e7b9a277b427e3a5f18f7305",
+    "analysis/post_model/run.py": "50460b3c49b826d1983c6bf711a87448678c9decd52053c8deedf0c5406284bc",
+    "analysis/post_model/verify.py": "661d4bd88d68f0a0f217a41022e02ceb869cde86d5bf83b1ebd731382baefbce"
+  },
+  "post_model_version": "1.0.0",
+  "production_artifact_hashes_before_and_after_equal": true,
+  "python_version": "3.12.1 (tags/v3.12.1:2305ca5, Dec  7 2023, 22:03:25) [MSC v.1937 64 bit (AMD64)]",
+  "seed": 4275,
+  "selected_model": "xgboost",
+  "selected_model_sha256": "9a36bb769060d1ed4ca5ea1823b3e22556e2365c3ac80b1ae916a0d3cfd26ae3",
+  "source_analysis_commit": "dd1e0ed9bb8981536b5059d71324d5b7ad58a5cf",
+  "source_analysis_run_id": "analysis-20260825T190121Z-1b3eaaff",
+  "source_analysis_tag": "tft-patch17.8-analysis-contract-v5",
+  "source_contract_version": "1.0.4",
+  "source_dataset_manifest_sha256": "e61eb7cd19f3b3e31872200e8b825bcf5d805dd507cdebd9632685b8bd07a3ef",
+  "source_dataset_version": "tft_set17_patch17_8_v11",
+  "source_split_sha256": "da64ca53fb584738b9db85c5364fd95644d399fe8202f9ad5b6619f271a95242",
+  "warnings": [
+    "Fold-level CV stores F1 only; CV variability for other metrics is unavailable.",
+    "Predicted probabilities were not persisted and will be reproduced from the frozen model and matrix.",
+    "Source predictor count is 291; train-fitted F5 encoding contains 404 model columns.",
+    "SHAP unavailable or incompatible; skipped without affecting other outputs: ModuleNotFoundError: No module named 'shap'",
+    "Rank strata with fewer than 50 test observations are retained but should not be interpreted as stable estimates: BRONZE, CHALLENGER, GRANDMASTER",
+    "Calibration intercept/slope were not fitted on the final test set; Brier score and observed-versus-predicted bins are reported without recalibration."
+  ]
+}

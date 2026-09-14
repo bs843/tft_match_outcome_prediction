@@ -1,0 +1,55 @@
+{
+  "exact_placement": {
+    "margin": 2.3925,
+    "runner_up": "dummy",
+    "runner_up_validation_mae": 3.5,
+    "selected_model": "random_forest",
+    "selection_metric": "mae",
+    "selection_rule": {
+      "direction": "minimize",
+      "identity": "exact_placement_mae_minimize_secondary_placement_registry_order",
+      "partition": "validation",
+      "primary_metric": "mae",
+      "registry_order": [
+        "dummy",
+        "random_forest"
+      ],
+      "tie_break": "secondary_placement_registry_order",
+      "version": "1"
+    },
+    "validation_mae": 1.1075
+  },
+  "selection_excluded_test_metrics": true,
+  "selection_locked_at_utc": "2026-08-25T19:11:06+00:00",
+  "status": "PASS",
+  "test_first_accessed_at_utc": "2026-08-25T19:11:06+00:00",
+  "top_four": {
+    "cv_mean": 0.8493645322705875,
+    "cv_std": 0.0044358154766057315,
+    "cv_variability_reference": 0.005847513987883797,
+    "effectively_tied_relative_to_observed_cv_sd": true,
+    "margin": 0.001764295009954675,
+    "materiality_basis": "Margin is compared with the larger observed five-fold CV standard deviation of the winner and runner-up; this is a descriptive stability comparison, not a significance threshold.",
+    "runner_up": "lightgbm",
+    "runner_up_validation_f1": 0.8525137798563555,
+    "selected_model": "xgboost",
+    "selection_metric": "f1",
+    "selection_rule": {
+      "direction": "maximize",
+      "identity": "top_four_classification_f1_maximize_primary_registry_order",
+      "partition": "validation",
+      "primary_metric": "f1",
+      "registry_order": [
+        "dummy",
+        "logistic_regression",
+        "random_forest",
+        "xgboost",
+        "lightgbm",
+        "catboost"
+      ],
+      "tie_break": "primary_registry_order",
+      "version": "1"
+    },
+    "validation_f1": 0.8542780748663101
+  }
+}

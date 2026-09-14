@@ -1,0 +1,16 @@
+{
+  "created_at_utc": "2026-08-27T20:24:56+00:00",
+  "files": {
+    "related_entity_sensitivity.md": "39633b4eaf62bc54a148fb94ba73918f0b8dd9bea28bbeee6c8595b5e925806a",
+    "tables/cv_participant_overlap_audit.csv": "9a3647924ddb400f43279150640926808de980edec4fcd403808009070eec503",
+    "tables/player_component_cv_folds.csv": "a563e7d6b303ad2e4233f9e4ad1aaf60f33012269a74517695298a09c333904a",
+    "tables/player_component_cv_summary.csv": "769adf367e430c3e912bf73e6b78b950547fd27b7c5c26c97db43fc2c18f0431",
+    "tables/player_component_cv_summary.md": "a2a27a4ab6e0e3cbdc0da498c5050e0e1ba27c428014de02fd33209156b96489",
+    "tables/player_connected_component_summary.csv": "48ce948a40cb56c05e74c06968044f420ff5b45081c6cd0f9cd243a1329b307f"
+  },
+  "folds": 5,
+  "grouping": "player_connected_match_components",
+  "production_artifact_hashes_before_and_after_equal": true,
+  "seed": 4275,
+  "status": "PASS"
+}

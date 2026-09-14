@@ -1,0 +1,36 @@
+{
+  "analysis_commit": "dd1e0ed9bb8981536b5059d71324d5b7ad58a5cf",
+  "analysis_contract": "1.0.4",
+  "analysis_tag": "tft-patch17.8-analysis-contract-v5",
+  "artifact_hashes_verified": 53,
+  "dataset_version": "tft_set17_patch17_8_v11",
+  "encoded_f5_feature_count": 404,
+  "encoded_feature_identity_sha256": "b8b46ebafa4463eefb69488449bbeca66890dbbb6d5255cf5f63be5949d671dc",
+  "failures": [],
+  "feature_manifest_hash": "22ce0b89127bd9a153fa9de838db8312115130112ebe945908cfa0151ea6bdbd",
+  "metrics_found": [
+    "C:\\Users\\bakan\\Documents\\Codex\\2026-08-06\\review-this-repository-without-changing-anything\\outputs\\tft-thesis-data-collection\\outputs\\analysis-20260825T190121Z-1b3eaaff\\modelling\\tables\\cross_validation_metrics.csv",
+    "C:\\Users\\bakan\\Documents\\Codex\\2026-08-06\\review-this-repository-without-changing-anything\\outputs\\tft-thesis-data-collection\\outputs\\analysis-20260825T190121Z-1b3eaaff\\modelling\\tables\\validation_metrics.csv",
+    "C:\\Users\\bakan\\Documents\\Codex\\2026-08-06\\review-this-repository-without-changing-anything\\outputs\\tft-thesis-data-collection\\outputs\\analysis-20260825T190121Z-1b3eaaff\\modelling\\tables\\final_test_metrics.csv"
+  ],
+  "models_found": [
+    "C:\\Users\\bakan\\Documents\\Codex\\2026-08-06\\review-this-repository-without-changing-anything\\outputs\\tft-thesis-data-collection\\outputs\\analysis-20260825T190121Z-1b3eaaff\\modelling\\models\\selected_top4_f5.joblib",
+    "C:\\Users\\bakan\\Documents\\Codex\\2026-08-06\\review-this-repository-without-changing-anything\\outputs\\tft-thesis-data-collection\\outputs\\analysis-20260825T190121Z-1b3eaaff\\modelling\\models\\selected_placement_f5.joblib"
+  ],
+  "predictor_count": 291,
+  "preprocessing_found": "C:\\Users\\bakan\\Documents\\Codex\\2026-08-06\\review-this-repository-without-changing-anything\\outputs\\tft-thesis-data-collection\\outputs\\analysis-20260825T190121Z-1b3eaaff\\data\\fitted_train_encoder.joblib",
+  "production_run_id": "analysis-20260825T190121Z-1b3eaaff",
+  "split_counts": {
+    "test": 750,
+    "train": 3500,
+    "validation": 750
+  },
+  "split_hash": "da64ca53fb584738b9db85c5364fd95644d399fe8202f9ad5b6619f271a95242",
+  "status": "PASS",
+  "verified_at_utc": "2026-08-26T13:21:22+00:00",
+  "warnings": [
+    "Fold-level CV stores F1 only; CV variability for other metrics is unavailable.",
+    "Predicted probabilities were not persisted and will be reproduced from the frozen model and matrix.",
+    "Source predictor count is 291; train-fitted F5 encoding contains 404 model columns."
+  ]
+}

@@ -1,0 +1,6 @@
+feature_group,feature_count,signed_mean_importance_sum,absolute_mean_importance_sum,mean_absolute_importance,aggregation_rule
+composition_structure,9,0.20203444563108963,0.20203444563108963,0.022448271736787737,sum of absolute column-level mean permutation importance within deterministic prefix group
+player_end_state_numeric,2,0.07130432888144785,0.07194896496046689,0.035974482480233445,sum of absolute column-level mean permutation importance within deterministic prefix group
+units_champions,134,0.034511101936538745,0.04087781729954385,0.0003050583380562974,sum of absolute column-level mean permutation importance within deterministic prefix group
+items,175,0.026252619827176683,0.036569732825764145,0.0002089699018615094,sum of absolute column-level mean permutation importance within deterministic prefix group
+traits,84,0.01559314449648952,0.018031570846446087,0.00021466155769578674,sum of absolute column-level mean permutation importance within deterministic prefix group

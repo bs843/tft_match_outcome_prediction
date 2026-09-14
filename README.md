@@ -207,6 +207,21 @@ status code 1; interrupted runs are audit-only and cannot produce a validated da
 
 Reproducibility means rebuilding results from the frozen raw snapshot and manifests. Re-querying a live API later is not expected to reconstruct the same sample.
 
+## GitHub publication boundary
+
+Commit the implementation, tests, documentation, dependency files, public
+configuration, `.env.example`, `.streamlit/config.toml`, and the authoritative,
+identifier-free aggregate evidence under `artifacts/`. These files are required to
+review the methods, run the test suite, and render the frozen dashboard and thesis
+figures.
+
+Do not commit local credentials, Streamlit secrets, private or row-level data,
+private collection manifests under `data/manifests/`, fitted models, run outputs,
+validation reports, logs, caches, or editor files. Clearly labelled superseded
+aggregate analyses may remain under `artifacts/` as audit evidence; the dashboard
+uses the authoritative `artifacts/post_model/composition_analysis_v1/` bundle. The
+precise enforcement rules are maintained in `.gitignore`.
+
 ## Frozen Analysis Protocol
 
 The dataset freeze and analysis freeze are separate. Dataset
@@ -244,10 +259,22 @@ The main collection is permitted only after all tests pass and a 100-accepted-ma
 
 ## Research documentation
 
+Examiner-facing manuscript chapters:
+
 - `docs/METHODOLOGY.md`: sampling, leakage controls and statistical analysis.
+- `docs/RESULTS.md`: results, integrated discussion and limitations.
+- `docs/CONCLUSION.md`: concise answers, contribution and recommendations.
+
+Repository-level technical and audit documentation, not part of the main thesis body:
+
+- `docs/REQUIREMENTS_SPECIFICATION.md`: detailed software requirements and traceability.
 - `docs/DATA_DICTIONARY.md`: table contracts and feature eligibility.
 - `docs/DATA_MANAGEMENT.md`: privacy, retention and publication rules.
 - `docs/REPRODUCIBILITY.md`: exact artifact and experiment requirements.
+- `docs/ANALYSIS_PIPELINE.md`: frozen execution protocol.
+- `docs/MULTI_REGION_AMENDMENT.md`: detailed collection-amendment record.
+
+See `docs/THESIS_SCOPE.md` for the intended examination boundary.
 
 Riot's current API and TFT policies remain authoritative and must be rechecked immediately before collection.
 

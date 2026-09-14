@@ -1,0 +1,2 @@
+true_negative,false_positive,false_negative,true_positive,specificity,sensitivity_recall,precision,negative_predictive_value
+2553,447,433,2567,0.851,0.8556666666666667,0.851692103516921,0.8549899531145345

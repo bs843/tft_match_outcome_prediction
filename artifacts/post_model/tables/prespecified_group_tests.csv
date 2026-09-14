@@ -1,0 +1,7 @@
+variable,test,top_four_n,bottom_four_n,top_four_median,bottom_four_median,statistic,p_value,rank_biserial_correlation,interpretation_scope,holm_adjusted_p
+composition_size,Mann-Whitney U,20000,20000,9.0,8.0,278214396.5,0.0,0.39107198249999997,pre-specified statistical association; not causality,0.0
+level,Mann-Whitney U,20000,20000,9.0,8.0,292797475.5,0.0,0.4639873775000001,pre-specified statistical association; not causality,0.0
+structure__active_traits,Mann-Whitney U,20000,20000,7.0,6.0,258613637.0,0.0,0.2930681850000001,pre-specified statistical association; not causality,0.0
+structure__mean_star,Mann-Whitney U,20000,20000,2.0,1.7777777777777777,279433950.0,0.0,0.39716975,pre-specified statistical association; not causality,0.0
+structure__total_items,Mann-Whitney U,20000,20000,13.0,10.0,309224765.5,0.0,0.5461238275,pre-specified statistical association; not causality,0.0
+structure__unique_units,Mann-Whitney U,20000,20000,9.0,8.0,276742579.5,0.0,0.3837128974999999,pre-specified statistical association; not causality,0.0

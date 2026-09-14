@@ -1,0 +1,5 @@
+transition,added_information,validation_f1_before,validation_f1_after,validation_f1_change,source
+F1 → F2,units and star levels,0.6544923301680059,0.8117883456128601,0.15729601544485416,existing frozen logistic feature-family validation experiment
+F2 → F3,traits,0.8117883456128601,0.8141948443254101,0.0024064987125500537,existing frozen logistic feature-family validation experiment
+F3 → F4,items,0.8141948443254101,0.8494247123561781,0.035229868030768,existing frozen logistic feature-family validation experiment
+F4 → F5,composition structure,0.8494247123561781,0.851085141903172,0.001660429546993858,existing frozen logistic feature-family validation experiment

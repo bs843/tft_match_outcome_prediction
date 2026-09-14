@@ -1,0 +1,13 @@
+| variant | analysis_type | substantive_unit | mean_cv_f1 | fold_sd_f1 | change_from_full_f5 | removal_deterioration | paired_difference_sd | folds | seed |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| full_F5 | full | all | 0.8484 | 0.0049 | 0.0000 | — | 0.0000 | 5 | 4275 |
+| only_basic | unit_only | basic | 0.6487 | 0.0065 | -0.1998 | — | 0.0059 | 5 | 4275 |
+| only_units | unit_only | units | 0.7799 | 0.0053 | -0.0686 | — | 0.0077 | 5 | 4275 |
+| only_traits | unit_only | traits | 0.7067 | 0.0081 | -0.1418 | — | 0.0119 | 5 | 4275 |
+| only_items | unit_only | items | 0.7433 | 0.0062 | -0.1052 | — | 0.0075 | 5 | 4275 |
+| only_structure | unit_only | structure | 0.8091 | 0.0054 | -0.0393 | — | 0.0060 | 5 | 4275 |
+| without_basic | leave_one_unit_out | basic | 0.8431 | 0.0036 | -0.0054 | 0.0054 | 0.0026 | 5 | 4275 |
+| without_units | leave_one_unit_out | units | 0.8471 | 0.0054 | -0.0014 | 0.0014 | 0.0011 | 5 | 4275 |
+| without_traits | leave_one_unit_out | traits | 0.8473 | 0.0060 | -0.0011 | 0.0011 | 0.0012 | 5 | 4275 |
+| without_items | leave_one_unit_out | items | 0.8419 | 0.0046 | -0.0065 | 0.0065 | 0.0011 | 5 | 4275 |
+| without_structure | leave_one_unit_out | structure | 0.8238 | 0.0040 | -0.0246 | 0.0246 | 0.0051 | 5 | 4275 |

@@ -1,0 +1,7 @@
+| feature_family | cumulative | included_units | variables_or_patterns | definition_source |
+| --- | --- | --- | --- | --- |
+| F1 | True | Basic final-board state | level; composition_size | analysis/configs/experiments.yaml; analysis/src/features.py |
+| F2 | True | Basic final-board state; Units/champions | level; composition_size; unit_presence__<unit>; unit_star__<unit> | analysis/configs/experiments.yaml; analysis/src/features.py |
+| F3 | True | Basic final-board state; Units/champions; Traits | level; composition_size; unit_presence__<unit>; unit_star__<unit>; trait_presence__<trait>; trait_strength__<trait> | analysis/configs/experiments.yaml; analysis/src/features.py |
+| F4 | True | Basic final-board state; Units/champions; Traits; Equipped items | level; composition_size; unit_presence__<unit>; unit_star__<unit>; trait_presence__<trait>; trait_strength__<trait>; item_count__<item> | analysis/configs/experiments.yaml; analysis/src/features.py |
+| F5 | True | Basic final-board state; Units/champions; Traits; Equipped items; Composition structure | level; composition_size; unit_presence__<unit>; unit_star__<unit>; trait_presence__<trait>; trait_strength__<trait>; item_count__<item>; structure__unique_units; structure__mean_star; structure__max_star; structure__two_star_units; structure__three_star_units; structure__total_items; structure__unique_items; structure__active_traits; structure__trait_strength_total | analysis/configs/experiments.yaml; analysis/src/features.py |

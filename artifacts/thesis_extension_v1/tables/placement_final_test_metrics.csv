@@ -1,0 +1,3 @@
+model,partition,accuracy,macro_f1,weighted_f1,mae,median_absolute_error,within_1_accuracy,within_2_accuracy
+random_forest_locked,final_test_read_only,0.34933333333333333,0.34015315859970885,0.3401531585997088,1.0648333333333333,1.0,0.7235,0.8991666666666667
+dummy_most_frequent,final_test_read_only,0.125,0.027777777777777776,0.027777777777777776,3.5,3.5,0.25,0.375

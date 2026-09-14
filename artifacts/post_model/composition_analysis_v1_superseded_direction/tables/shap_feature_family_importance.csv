@@ -1,0 +1,6 @@
+feature_family,encoded_features,summed_mean_absolute_shap,mean_feature_absolute_shap
+structure,9,2.281129,0.25345877
+units,134,1.2371669,0.009232589
+items,175,1.2245463,0.0069974074
+basic,2,0.84821737,0.42410868
+traits,84,0.51992863,0.0061896266

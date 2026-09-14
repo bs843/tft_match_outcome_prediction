@@ -1,0 +1,6 @@
+fold,fit_matches,held_matches,fit_rows,held_rows,participant_overlap,f1,encoded_columns,seed,splitter
+1,2800,700,22400,5600,0,0.8451462408038758,403,4275,GroupKFold_player_connected_match_components
+2,2800,700,22400,5600,0,0.8554087825776509,403,4275,GroupKFold_player_connected_match_components
+3,2800,700,22400,5600,0,0.8539677027261677,403,4275,GroupKFold_player_connected_match_components
+4,2800,700,22400,5600,0,0.8396383096512272,402,4275,GroupKFold_player_connected_match_components
+5,2800,700,22400,5600,0,0.8442356342609324,402,4275,GroupKFold_player_connected_match_components
