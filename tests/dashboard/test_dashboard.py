@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ast
 import hashlib
+import json
 from pathlib import Path
 
 import pandas as pd
@@ -32,6 +33,7 @@ from dashboard.components.validation import (
     ProhibitedColumnsError,
     assert_metric_scope,
     assert_safe_columns,
+    verify_generated_manifest,
 )
 
 
@@ -42,12 +44,12 @@ def _digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def test_frozen_artifact_paths_resolve() -> None:
+def test_public_frozen_artifact_paths_resolve() -> None:
     paths = ArtifactCatalog(ROOT)
     assert paths.contract.is_file()
     assert paths.verification_report.is_file()
     assert paths.post_model_manifest.is_file()
-    assert paths.production_root().is_dir()
+    assert paths.model_selection_audit.is_file()
     assert (paths.extension / "tables" / "placement_final_test_metrics.csv").is_file()
 
 
@@ -179,6 +181,21 @@ def test_post_model_manifest_verifies() -> None:
     result = verify_post_model_bundle(ROOT)
     assert result["status"] == "PASS", result["failures"]
     assert result["verified"] == result["expected"]
+
+
+def test_manifest_verification_accepts_equivalent_text_line_endings(
+    tmp_path: Path,
+) -> None:
+    artifact = tmp_path / "table.csv"
+    artifact.write_bytes(b"name,value\nexample,1\n")
+    legacy_crlf = hashlib.sha256(b"name,value\r\nexample,1\r\n").hexdigest()
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(
+        json.dumps({"generated_files": [{"path": artifact.name, "sha256": legacy_crlf}]}),
+        encoding="utf-8",
+    )
+    result = verify_generated_manifest(manifest, tmp_path)
+    assert result["status"] == "PASS"
 
 
 def test_composition_dashboard_loaders_are_read_only_and_identifier_safe() -> None:

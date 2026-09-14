@@ -10,6 +10,9 @@ from typing import Iterable
 import pandas as pd
 
 
+TEXT_ARTIFACT_SUFFIXES = {".csv", ".json", ".md", ".toml", ".txt", ".yaml", ".yml"}
+
+
 class DashboardDataError(RuntimeError):
     """Base class for safe dashboard failures."""
 
@@ -100,12 +103,24 @@ def assert_metric_scope(
 
 
 def sha256_file(path: Path) -> str:
-    """Hash a file without modifying it."""
-    digest = hashlib.sha256()
-    with require_file(path).open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+    """Hash text canonically across LF/CRLF checkouts and binaries byte-for-byte."""
+    required = require_file(path)
+    raw = required.read_bytes()
+    if required.suffix.lower() in TEXT_ARTIFACT_SUFFIXES:
+        raw = raw.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def artifact_hash_matches(path: Path, expected: object) -> bool:
+    """Accept a frozen text hash from either legacy CRLF or canonical LF output."""
+    required = require_file(path)
+    raw = required.read_bytes()
+    candidates = {hashlib.sha256(raw).hexdigest()}
+    if required.suffix.lower() in TEXT_ARTIFACT_SUFFIXES:
+        canonical = raw.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+        candidates.add(hashlib.sha256(canonical).hexdigest())
+        candidates.add(hashlib.sha256(canonical.replace(b"\n", b"\r\n")).hexdigest())
+    return str(expected) in candidates
 
 
 def verify_generated_manifest(manifest_path: Path, base_dir: Path) -> dict[str, object]:
@@ -126,8 +141,7 @@ def verify_generated_manifest(manifest_path: Path, base_dir: Path) -> dict[str, 
         if not candidate.is_file():
             failures.append(f"Missing: {relative.as_posix()}")
             continue
-        actual = sha256_file(candidate)
-        if actual != entry.get("sha256"):
+        if not artifact_hash_matches(candidate, entry.get("sha256")):
             failures.append(f"Hash mismatch: {relative.as_posix()}")
             continue
         verified += 1
@@ -143,4 +157,3 @@ def verify_generated_manifest(manifest_path: Path, base_dir: Path) -> dict[str, 
 def optional_file(path: Path) -> Path | None:
     """Resolve an optional artifact without inventing fallback analysis."""
     return path.resolve() if path.is_file() else None
-

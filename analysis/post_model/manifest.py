@@ -16,6 +16,8 @@ from .verify import VerifiedInputs
 def write_post_model_manifest(verified: VerifiedInputs, output: Path,
                               warnings: list[str]) -> dict[str, Any]:
     manifest_path = output / "post_model_manifest.json"
+    excluded_files = {manifest_path}
+    excluded_files.update(path for path in (output / "logs").rglob("*") if path.is_file())
     packages = {}
     for package in ("numpy", "pandas", "scikit-learn", "scipy", "matplotlib", "joblib",
                     "xgboost", "lightgbm", "catboost"):
@@ -63,7 +65,7 @@ def write_post_model_manifest(verified: VerifiedInputs, output: Path,
         ),
         "seed": SEED,
         "warnings": warnings,
-        "generated_files": generated_file_hashes(output, exclude={manifest_path}),
+        "generated_files": generated_file_hashes(output, exclude=excluded_files),
         "production_artifact_hashes_before_and_after_equal": True,
     }
     write_json(manifest_path, payload)

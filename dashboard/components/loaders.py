@@ -16,6 +16,7 @@ from dashboard.components.validation import (
     assert_safe_columns,
     optional_file,
     require_file,
+    sha256_file,
     verify_generated_manifest,
 )
 
@@ -75,6 +76,10 @@ class ArtifactCatalog:
     def post_model_manifest(self) -> Path:
         return self.post_model / "post_model_manifest.json"
 
+    @property
+    def model_selection_audit(self) -> Path:
+        return self.post_model / "model_selection_audit.json"
+
     def production_root(self) -> Path:
         report = _read_json(self.verification_report)
         return self.root / "outputs" / str(report["production_run_id"])
@@ -123,22 +128,31 @@ def load_dashboard_manifest(root: Path | str | None = None) -> dict[str, Any]:
 
 @st.cache_data(show_spinner=False)
 def load_production_manifest(root: Path | str | None = None) -> dict[str, Any]:
+    """Return the public production record without loading ignored run outputs."""
     paths = catalog(root)
-    return _read_json(paths.production_root() / "run_manifest.json")
+    report = _read_json(paths.verification_report)
+    return {
+        "status": report.get("production_status", report.get("status")),
+        "split_hash": report["split_hash"],
+        "configuration_hashes": report.get(
+            "configuration_hashes",
+            {"analysis_contract": sha256_file(paths.contract)},
+        ),
+    }
 
 
 @st.cache_data(show_spinner=False)
 def load_selection_manifest(root: Path | str | None = None) -> dict[str, Any]:
     paths = catalog(root)
-    return _read_json(paths.production_root() / "modelling" / "selection_manifest.json")
+    audit = _read_json(paths.model_selection_audit)
+    return dict(audit["top_four"])
 
 
 @st.cache_data(show_spinner=False)
 def load_placement_selection_manifest(root: Path | str | None = None) -> dict[str, Any]:
     paths = catalog(root)
-    return _read_json(
-        paths.production_root() / "modelling" / "placement_selection_manifest.json"
-    )
+    audit = _read_json(paths.model_selection_audit)
+    return dict(audit["exact_placement"])
 
 
 @st.cache_data(show_spinner=False)

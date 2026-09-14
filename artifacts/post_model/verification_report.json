@@ -3,23 +3,29 @@
   "analysis_contract": "1.0.4",
   "analysis_tag": "tft-patch17.8-analysis-contract-v5",
   "artifact_hashes_verified": 53,
+  "configuration_hashes": {
+    "analysis_contract": "65d49c664cd353d050747bf59ab0abca5c3f654e9b473da285c673d03b81f028",
+    "columns": "afe61718d74e691d3593a8cfb6bbfcd72dcef072eeea08bd6ae55198ea5e619a",
+    "experiments": "7d6c5fe51c4a20154cc6e9ba734bc464012cf59721138a82941b84dd9b47d48d"
+  },
   "dataset_version": "tft_set17_patch17_8_v11",
   "encoded_f5_feature_count": 404,
   "encoded_feature_identity_sha256": "b8b46ebafa4463eefb69488449bbeca66890dbbb6d5255cf5f63be5949d671dc",
   "failures": [],
   "feature_manifest_hash": "22ce0b89127bd9a153fa9de838db8312115130112ebe945908cfa0151ea6bdbd",
   "metrics_found": [
-    "C:\\Users\\bakan\\Documents\\Codex\\2026-08-06\\review-this-repository-without-changing-anything\\outputs\\tft-thesis-data-collection\\outputs\\analysis-20260825T190121Z-1b3eaaff\\modelling\\tables\\cross_validation_metrics.csv",
-    "C:\\Users\\bakan\\Documents\\Codex\\2026-08-06\\review-this-repository-without-changing-anything\\outputs\\tft-thesis-data-collection\\outputs\\analysis-20260825T190121Z-1b3eaaff\\modelling\\tables\\validation_metrics.csv",
-    "C:\\Users\\bakan\\Documents\\Codex\\2026-08-06\\review-this-repository-without-changing-anything\\outputs\\tft-thesis-data-collection\\outputs\\analysis-20260825T190121Z-1b3eaaff\\modelling\\tables\\final_test_metrics.csv"
+    "modelling/tables/cross_validation_metrics.csv",
+    "modelling/tables/validation_metrics.csv",
+    "modelling/tables/final_test_metrics.csv"
   ],
   "models_found": [
-    "C:\\Users\\bakan\\Documents\\Codex\\2026-08-06\\review-this-repository-without-changing-anything\\outputs\\tft-thesis-data-collection\\outputs\\analysis-20260825T190121Z-1b3eaaff\\modelling\\models\\selected_top4_f5.joblib",
-    "C:\\Users\\bakan\\Documents\\Codex\\2026-08-06\\review-this-repository-without-changing-anything\\outputs\\tft-thesis-data-collection\\outputs\\analysis-20260825T190121Z-1b3eaaff\\modelling\\models\\selected_placement_f5.joblib"
+    "modelling/models/selected_top4_f5.joblib",
+    "modelling/models/selected_placement_f5.joblib"
   ],
   "predictor_count": 291,
-  "preprocessing_found": "C:\\Users\\bakan\\Documents\\Codex\\2026-08-06\\review-this-repository-without-changing-anything\\outputs\\tft-thesis-data-collection\\outputs\\analysis-20260825T190121Z-1b3eaaff\\data\\fitted_train_encoder.joblib",
+  "preprocessing_found": "data/fitted_train_encoder.joblib",
   "production_run_id": "analysis-20260825T190121Z-1b3eaaff",
+  "production_status": "final_evaluation_complete",
   "split_counts": {
     "test": 750,
     "train": 3500,

@@ -122,14 +122,9 @@
       "sha256": "c99a850e0a9aec1f0a857b33ec0e1269db4196bb3ff8b718a43bbc10704f4905"
     },
     {
-      "bytes": 1179,
-      "path": "logs/post_model_analysis.log",
-      "sha256": "0d6c78f4c7bd8276212094f0a437ae06ab5fd28d53fa7c5ab0384577a2f259d7"
-    },
-    {
-      "bytes": 1829,
+      "bytes": 2011,
       "path": "model_selection_audit.json",
-      "sha256": "1d776dd45361977ce9f54e2e96a0ff10fcdb4409144682f8a815f6aace4d2091"
+      "sha256": "ffa5db5decd6b606499d4d5972899b0ef9dc74bb84ed0f2ee1fb5ea9e2fa253e"
     },
     {
       "bytes": 810,
@@ -322,9 +317,9 @@
       "sha256": "76ae3484b82e53ef1b1617c1f762dfa2ad20acb4afde0ca240bf026973b40fd1"
     },
     {
-      "bytes": 2568,
+      "bytes": 1824,
       "path": "verification_report.json",
-      "sha256": "892a0e1834a469369a82ec474ff2452243be1dec850c72f9088a6f350e877638"
+      "sha256": "133e5d05b943b874bfa51101bd802a4394c6a7cd46387f083b3e4db6c60ceb4c"
     },
     {
       "bytes": 578,

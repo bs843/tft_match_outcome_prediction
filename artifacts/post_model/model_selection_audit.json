@@ -1,5 +1,6 @@
 {
   "exact_placement": {
+    "manifest_sha256": "c8c07abcca5c88f259d76f2cc07c5c1f1270e4c0e045e2a41a97f3216b856d25",
     "margin": 2.3925,
     "runner_up": "dummy",
     "runner_up_validation_mae": 3.5,
@@ -30,6 +31,7 @@
     "effectively_tied_relative_to_observed_cv_sd": true,
     "margin": 0.001764295009954675,
     "materiality_basis": "Margin is compared with the larger observed five-fold CV standard deviation of the winner and runner-up; this is a descriptive stability comparison, not a significance threshold.",
+    "manifest_sha256": "77b60b1f0249a1b6b5f0d3d0ed1cfbb604b1f19d2c092aae54ca8b4c9bcebfe5",
     "runner_up": "lightgbm",
     "runner_up_validation_f1": 0.8525137798563555,
     "selected_model": "xgboost",

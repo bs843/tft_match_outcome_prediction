@@ -16,6 +16,9 @@ from analysis.src.common import sha256_file, stable_hash, utc_now, write_json
 from src.config import PROJECT_ROOT
 
 
+TEXT_ARTIFACT_SUFFIXES = {".csv", ".json", ".md", ".toml", ".txt", ".yaml", ".yml"}
+
+
 PRODUCTION_RUN_ID = "analysis-20260825T190121Z-1b3eaaff"
 COLLECTION_RUN_ID = "20260823T124729Z-673b6e6c"
 DATASET_VERSION = "tft_set17_patch17_8_v11"
@@ -123,11 +126,19 @@ def setup_logger(path: Path) -> logging.Logger:
     return logger
 
 
+def artifact_sha256_file(path: Path) -> str:
+    """Hash generated text with canonical newlines and binary files byte-for-byte."""
+    raw = path.read_bytes()
+    if path.suffix.lower() in TEXT_ARTIFACT_SUFFIXES:
+        raw = raw.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return hashlib.sha256(raw).hexdigest()
+
+
 def generated_file_hashes(root: Path, exclude: set[Path] | None = None) -> list[dict[str, Any]]:
     excluded = {path.resolve() for path in (exclude or set())}
     return [
         {"path": path.relative_to(root).as_posix(), "bytes": path.stat().st_size,
-         "sha256": sha256_file(path)}
+         "sha256": artifact_sha256_file(path)}
         for path in sorted(root.rglob("*"))
         if path.is_file() and path.resolve() not in excluded
     ]
@@ -151,8 +162,8 @@ def json_sanitize(value: Any) -> Any:
 __all__ = [
     "ANALYSIS_COMMIT", "ANALYSIS_TAG", "COLLECTION_RUN_ID", "CONTRACT_VERSION",
     "DATASET_VERSION", "PROJECT_ROOT", "PRODUCTION_RUN_ID", "SEED", "SPLIT_HASH",
-    "dataframe_markdown", "default_output_root", "feature_group", "generated_file_hashes",
-    "json_sanitize", "observation_id", "production_root", "read_json",
+    "artifact_sha256_file", "dataframe_markdown", "default_output_root", "feature_group",
+    "generated_file_hashes", "json_sanitize", "observation_id", "production_root", "read_json",
     "safe_binary_metrics", "setup_logger", "sha256_file", "stable_hash", "utc_now",
     "write_json", "write_table", "write_text",
 ]
